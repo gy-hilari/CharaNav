@@ -2,19 +2,31 @@
   "name": "chara-nav",
   "version": "0.1.0",
   "private": true,
+  "main": "public/electron.js",
+  "homepage": "./",
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.4.0",
     "@testing-library/user-event": "^7.2.1",
+    "electron-is-dev": "^1.1.0",
+    "electron-promise-ipc": "^2.0.1",
+    "electron-window-state": "^5.0.3",
+    "node-lmdb": "^0.8.0",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
-    "react-scripts": "3.3.1"
+    "react-scripts": "3.3.1",
+    "uniqid": "^5.2.0"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "watch": "set ELECTRON_START_URL=http://localhost:3000 && nodemon --exec electron .",
+    "preelectron-pack": "npm run build",
+    "postinstall": "electron-builder install-app-deps",
+    "electron-pack": "electron-builder -w zip",
+    "electron-rebuild": "electron-rebuild -f -w node-lmdb"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -30,5 +42,10 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "electron": "^7.1.11",
+    "electron-builder": "^22.3.2",
+    "electron-rebuild": "^1.10.0"
   }
 }
