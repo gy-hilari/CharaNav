@@ -1,7 +1,6 @@
 const { contextBridge, ipcRenderer } = require("electron");
 const promiseIpc = require('electron-promise-ipc');
-// Expose protected methods that allow the renderer process to use
-// the ipcRenderer without exposing the entire object
+
 contextBridge.exposeInMainWorld(
     "api", {
     send: (channel, data) => {
@@ -19,12 +18,28 @@ contextBridge.exposeInMainWorld(
         let validChannels = [
             "toMain",
             "/get/comp",
+            "/get/comp/id",
+            "/get/comp/char",
             "/post/comp",
+            "/get/char/id",
+            "/post/char",
+            "/post/article",
+            "/get/article",
+            "/get/article/id",
+            "/post/article/char",
+            "/assign/article/char",
+            "/get/char/article",
+            "/get/artTag",
+            "/post/artTag",
+            "/get/article/artTag",
+            "/post/article/artTag",
             "test"
         ];
         if (validChannels.includes(channel)) {
             promiseIpc.send(channel, data).then((res) => {func(res)});
-        }       
+        } else {
+            console.log(`[${channel}] is an invalide route!`);
+        }
     },
     receive: (channel, func) => {
         let validChannels = [
@@ -32,7 +47,6 @@ contextBridge.exposeInMainWorld(
             "/get/comp"
         ];
         if (validChannels.includes(channel)) {
-            // Deliberately strip event as it includes `sender` 
             ipcRenderer.on(channel, (event, ...args) => func(...args));
         }
     },

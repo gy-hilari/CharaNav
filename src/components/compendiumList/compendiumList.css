@@ -1,0 +1,15 @@
+.Compendium:hover{
+    cursor: pointer;
+}
+
+.Compendium{
+    color: rgb(127, 172, 255);
+}
+
+.Character:hover{
+    cursor: pointer;
+}
+
+.Character{
+    color: rgb(101, 83, 255);
+}
