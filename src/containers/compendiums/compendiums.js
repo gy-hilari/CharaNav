@@ -21,8 +21,8 @@ class Compendiums extends Component {
     // }
 
     componentDidMount() {
-        this.getComps();
-        this.getSortedChars();
+        // this.getComps();
+        // this.getSortedChars();
         // this.getArticles();
         // this.getSortedArticles();
         // this.getArticleTags();
