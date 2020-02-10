@@ -13,32 +13,46 @@ const uniqid = require('uniqid');
 const promiseIpc = require('electron-promise-ipc');
 
 // const lmdb = require('node-lmdb');
+const sqlite3 = require('sqlite3').verbose();
 
 let mainWindow;
 
-//#region  INITIALIZE LMDB ENVIRONMENT
-// const dbDir = "/mydata";
-// if (!fs.existsSync(__dirname + dbDir)) {
-//     fs.mkdirSync(__dirname + dbDir);
+//#region  INITIALIZE DATABASE ENVIRONMENT
+const dbDir = "data";
+const dbName = "charanav";
+if (!fs.existsSync('.' + `/${dbDir}/${dbName}.db`)) {
+    fs.mkdirSync('.' + `/${dbDir}`);
+    fs.createWriteStream('.' + `/${dbDir}/${dbName}.db`);
+}
+
+// if(!fs.existsSync(path.join(__dirname, `/${dbDir}/${dbName}.db`))){
+//     fs.mkdirSync(path.join(__dirname, `/${dbDir}`));
+//     fs.createWriteStream(path.join(__dirname, `/${dbDir}/${dbName}.db`));
 // }
 
-// let mapSize = 2 * 1024 * 1024 * 1024;
-// let env = new lmdb.Env();
-// env.open({
-//     path: __dirname + dbDir,
-//     mapSize: mapSize, // maximum database size
-//     maxDbs: 3
+const db = new sqlite3.Database(path.join('.', `/${dbDir}/${dbName}.db`));
+// const db = new sqlite3.Database(path.join(__dirname, `/${dbDir}/${dbName}.db`));
+
+// db.serialize(() => {
+//     db.run("CREATE TABLE lorem (info TEXT)");
+
+//     var stmt = db.prepare("INSERT INTO lorem VALUES (?)");
+//     for (var i = 0; i < 10; i++) {
+//         stmt.run("Ipsum " + i);
+//     }
+//     stmt.finalize();
+
+//     db.each("SELECT rowid AS id, info FROM lorem", function (err, row) {
+//         console.log(row.id + ": " + row.info);
+//     });
 // });
-// const dbi = env.openDbi({
-//     name: "charaNavDB",
-//     create: true // will create if database did not exist
-// })
+// db.close();
 //#endregion
 
 //#region  CREATE ELECTRON WINDOW
 function createWindow() {
-    let dir = './mydata';
-    if (!fs.existsSync(dir)) fs.mkdirSync(dir);
+    // let dir = './mydata';
+    // if (!fs.existsSync(dir)) fs.mkdirSync(dir);
 
     let state = windowStateKeeper({
         defaultWidth: 800, defaultHeight: 600
@@ -59,23 +73,23 @@ function createWindow() {
         frame: true
     });
 
-    const startUrl = process.env.ELECTRON_START_URL || url.format({
+    const startUrl = isDev ? process.env.ELECTRON_START_URL : url.format({
         pathname: path.join(__dirname, '/../build/index.html'),
         protocol: 'file:',
         slashes: true
     });
     mainWindow.loadURL(startUrl);
 
-    mainWindow.webContents.openDevTools();
+    if (isDev) mainWindow.webContents.openDevTools();
 
-    state.manage(mainWindow);    
+    state.manage(mainWindow);
 
     mainWindow.on('closed', () => mainWindow = null);
 }
 
 app.on('ready', () => {
     createWindow();
-    // CheckOrCreateModels();
+    CheckOrCreateModels();
 });
 
 app.on('window-all-closed', () => {
@@ -94,6 +108,21 @@ app.on('activate', () => {
 //#region  DATABASE and API
 
 function CheckOrCreateModels() {
+    let tables = [
+        'lorem',
+        'chara',
+        'comp',
+        'article',
+        'tag'
+    ];
+
+    db.serialize(() => {
+        tables.forEach(t => {
+            db.run(`CREATE TABLE IF NOT EXISTS ${t} (info TEXT)`);
+        });
+    });
+    db.close();
+
     // let txn = env.beginTxn();
     // let Compendiums = txn.getString(dbi, "Compendiums");
     // let Characters = txn.getString(dbi, "Characters");
@@ -104,6 +133,39 @@ function CheckOrCreateModels() {
     // if (Articles === null) txn.putString(dbi, "Articles", "[]");
     // if (ArtTags === null) txn.putString(dbi, "ArtTags", "[]");
     // txn.commit();
+}
+
+function CheckForTable(name, fnc) {
+    // let myvar = null;
+    // db.serialize(() => {
+    let sql = `SELECT name FROM sqlite_master WHERE type='table' AND name = ?`;
+    db.get(sql, [name], (err, row) => {
+        if (err) console.log(err.message);
+        if (row) {
+            console.log(`Found table: [${row.name}]`);
+            db.serialize(() => {
+                fnc(row.name);
+            })
+        } else {
+            console.log(`Did not find table: [${name}]`);
+            db.serialize(() => {
+                fnc(null);
+            })
+        }
+    });
+    // });
+    // db.close();
+    // return myvar;
+}
+
+function CreateDbTable(table) {
+    db.run(`CREATE TABLE ${table} (info TEXT)`), [], (err) => {
+        if (err) {
+            console.log(err);
+        } else {
+            console.log(`Table [${table}] successfully created!`);
+        }
+    };
 }
 
 promiseIpc.on('test', () => {
@@ -308,7 +370,7 @@ function AssignArticle(form) {
     // txn.putString(dbi, form.charId, JSON.stringify(char));
     // txn.commit();
     // return GetArticleById(form.articleId);
-} 
+}
 
 function GetArticlesOfCharacters() {
     // let txn = env.beginTxn();
@@ -360,7 +422,7 @@ function CreateArticleTag(form) {
     // txn.putString(dbi, "ArtTags", JSON.stringify([...allArtTags]));
     // txn.commit();
     // return GetArtTagById(artTagId);
-}    
+}
 
 function AssignArticleTag(form) {
     // let article = GetArticleById(form.articleId);
