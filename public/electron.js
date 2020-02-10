@@ -17,15 +17,15 @@ const promiseIpc = require('electron-promise-ipc');
 let mainWindow;
 
 //#region  INITIALIZE LMDB ENVIRONMENT
-const dir = "/mydata";
-if (!fs.existsSync(__dirname + dir)) {
-    fs.mkdirSync(__dirname + dir);
+const dbDir = "/mydata";
+if (!fs.existsSync(__dirname + dbDir)) {
+    fs.mkdirSync(__dirname + dbDir);
 }
 
 let mapSize = 2 * 1024 * 1024 * 1024;
 let env = new lmdb.Env();
 env.open({
-    path: __dirname + dir,
+    path: __dirname + dbDir,
     mapSize: mapSize, // maximum database size
     maxDbs: 3
 });
@@ -67,6 +67,8 @@ function createWindow() {
     mainWindow.loadURL(startUrl);
 
     mainWindow.webContents.openDevTools();
+
+    state.manage(mainWindow);    
 
     mainWindow.on('closed', () => mainWindow = null);
 }

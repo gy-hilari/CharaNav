@@ -24,33 +24,40 @@ const CompendiumList = (props) => {
                                     props.compChars[elm.id].map((char) => {
                                         return (
                                             <Aux key={char.id}>
-                                                <p className='Character' onClick={() => { props.getChar(char.id) }}>{char.id}</p>
-                                                <form onSubmit={() => { props.assignArticle({ charId: char.id, articleId: document.getElementById(`sel-${char.id}`).value }) }}>
-                                                    <select id={`sel-${char.id}`}>
-                                                        {
-                                                            props.articles.map((article) => {
+                                                {/* <div className="tooltip"> */}
+                                                    <p className='Character tooltip' onClick={() => { props.getChar(char.id) }}>
+                                                        <span className="tooltiptext">
+                                                            {char.id}
+                                                        </span>
+                                                        {char.id}
+                                                    </p>
+                                                    {/* <form onSubmit={() => { props.assignArticle({ charId: char.id, articleId: document.getElementById(`sel-${char.id}`).value }) }}>
+                                                        <select id={`sel-${char.id}`}>
+                                                            {
+                                                                props.articles.map((article) => {
+                                                                    return (
+                                                                        <option key={'sel' + char.id + article.id} value={article.id}>{article.id}</option>
+                                                                    )
+                                                                })
+                                                            }
+                                                        </select>
+                                                        <input type="submit" value="Add Article" />
+                                                    </form>
+                                                    {
+                                                        props.charArticles[char.id] ?
+                                                            props.charArticles[char.id].map((article) => {
                                                                 return (
-                                                                    <option key={'sel' + char.id + article.id} value={article.id}>{article.id}</option>
+                                                                    <p key={char.id + article.id}>{article.id}</p>
                                                                 )
                                                             })
-                                                        }
-                                                    </select>
-                                                    <input type="submit" value="Add Article" />
-                                                </form>
-                                                {
-                                                    props.charArticles[char.id] ?
-                                                        props.charArticles[char.id].map((article) => {
-                                                            return (
-                                                                <p key={char.id + article.id}>{article.id}</p>
-                                                            )
-                                                        }) : null
-                                                }
+                                                            : null
+                                                    } */}
+                                                {/* </div> */}
                                                 <hr />
                                             </Aux>
                                         )
                                     })
-                                    :
-                                    null
+                                    : null
                             }
                         </Aux>
                     );
