@@ -135,39 +135,6 @@ function CheckOrCreateModels() {
     // txn.commit();
 }
 
-function CheckForTable(name, fnc) {
-    // let myvar = null;
-    // db.serialize(() => {
-    let sql = `SELECT name FROM sqlite_master WHERE type='table' AND name = ?`;
-    db.get(sql, [name], (err, row) => {
-        if (err) console.log(err.message);
-        if (row) {
-            console.log(`Found table: [${row.name}]`);
-            db.serialize(() => {
-                fnc(row.name);
-            })
-        } else {
-            console.log(`Did not find table: [${name}]`);
-            db.serialize(() => {
-                fnc(null);
-            })
-        }
-    });
-    // });
-    // db.close();
-    // return myvar;
-}
-
-function CreateDbTable(table) {
-    db.run(`CREATE TABLE ${table} (info TEXT)`), [], (err) => {
-        if (err) {
-            console.log(err);
-        } else {
-            console.log(`Table [${table}] successfully created!`);
-        }
-    };
-}
-
 promiseIpc.on('test', () => {
     return "Testing IPC!!!";
 })
