@@ -18,6 +18,7 @@ const sqlite3 = require('sqlite3').verbose();
 let mainWindow;
 
 //#region  INITIALIZE DATABASE ENVIRONMENT
+
 const dbDir = "data";
 const dbName = "charanav";
 if (!fs.existsSync('.' + `/${dbDir}/${dbName}.db`)) {
@@ -25,40 +26,17 @@ if (!fs.existsSync('.' + `/${dbDir}/${dbName}.db`)) {
     fs.createWriteStream('.' + `/${dbDir}/${dbName}.db`);
 }
 
-// if(!fs.existsSync(path.join(__dirname, `/${dbDir}/${dbName}.db`))){
-//     fs.mkdirSync(path.join(__dirname, `/${dbDir}`));
-//     fs.createWriteStream(path.join(__dirname, `/${dbDir}/${dbName}.db`));
-// }
-
 const db = new sqlite3.Database(path.join('.', `/${dbDir}/${dbName}.db`));
-// const db = new sqlite3.Database(path.join(__dirname, `/${dbDir}/${dbName}.db`));
 
-// db.serialize(() => {
-//     db.run("CREATE TABLE lorem (info TEXT)");
-
-//     var stmt = db.prepare("INSERT INTO lorem VALUES (?)");
-//     for (var i = 0; i < 10; i++) {
-//         stmt.run("Ipsum " + i);
-//     }
-//     stmt.finalize();
-
-//     db.each("SELECT rowid AS id, info FROM lorem", function (err, row) {
-//         console.log(row.id + ": " + row.info);
-//     });
-// });
-// db.close();
 //#endregion
 
 //#region  CREATE ELECTRON WINDOW
-function createWindow() {
-    // let dir = './mydata';
-    // if (!fs.existsSync(dir)) fs.mkdirSync(dir);
 
+function createWindow() {
     let state = windowStateKeeper({
         defaultWidth: 800, defaultHeight: 600
     })
 
-    // console.log(path.join(__dirname, '/preload.js'));
     mainWindow = new BrowserWindow({
         x: state.x, y: state.y,
         width: state.width, height: state.height,
@@ -103,6 +81,7 @@ app.on('activate', () => {
         createWindow();
     }
 });
+
 //#endregion
 
 //#region  DATABASE and API
@@ -150,60 +129,6 @@ function CheckOrCreateModels() {
         db.close();
     });
 }
-
-// function CheckOrCreateModels() {
-//     let tables = [
-//         'lorem',
-//         'chara',
-//         'comp',
-//         'article',
-//         'tag'
-//     ];
-
-//     let entries = [];
-//     db.serialize(() => {
-//         tables.forEach(t => {
-//             db.run(
-//                 `CREATE TABLE IF NOT EXISTS ${t} (
-//                     _id TEXT,
-//                     name TEXT
-//                 )`
-//             );
-//         });
-
-//         let stmt = db.prepare(
-//             `INSERT INTO chara (
-//                 _id,
-//                 name
-//             )
-//             VALUES (
-//                 $id,
-//                 $name
-//             )`
-//         );
-//         for(let i = 0; i < 10; i++){
-//             stmt.run({$id: uniqid('chr-'), $name: `Name # ${i}`});
-//         }
-//         stmt.finalize();
-
-//         db.each(`SELECT _id as id, name FROM chara`, fnc = (err, res) => {ReadSQL(res, entries)});
-
-//         console.log(entries);
-//     });
-//     db.close();
-
-
-//     // let txn = env.beginTxn();
-//     // let Compendiums = txn.getString(dbi, "Compendiums");
-//     // let Characters = txn.getString(dbi, "Characters");
-//     // let Articles = txn.getString(dbi, "Articles");
-//     // let ArtTags = txn.getString(dbi, "ArtTags");
-//     // if (Compendiums === null) txn.putString(dbi, "Compendiums", "[]");
-//     // if (Characters === null) txn.putString(dbi, "Characters", "[]");
-//     // if (Articles === null) txn.putString(dbi, "Articles", "[]");
-//     // if (ArtTags === null) txn.putString(dbi, "ArtTags", "[]");
-//     // txn.commit();
-// }
 
 promiseIpc.on('test', () => {
     return "Testing IPC!!!";
