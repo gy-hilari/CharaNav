@@ -89,7 +89,7 @@ function createWindow() {
 
 app.on('ready', () => {
     createWindow();
-    CheckOrCreateModels();
+    CheckOrCreateModels().then(res => console.log(res));
 });
 
 app.on('window-all-closed', () => {
@@ -108,32 +108,102 @@ app.on('activate', () => {
 //#region  DATABASE and API
 
 function CheckOrCreateModels() {
-    let tables = [
-        'lorem',
-        'chara',
-        'comp',
-        'article',
-        'tag'
-    ];
+    // RETURNS THE WHOLE PROMISE!! :)
+    return new Promise((resolve, reject) => {
+        let tables = [
+            'lorem',
+            'chara',
+            'comp',
+            'article',
+            'tag'
+        ];
 
-    db.serialize(() => {
-        tables.forEach(t => {
-            db.run(`CREATE TABLE IF NOT EXISTS ${t} (info TEXT)`);
+        db.serialize(() => {
+            tables.forEach(t => {
+                db.run(
+                    `CREATE TABLE IF NOT EXISTS ${t} (
+                        _id TEXT,
+                        name TEXT
+                    )`
+                );
+            });
+
+            let stmt = db.prepare(
+                `INSERT INTO chara (
+                    _id,
+                    name
+                )
+                VALUES (
+                    $id,
+                    $name
+                )`
+            );
+            for (let i = 0; i < 10; i++) {
+                stmt.run({ $id: uniqid('chr-'), $name: `Name # ${i}` });
+            }
+            stmt.finalize();
+
+            db.all(`SELECT _id as id, name FROM chara`, (err, res) => {
+                resolve(res);
+            });
         });
+        db.close();
     });
-    db.close();
-
-    // let txn = env.beginTxn();
-    // let Compendiums = txn.getString(dbi, "Compendiums");
-    // let Characters = txn.getString(dbi, "Characters");
-    // let Articles = txn.getString(dbi, "Articles");
-    // let ArtTags = txn.getString(dbi, "ArtTags");
-    // if (Compendiums === null) txn.putString(dbi, "Compendiums", "[]");
-    // if (Characters === null) txn.putString(dbi, "Characters", "[]");
-    // if (Articles === null) txn.putString(dbi, "Articles", "[]");
-    // if (ArtTags === null) txn.putString(dbi, "ArtTags", "[]");
-    // txn.commit();
 }
+
+// function CheckOrCreateModels() {
+//     let tables = [
+//         'lorem',
+//         'chara',
+//         'comp',
+//         'article',
+//         'tag'
+//     ];
+
+//     let entries = [];
+//     db.serialize(() => {
+//         tables.forEach(t => {
+//             db.run(
+//                 `CREATE TABLE IF NOT EXISTS ${t} (
+//                     _id TEXT,
+//                     name TEXT
+//                 )`
+//             );
+//         });
+
+//         let stmt = db.prepare(
+//             `INSERT INTO chara (
+//                 _id,
+//                 name
+//             )
+//             VALUES (
+//                 $id,
+//                 $name
+//             )`
+//         );
+//         for(let i = 0; i < 10; i++){
+//             stmt.run({$id: uniqid('chr-'), $name: `Name # ${i}`});
+//         }
+//         stmt.finalize();
+
+//         db.each(`SELECT _id as id, name FROM chara`, fnc = (err, res) => {ReadSQL(res, entries)});
+
+//         console.log(entries);
+//     });
+//     db.close();
+
+
+//     // let txn = env.beginTxn();
+//     // let Compendiums = txn.getString(dbi, "Compendiums");
+//     // let Characters = txn.getString(dbi, "Characters");
+//     // let Articles = txn.getString(dbi, "Articles");
+//     // let ArtTags = txn.getString(dbi, "ArtTags");
+//     // if (Compendiums === null) txn.putString(dbi, "Compendiums", "[]");
+//     // if (Characters === null) txn.putString(dbi, "Characters", "[]");
+//     // if (Articles === null) txn.putString(dbi, "Articles", "[]");
+//     // if (ArtTags === null) txn.putString(dbi, "ArtTags", "[]");
+//     // txn.commit();
+// }
 
 promiseIpc.on('test', () => {
     return "Testing IPC!!!";
