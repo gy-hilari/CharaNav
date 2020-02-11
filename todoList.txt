@@ -4,7 +4,8 @@
 - Start basic Character Form
 - Make "Scene Manager" State
 
--- NEW MODEL: Canvas
+-- NEW MODEL: Layers
+	- Consider a linked list structure
 -- New behavior: Non-Entry Article
 	- Article that has no info data, use as image only
 -- New behavior: Global (True / False)

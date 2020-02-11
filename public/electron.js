@@ -19,7 +19,7 @@ let mainWindow;
 
 //#region  INITIALIZE DATABASE ENVIRONMENT
 
-const dbDir = "data";
+const dbDir = "charanavdata";
 const dbName = "charanav";
 if (!fs.existsSync('.' + `/${dbDir}/${dbName}.db`)) {
     fs.mkdirSync('.' + `/${dbDir}`);
@@ -67,7 +67,12 @@ function createWindow() {
 
 app.on('ready', () => {
     createWindow();
-    CheckOrCreateModels().then(res => console.log(res));
+    CheckOrCreateModels().then(comp => {
+        InsertChar(comp).then(char => {
+            console.log(char);
+            db.close();
+        })
+    });
 });
 
 app.on('window-all-closed', () => {
@@ -87,28 +92,72 @@ app.on('activate', () => {
 //#region  DATABASE and API
 
 function CheckOrCreateModels() {
-    // RETURNS THE WHOLE PROMISE!! :)
     return new Promise((resolve, reject) => {
         let tables = [
-            'lorem',
-            'chara',
-            'comp',
-            'article',
-            'tag'
+            {
+                tableName: 'comp',
+                name: { foreignKey: false, string: 'TEXT NOT NULL' }
+            },
+            {
+                tableName: 'character',
+                name: { foreignKey: false, string: 'TEXT NOT NULL' },
+                comp: { foreignKey: false, string: 'TEXT NOT NULL' },
+                compkey: { foreignKey: true, string: 'FOREIGN KEY (comp) REFERENCES comp(_id)' }
+            },
+            {
+                tableName: 'layer',
+                name: { foreignKey: false, string: 'TEXT NOT NULL' },
+                zIndex: { foreignKey: false, string: 'TEXT NOT NULL' }, // MAKE A LINKED LIST FOR THESE!
+                character: { foreignKey: true, string: 'FOREIGN KEY (_id) REFERENCES character(_id)' }
+            },
+            {
+                tableName: 'article',
+                name: { foreignKey: false, string: 'TEXT NOT NULL' },
+                imagePath: { foreignKey: false, string: 'TEXT NOT NULL' },
+                comp: { foreignKey: true, string: 'FOREIGN KEY (_id) REFERENCES comp(_id)' }
+            },
+            {
+                tableName: 'character_article',
+                position: { foreignKey: false, string: 'TEXT NOT NULL' },
+                char: { foreignKey: true, string: 'FOREIGN KEY (_id) REFERENCES character(_id)' },
+                article: { foreignKey: true, string: 'FOREIGN KEY (_id) REFERENCES article(_id)' },
+                layer: { foreignKey: true, string: 'FOREIGN KEY (_id) REFERENCES layer(_id)' }
+            },
+            {
+                tableName: 'tag',
+                name: { foreignKey: false, string: 'TEXT NOT NULL' }
+            },
+            {
+                tableName: 'article_tag',
+                article: { foreignKey: true, string: 'FOREIGN KEY (_id) REFERENCES article(_id)' },
+                tag: { foreignKey: true, string: 'FOREIGN KEY (_id) REFERENCES tag(_id)' }
+            }
         ];
 
         db.serialize(() => {
             tables.forEach(t => {
-                db.run(
-                    `CREATE TABLE IF NOT EXISTS ${t} (
-                        _id TEXT,
-                        name TEXT
-                    )`
-                );
+                let sql =
+                    `CREATE TABLE IF NOT EXISTS ${t.tableName} (
+                    _id TEXT PRIMARY KEY,
+                    `;
+
+                let fields = Object.keys(t);
+                for (let k = 0; k < fields.length; k++) {
+                    if (fields[k] != 'tableName') {
+                        sql += !t[fields[k]].foreignKey ? `${fields[k]} ${t[fields[k]].string}` : `${t[fields[k]].string}`;
+                        if (k + 1 < fields.length) sql += `,
+                        `;
+                    }
+                }
+                sql += `
+                )`;
+                let stmt = db.prepare(sql);
+                stmt.run();
+                stmt.finalize();
             });
 
             let stmt = db.prepare(
-                `INSERT INTO chara (
+                `INSERT INTO comp (
                     _id,
                     name
                 )
@@ -118,15 +167,46 @@ function CheckOrCreateModels() {
                 )`
             );
             for (let i = 0; i < 10; i++) {
-                stmt.run({ $id: uniqid('chr-'), $name: `Name # ${i}` });
+                stmt.run({ $id: uniqid('cmp-'), $name: `Compendium # ${i}` });
             }
             stmt.finalize();
 
-            db.all(`SELECT _id as id, name FROM chara`, (err, res) => {
-                resolve(res);
+            db.all(`SELECT _id as id, name FROM comp`, (err, comps) => {
+                resolve(comps);
+            });
+
+        });
+    });
+}
+
+function InsertChar(comps) {
+    return new Promise((resolve, reject) => {
+        db.serialize(() => {
+            comps.forEach(comp => {
+                console.log(comp.id);
+                let stmt = db.prepare(
+                    `INSERT INTO character (
+                        _id,
+                        name,
+                        comp
+                    )
+                    VALUES (
+                        $id,
+                        $name,
+                        $comp
+                    )`
+                );
+                for (let i = 0; i < 10; i++) {
+                    stmt.run({ $id: uniqid('chr-'), $name: `Character of comp: [${comp.id}]`, $comp: comp.id });
+                }
+                stmt.finalize();
+            });
+
+            db.all(`SELECT _id as id, name FROM character`, (err, chars) => {
+                console.log(chars);
+                resolve(chars);
             });
         });
-        db.close();
     });
 }
 
