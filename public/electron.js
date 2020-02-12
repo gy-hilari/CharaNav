@@ -33,7 +33,7 @@ const db = new sqlite3.Database(path.join('.', `/${dbDir}/${dbName}.db`));
 //#region  CREATE ELECTRON WINDOW
 
 function createWindow() {
-    let state = windowStateKeeper({
+    let state = windowStateKeeper({ 
         defaultWidth: 800, defaultHeight: 600
     })
 
@@ -156,7 +156,7 @@ function CheckOrCreateModels() {
                 }
                 sql += `
                 )`;
-                console.log(sql);
+                // console.log(sql);
                 let stmt = db.prepare(sql);
                 stmt.run(err => {
                     reject(err);
@@ -185,7 +185,6 @@ promiseIpc.on('/get/comp', () => {
 });
 
 promiseIpc.on('/get/article', () => {
-    return GetArticles();
 });
 
 promiseIpc.on('/get/comp/id', (id) => {
@@ -216,34 +215,42 @@ promiseIpc.on('/post/comp', (form) => {
 });
 
 promiseIpc.on('/get/char/id', (id) => {
-    // return GetCharacterById(id);
+    return new Promise((resolve, reject) => {
+        GetCharacterById(id).then((res) => {
+            console.log(res);
+            resolve(res);
+        }).catch((err) => reject(err));
+    });
 });
 
 promiseIpc.on('/post/char', (form) => {
-    // let txn = env.beginTxn();
-    // let allChars = new Set(JSON.parse(txn.getString(dbi, "Characters")));
-    // let charId = uniqid('chr-');
-    // let newChar = {
-    //     id: charId,
-    //     comp: form.compId,
-    //     type: 'character',
-    //     name: form.name,
-    //     articles: []
-    // };
-    // allChars.add(charId);
-    // let comp = JSON.parse(txn.getString(dbi, form.compId));
-    // let compChars = new Set(comp.characters);
-    // compChars.add(charId);
-    // comp.characters = [...compChars];
-    // txn.putString(dbi, form.compId, JSON.stringify(comp));
-    // txn.putString(dbi, "Characters", JSON.stringify([...allChars]));
-    // txn.putString(dbi, charId, JSON.stringify(newChar));
-    // txn.commit();
-    // return GetCharacterById(charId);
+    return new Promise((resolve, reject) => {
+        CreateCharacter(form).then((res) => {
+            console.log(res);
+            GetCharactersByCompId(form.compId).then((res) => {
+                console.log(res);
+                resolve(res);
+            });
+        }).catch((err) => {
+            console.log(err);
+            GetCharactersByCompId(form.compId).then((res) => {
+                console.log(res);
+                resolve(res);
+            });
+        });
+    });
 });
 
-promiseIpc.on('/get/comp/char', () => {
-    return GetCharactersOfCompendiums();
+promiseIpc.on('/get/comp/char', (compId) => {
+    return new Promise((resolve, reject) => {
+        GetCharactersByCompId(compId).then((res) => {
+            console.log(res);
+            resolve(res);
+        }).catch((err) => {
+            console.log(err);
+            reject(err);
+        });
+    });
 });
 
 promiseIpc.on('/post/article', (form) => {
@@ -320,7 +327,7 @@ function GetCompendiumById(id) {
     console.log(id);
     return new Promise((resolve, reject) => {
         db.serialize(() => {
-            let sql = `SELECT _id as id, name FROM comp WHERE id = '${id}'`; 
+            let sql = `SELECT _id as id, name FROM comp WHERE id = '${id}'`;
             db.get(sql, (err, comp) => {
                 if (err) reject(err);
                 resolve(comp);
@@ -329,170 +336,89 @@ function GetCompendiumById(id) {
     });
 }
 
+function GetCharactersByCompId(compId) {
+    console.log(`Getting characters of comp: [${compId}]`);
+    return new Promise((resolve, reject) => {
+        db.serialize(() => {
+            db.all(`SELECT _id as id, name FROM character WHERE comp = '${compId}'`, (err, chars) => {
+                if (err) reject(err);
+                resolve(chars);
+            });
+        });
+    });
+}
+
+function CreateCharacter(form) {
+    return new Promise((resolve, reject) => {
+        if (!form.name) reject('Invalid form');
+        db.serialize(() => {
+            let stmt = db.prepare(
+                `INSERT INTO character (
+                    _id,
+                    name,
+                    comp
+                )
+                VALUES (
+                    $id,
+                    $name,
+                    $comp
+                )`
+            );
+            let charId = uniqid('chr_');
+            stmt.run({ $id: charId, $name: form.name, $comp: form.compId });
+            stmt.finalize();
+            resolve(`Character [${charId}] created successfully!`);
+        });
+    });
+}
+
 function GetCharacterById(id) {
-    // let txn = env.beginTxn();
-    // let char = JSON.parse(txn.getString(dbi, id));
-    // txn.abort();
-    // return char ? char : null;
+    console.log(`Getting character with id: [${id}]`);
+    return new Promise((resolve, reject) => {
+        db.serialize(() => {
+            let sql = `SELECT _id as id, name, comp FROM character WHERE id = '${id}'`;
+            db.get(sql, (err, char) => {
+                if (err) reject(err);
+                resolve(char);
+            });
+        });
+    });
 }
 
 function GetArticleById(id) {
-    // let txn = env.beginTxn();
-    // let article = JSON.parse(txn.getString(dbi, id));
-    // txn.abort();
-    // return article ? article : null;
 }
 
 function GetCharactersOfCompendiums() {
-    // let txn = env.beginTxn();
-    // let allComps = JSON.parse(txn.getString(dbi, "Compendiums"));
-    // txn.abort();
-    // let compChars = {};
-    // allComps.forEach((i) => {
-    //     let chars = [];
-    //     let comp = GetCompendiumById(i);
-    //     comp.characters.forEach((j) => {
-    //         chars.push(GetCharacterById(j));
-    //     });
-    //     compChars[i] = chars;
-    // });
-    // // console.log(compChars);
-    // return compChars;
 }
 
 function CreateArticle(form) {
-    // console.log('Creating Article!');
-    // let txn = env.beginTxn();
-    // let allArticles = new Set(JSON.parse(txn.getString(dbi, "Articles")));
-    // let articleId = uniqid('art-');
-    // let newArticle = {
-    //     id: articleId,
-    //     type: 'article',
-    //     name: form.name,
-    //     tags: []
-    // };
-    // allArticles.add(articleId);
-    // txn.putString(dbi, articleId, JSON.stringify(newArticle));
-    // txn.putString(dbi, "Articles", JSON.stringify([...allArticles]));
-    // txn.commit();
-    // return GetArticleById(articleId);
 }
 
 function GetArticles() {
-    // let txn = env.beginTxn();
-    // let allArticles = new Set(JSON.parse(txn.getString(dbi, "Articles")));
-    // let articleArray = [];
-    // txn.abort();
-    // for (let key of allArticles) {
-    //     articleArray.push(GetArticleById(key));
-    // }
-    // return articleArray;
 }
 
 function CreateAndAssignArticle(charId, form) {
-    // let txn = env.beginTxn();
-    // let char = JSON.parse(txn.getString(dbi, charId));
-    // let charArticles = new Set(char.articles);
-    // let article = CreateArticle(form);
-    // charArticles.add(article.id); // Convert to many to many join table
-    // char.articles = [...charArticles];
-    // txn.putString(dbi, charId, JSON.stringify(char));
-    // txn.commit();
-    // return GetArticleById(article.id);
 }
 
 function AssignArticle(form) {
-    // let char = GetCharacterById(form.charId);
-    // let charArticles = new Set(char.articles);
-    // let article = GetArticleById(form.articleId)
-    // charArticles.add(article.id); // Convert to many to many join table
-    // char.articles = [...charArticles];
-    // let txn = env.beginTxn();
-    // txn.putString(dbi, form.charId, JSON.stringify(char));
-    // txn.commit();
-    // return GetArticleById(form.articleId);
 }
 
 function GetArticlesOfCharacters() {
-    // let txn = env.beginTxn();
-    // let allChars = JSON.parse(txn.getString(dbi, "Characters"));
-    // txn.abort();
-    // let charArticles = {};
-    // allChars.forEach((i) => {
-    //     let articles = [];
-    //     let char = GetCharacterById(i);
-    //     char.articles.forEach((j) => {
-    //         articles.push(GetArticleById(j));
-    //     });
-    //     charArticles[i] = articles;
-    // });
-    // // console.log(charArticles);
-    // return charArticles;
 }
 
 function GetArtTags() {
-    // console.log('Getting Article Tags!!!')
-    // let txn = env.beginTxn();
-    // let allArtTags = new Set(JSON.parse(txn.getString(dbi, "ArtTags")));
-    // let artTagArray = [];
-    // txn.abort();
-    // for (let key of allArtTags) {
-    //     artTagArray.push(GetArtTagById(key));
-    // }
-    // return artTagArray;
 }
 
 function GetArtTagById(id) {
-    // let txn = env.beginTxn();
-    // let artTag = JSON.parse(txn.getString(dbi, id));
-    // txn.abort();
-    // return artTag ? artTag : null;
 }
 
 function CreateArticleTag(form) {
-    // let txn = env.beginTxn();
-    // let allArtTags = new Set(JSON.parse(txn.getString(dbi, "ArtTags")));
-    // let artTagId = uniqid('tgArt-');
-    // let newTag = {
-    //     id: artTagId,
-    //     type: 'articleTag',
-    //     name: form.name
-    // };    
-    // allArtTags.add(artTagId);
-    // txn.putString(dbi, artTagId, JSON.stringify(newTag));
-    // txn.putString(dbi, "ArtTags", JSON.stringify([...allArtTags]));
-    // txn.commit();
-    // return GetArtTagById(artTagId);
 }
 
 function AssignArticleTag(form) {
-    // let article = GetArticleById(form.articleId);
-    // let artTag = GetArtTagById(form.artTagId);
-    // let articleTags = new Set(article.tags);
-    // articleTags.add(artTag.id); // Convert to many to many join table
-    // article.tags = [...articleTags];
-    // let txn = env.beginTxn();
-    // txn.putString(dbi, form.articleId, JSON.stringify(article));
-    // txn.commit();
-    // return GetArtTagById(form.artTagId);
 }
 
-function GetArticlesByTag() { // REFACTOR TO MANY TO MANY JOIN TABLE!    
-    // let txn = env.beginTxn();
-    // let allArtTags = new Set(JSON.parse(txn.getString(dbi, "ArtTags")));
-    // let allArticles = new Set(JSON.parse(txn.getString(dbi, "Articles")));
-    // txn.abort();
-    // let articlesByTag = {};
-    // for (tag of allArtTags) {
-    //     let articleArray = [];
-    //     for (artId of allArticles) {
-    //         let article = GetArticleById(artId);
-    //         let articleTags = new Set(article.tags);
-    //         if (articleTags.has(tag)) articleArray.push(article);
-    //     }
-    //     articlesByTag[tag] = articleArray;
-    // }
-    // return articlesByTag;
+function GetArticlesByTag() {
 }
 
 //#endregion

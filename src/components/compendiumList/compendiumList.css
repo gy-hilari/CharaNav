@@ -4,42 +4,5 @@
 
 .Compendium{
     color: rgb(127, 172, 255);
-}
-
-.Character:hover{
-    cursor: pointer;
-}
-
-.Character{
-    color: rgb(101, 83, 255);
-}
-
-.tooltip {
-    position: relative;
-    display: inline-block;
     border-bottom: 1px dotted black;
-  }
-  
-.tooltip .tooltiptext {
-    visibility: hidden;
-    opacity: 0;
-    width: 200%;
-    bottom: 100%;
-    left: 50%;
-    margin-left: -100%; 
-    background-color: black;
-    color: #fff;
-    text-align: center;
-    border-radius: 6px;
-    padding: 5px 0;
-    transition: opacity .5s;
-
-    /* Position the tooltip */
-    position: absolute;
-    z-index: 1;
-}
-
-.tooltip:hover .tooltiptext {
-    visibility: visible;
-    opacity: 1;
 }
