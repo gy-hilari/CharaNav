@@ -30,15 +30,19 @@ function InsertChar(comps) {
     });
 }
 ```
-- Fetch data asynchronously with promises, keep daisy chaining promise methods until you get your target data, then finally close the database:
+- Fetch data asynchronously with promises, keep daisy chaining promise methods until you get your target data, then resolve that data for access in .then():WES
 ``` javascript
 function CreateModelsAndCharacters() {
     CheckOrCreateModels().then(comp => {
         InsertChar(comp).then(char => {
             console.log(char);
-            db.close(); // <-- AT THE END OF THE PROMISE CHAIN IS WHERE YOU FINALLY CLOSE THE DB!!!
+            resolve(char); // <-- This resolve bubbles out to the outer-most promise!
         })
     });
 }
+
+CreateModelsAndCharacters().then((res) => {
+    //  ...
+});
 ```
 ---

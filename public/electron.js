@@ -113,7 +113,7 @@ function CheckOrCreateModels() {
                 tableName: 'article',
                 name: { foreignKey: false, string: 'TEXT NOT NULL' },
                 imagePath: { foreignKey: false, string: 'TEXT NOT NULL' },
-                comp: { foreignKey: false, string: 'TEXT NOT NULL' },
+                comp: { foreignKey: false, string: 'TEXT' }, // CAN BE NULL IF ARTICLE IS 'GLOBAL'
                 compKey: { foreignKey: true, string: 'FOREIGN KEY (comp) REFERENCES comp(_id)' }
             },
             {
@@ -184,9 +184,6 @@ promiseIpc.on('/get/comp', () => {
     });
 });
 
-promiseIpc.on('/get/article', () => {
-});
-
 promiseIpc.on('/get/comp/id', (id) => {
     return new Promise((resolve, reject) => {
         GetCompendiumById(id).then((res) => {
@@ -252,6 +249,10 @@ promiseIpc.on('/get/comp/char', (compId) => {
         });
     });
 });
+
+promiseIpc.on('/get/article', () => {
+});
+
 
 promiseIpc.on('/post/article', (form) => {
     return CreateArticle(form);
