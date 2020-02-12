@@ -7,13 +7,12 @@ import CompendiumList from '../../components/compendiumList/compendiumList'
 class Compendiums extends Component {
     state = {
         comps: [],
-        compChars: {},
-        articles: [],
-        charArticles: {},
+        // compChars: {},
+        // articles: [],
+        // charArticles: {},
         // artTags: [],
         // articlesByTag: {},
-        // articleFilter: '',
-        bool: false
+        // articleFilter: ''
     };
 
     // shouldComponentUpdate(nextProps, nextState) {
@@ -21,7 +20,7 @@ class Compendiums extends Component {
     // }
 
     componentDidMount() {
-        // this.getComps();
+        this.getComps();
         // this.getSortedChars();
         // this.getArticles();
         // this.getSortedArticles();
@@ -33,6 +32,7 @@ class Compendiums extends Component {
 
     getComps = () => {
         window.api.promise('/get/comp', { message: "Querying Compendiums..." }, (res) => {
+            console.log(res);
             this.setState({ comps: res });
         });
     }
@@ -50,26 +50,26 @@ class Compendiums extends Component {
         });
     }
 
-    getSortedChars = () => {
-        window.api.promise('/get/comp/char', {}, (res) => {
-            this.setState({ compChars: res });
-            console.log(res);
-        });
-    }
+    // getSortedChars = () => {
+    //     window.api.promise('/get/comp/char', {}, (res) => {
+    //         this.setState({ compChars: res });
+    //         console.log(res);
+    //     });
+    // }
 
-    getChar = (id) => {
-        console.log('Getting Char!');
-        window.api.promise('/get/char/id', id, (res) => {
-            console.log(res);
-        });
-    }
+    // getChar = (id) => {
+    //     console.log('Getting Char!');
+    //     window.api.promise('/get/char/id', id, (res) => {
+    //         console.log(res);
+    //     });
+    // }
 
-    createChar = (form) => {
-        console.log(form);
-        window.api.promise('/post/char', form, (res) => {
-            console.log(res);
-        });
-    }
+    // createChar = (form) => {
+    //     console.log(form);
+    //     window.api.promise('/post/char', form, (res) => {
+    //         console.log(res);
+    //     });
+    // }
 
     // getArticles = () => {
     //     window.api.promise('/get/article', { message: "Querying Articles..." }, (res) => {
@@ -209,13 +209,13 @@ class Compendiums extends Component {
                 }
                 <CompendiumList
                     comps={this.state.comps}
-                    compChars={this.state.compChars}
+                    // compChars={this.state.compChars}
                     getComp={this.getComp}
-                    newChar={this.createChar}
-                    getChar={this.getChar}
-                    articles={this.state.articles}
-                    assignArticle={this.assignArticle}
-                    charArticles={this.state.charArticles}
+                // newChar={this.createChar}
+                // getChar={this.getChar}
+                // articles={this.state.articles}
+                // assignArticle={this.assignArticle}
+                // charArticles={this.state.charArticles}
                 />
             </Aux>
         );

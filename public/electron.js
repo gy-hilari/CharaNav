@@ -67,16 +67,14 @@ function createWindow() {
 
 app.on('ready', () => {
     createWindow();
-    CheckOrCreateModels().then(comp => {
-        InsertChar(comp).then(char => {
-            console.log(char);
-            db.close();
-        })
-    });
+    CheckOrCreateModels().then(res => {
+        console.log(res);
+    }).catch((err) => console.log(err));
 });
 
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
+        db.close();
         app.quit();
     }
 });
@@ -108,20 +106,25 @@ function CheckOrCreateModels() {
                 tableName: 'layer',
                 name: { foreignKey: false, string: 'TEXT NOT NULL' },
                 zIndex: { foreignKey: false, string: 'TEXT NOT NULL' }, // MAKE A LINKED LIST FOR THESE!
-                character: { foreignKey: true, string: 'FOREIGN KEY (_id) REFERENCES character(_id)' }
+                character: { foreignKey: false, string: 'TEXT NOT NULL' },
+                charKey: { foreignKey: true, string: 'FOREIGN KEY (character) REFERENCES character(_id)' }
             },
             {
                 tableName: 'article',
                 name: { foreignKey: false, string: 'TEXT NOT NULL' },
                 imagePath: { foreignKey: false, string: 'TEXT NOT NULL' },
-                comp: { foreignKey: true, string: 'FOREIGN KEY (_id) REFERENCES comp(_id)' }
+                comp: { foreignKey: false, string: 'TEXT NOT NULL' },
+                compKey: { foreignKey: true, string: 'FOREIGN KEY (comp) REFERENCES comp(_id)' }
             },
             {
                 tableName: 'character_article',
                 position: { foreignKey: false, string: 'TEXT NOT NULL' },
-                char: { foreignKey: true, string: 'FOREIGN KEY (_id) REFERENCES character(_id)' },
-                article: { foreignKey: true, string: 'FOREIGN KEY (_id) REFERENCES article(_id)' },
-                layer: { foreignKey: true, string: 'FOREIGN KEY (_id) REFERENCES layer(_id)' }
+                character: { foreignKey: false, string: 'TEXT NOT NULL' },
+                article: { foreignKey: false, string: 'TEXT NOT NULL' },
+                layer: { foreignKey: false, string: 'TEXT NOT NULL' },
+                charKey: { foreignKey: true, string: 'FOREIGN KEY (character) REFERENCES character(_id)' },
+                articleKey: { foreignKey: true, string: 'FOREIGN KEY (article) REFERENCES article(_id)' },
+                layerKey: { foreignKey: true, string: 'FOREIGN KEY (layer) REFERENCES layer(_id)' }
             },
             {
                 tableName: 'tag',
@@ -129,8 +132,10 @@ function CheckOrCreateModels() {
             },
             {
                 tableName: 'article_tag',
-                article: { foreignKey: true, string: 'FOREIGN KEY (_id) REFERENCES article(_id)' },
-                tag: { foreignKey: true, string: 'FOREIGN KEY (_id) REFERENCES tag(_id)' }
+                article: { foreignKey: false, string: 'TEXT NOT NULL' },
+                tag: { foreignKey: false, string: 'TEXT NOT NULL' },
+                articleKey: { foreignKey: true, string: 'FOREIGN KEY (article) REFERENCES article(_id)' },
+                tagKey: { foreignKey: true, string: 'FOREIGN KEY (tag) REFERENCES tag(_id)' }
             }
         ];
 
@@ -151,61 +156,14 @@ function CheckOrCreateModels() {
                 }
                 sql += `
                 )`;
+                console.log(sql);
                 let stmt = db.prepare(sql);
-                stmt.run();
+                stmt.run(err => {
+                    reject(err);
+                });
                 stmt.finalize();
             });
-
-            let stmt = db.prepare(
-                `INSERT INTO comp (
-                    _id,
-                    name
-                )
-                VALUES (
-                    $id,
-                    $name
-                )`
-            );
-            for (let i = 0; i < 10; i++) {
-                stmt.run({ $id: uniqid('cmp-'), $name: `Compendium # ${i}` });
-            }
-            stmt.finalize();
-
-            db.all(`SELECT _id as id, name FROM comp`, (err, comps) => {
-                resolve(comps);
-            });
-
-        });
-    });
-}
-
-function InsertChar(comps) {
-    return new Promise((resolve, reject) => {
-        db.serialize(() => {
-            comps.forEach(comp => {
-                console.log(comp.id);
-                let stmt = db.prepare(
-                    `INSERT INTO character (
-                        _id,
-                        name,
-                        comp
-                    )
-                    VALUES (
-                        $id,
-                        $name,
-                        $comp
-                    )`
-                );
-                for (let i = 0; i < 10; i++) {
-                    stmt.run({ $id: uniqid('chr-'), $name: `Character of comp: [${comp.id}]`, $comp: comp.id });
-                }
-                stmt.finalize();
-            });
-
-            db.all(`SELECT _id as id, name FROM character`, (err, chars) => {
-                console.log(chars);
-                resolve(chars);
-            });
+            resolve('Models created!');
         });
     });
 }
@@ -215,7 +173,15 @@ promiseIpc.on('test', () => {
 })
 
 promiseIpc.on('/get/comp', () => {
-    return GetCompendiums();
+    return new Promise((resolve, reject) => {
+        GetCompendiums().then((res) => {
+            console.log(res);
+            resolve(res);
+        }).catch(err => {
+            console.log(err);
+            reject(err);
+        });
+    });
 });
 
 promiseIpc.on('/get/article', () => {
@@ -223,24 +189,30 @@ promiseIpc.on('/get/article', () => {
 });
 
 promiseIpc.on('/get/comp/id', (id) => {
-    return GetCompendiumById(id);
+    return new Promise((resolve, reject) => {
+        GetCompendiumById(id).then((res) => {
+            console.log(res);
+            resolve(res);
+        }).catch((err) => reject(err));
+    });
 });
 
 promiseIpc.on('/post/comp', (form) => {
-    // let txn = env.beginTxn();
-    // let allComps = new Set(JSON.parse(txn.getString(dbi, "Compendiums")));
-    // let compId = uniqid('cm-');
-    // let newComp = {
-    //     id: compId,
-    //     type: 'comp',
-    //     name: form.name,
-    //     characters: []
-    // };
-    // allComps.add(compId);
-    // txn.putString(dbi, "Compendiums", JSON.stringify([...allComps]));
-    // txn.putString(dbi, compId, JSON.stringify(newComp));
-    // txn.commit();
-    // return GetCompendiums();
+    return new Promise((resolve, reject) => {
+        CreateCompendium(form).then((res) => {
+            console.log(res);
+            GetCompendiums().then((res) => {
+                console.log(res);
+                resolve(res);
+            });
+        }).catch((err) => {
+            console.log(err);
+            GetCompendiums().then((res) => {
+                console.log(res);
+                resolve(res);
+            });
+        });
+    });
 });
 
 promiseIpc.on('/get/char/id', (id) => {
@@ -311,23 +283,50 @@ promiseIpc.on('/get/article/artTag', (form) => {
 })
 
 function GetCompendiums() {
-    // console.log('Getting Compendiums!');
-    // let txn = env.beginTxn();
-    // let allComps = new Set(JSON.parse(txn.getString(dbi, "Compendiums")));
-    // let compArray = [];
-    // txn.abort();
-    // for (let key of allComps) {
-    //     compArray.push(GetCompendiumById(key));
-    // }
-    // return compArray;
+    console.log('Getting Compendiums!');
+    return new Promise((resolve, reject) => {
+        db.serialize(() => {
+            db.all(`SELECT _id as id, name FROM comp`, (err, comps) => {
+                if (err) reject(err);
+                resolve(comps);
+            });
+        });
+    });
+}
+
+function CreateCompendium(form) {
+    return new Promise((resolve, reject) => {
+        if (!form.name) reject('Invalid form!');
+        db.serialize(() => {
+            let stmt = db.prepare(
+                `INSERT INTO comp (
+                    _id,
+                    name
+                )
+                VALUES (
+                    $id,
+                    $name
+                )`
+            );
+            let compId = uniqid('cmp_');
+            stmt.run({ $id: compId, $name: form.name });
+            stmt.finalize();
+            resolve(`Compendium [${compId}] created successfully!`);
+        });
+    });
 }
 
 function GetCompendiumById(id) {
-    // console.log(`Getting ${id}`);
-    // let txn = env.beginTxn();
-    // let comp = JSON.parse(txn.getString(dbi, id));
-    // txn.abort();
-    // return comp ? comp : null;
+    console.log(id);
+    return new Promise((resolve, reject) => {
+        db.serialize(() => {
+            let sql = `SELECT _id as id, name FROM comp WHERE id = '${id}'`; 
+            db.get(sql, (err, comp) => {
+                if (err) reject(err);
+                resolve(comp);
+            });
+        });
+    });
 }
 
 function GetCharacterById(id) {
