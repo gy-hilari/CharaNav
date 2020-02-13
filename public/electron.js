@@ -33,7 +33,7 @@ const db = new sqlite3.Database(path.join('.', `/${dbDir}/${dbName}.db`));
 //#region  CREATE ELECTRON WINDOW
 
 function createWindow() {
-    let state = windowStateKeeper({ 
+    let state = windowStateKeeper({
         defaultWidth: 800, defaultHeight: 600
     })
 
@@ -238,9 +238,45 @@ promiseIpc.on('/post/char', (form) => {
     });
 });
 
+promiseIpc.on('/post/char/article', (form) => {
+    return new Promise((resolve, reject) => {
+        AssignArticleToCharacterLayer();
+    });
+});
+
 promiseIpc.on('/get/comp/char', (compId) => {
     return new Promise((resolve, reject) => {
         GetCharactersByCompId(compId).then((res) => {
+            console.log(res);
+            resolve(res);
+        }).catch((err) => {
+            console.log(err);
+            reject(err);
+        });
+    });
+});
+
+promiseIpc.on('/post/layer', (form) => {
+    return new Promise((resolve, reject) => {
+        CreateLayer(form).then((res) => {
+            console.log(res);
+            GetLayersByCharId(form.charId).then((res) => {
+                console.log(res);
+                resolve(res);
+            });
+        }).catch((err) => {
+            console.log(err);
+            GetLayersByCharId(form.charId).then((res) => {
+                console.log(res);
+                resolve(res);
+            });
+        });
+    });
+});
+
+promiseIpc.on('/get/char/layer', (charId) => {
+    return new Promise((resolve, reject) => {
+        GetLayersByCharId(charId).then((res) => {
             console.log(res);
             resolve(res);
         }).catch((err) => {
@@ -255,7 +291,33 @@ promiseIpc.on('/get/article', () => {
 
 
 promiseIpc.on('/post/article', (form) => {
-    return CreateArticle(form);
+    return new Promise((resolve, reject) => {
+        CreateArticle(form).then((res) => {
+            console.log(res);
+            GetArticlesByCompId(form.compId).then((res) => {
+                console.log(res);
+                resolve(res);
+            });
+        }).catch((err) => {
+            console.log(err);
+            GetArticlesByCompId(form.compId).then((res) => {
+                console.log(res);
+                resolve(res);
+            });
+        });
+    });
+});
+
+promiseIpc.on('/get/comp/article', (compId) => {
+    return new Promise((resolve, reject) => {
+        GetArticlesByCompId(compId).then((res) => {
+            console.log(res);
+            resolve(res);
+        }).catch((err) => {
+            console.log(err);
+            reject(err);
+        });
+    });
 });
 
 promiseIpc.on('/get/article/id', (id) => {
@@ -266,8 +328,15 @@ promiseIpc.on('/post/article/char', (form) => {
     return CreateAndAssignArticle(form);
 });
 
-promiseIpc.on('/assign/article/char', (form) => {
-    return AssignArticle(form);
+promiseIpc.on('/assign/article/char/layer', (form) => {
+    return new Promise((resolve, reject) => {
+        AssignArticleToCharacterLayer(form).then((res) => {
+            console.log(res);
+            resolve(res);
+        }).catch((err) => {
+            console.log(err);
+        });
+    });
 });
 
 promiseIpc.on('/get/char/article', () => {
@@ -389,37 +458,138 @@ function GetCharacterById(id) {
 function GetArticleById(id) {
 }
 
-function GetCharactersOfCompendiums() {
+function CreateLayer(form) {
+    return new Promise((resolve, reject) => {
+        if (!form.name) reject('Invalid form');
+        db.serialize(() => {
+            let stmt = db.prepare(
+                `INSERT INTO layer (
+                    _id,
+                    name,
+                    zIndex,
+                    character
+                )
+                VALUES (
+                    $id,
+                    $name,
+                    $zIndex,
+                    $charId
+                )`
+            );
+            let lyrId = uniqid('lyr_');
+            stmt.run({
+                $id: lyrId,
+                $name: form.name,
+                $zIndex: form.zIndex,
+                $charId: form.charId
+            });
+            stmt.finalize();
+            resolve(`Character [${lyrId}] created successfully!`);
+        });
+    });
+}
+
+function GetLayersByCharId(charId) {
+    return new Promise((resolve, reject) => {
+        console.log(`Getting layers of char: [${charId}]`);
+        db.serialize(() => {
+            db.all(`SELECT _id as id, name, zIndex FROM layer WHERE character = '${charId}'`, (err, chars) => {
+                if (err) reject(err);
+                resolve(chars);
+            });
+        });
+    })
 }
 
 function CreateArticle(form) {
+    return new Promise((resolve, reject) => {
+        if (!form.name) reject('Invalid form');
+        db.serialize(() => {
+            let stmt = db.prepare(
+                `INSERT INTO article (
+                    _id,
+                    name,
+                    imagePath,
+                    comp
+                )
+                VALUES (
+                    $id,
+                    $name,
+                    $imagePath,
+                    $comp
+                )`
+            );
+            let artId = uniqid('art_');
+            stmt.run({
+                $id: artId,
+                $name: form.name,
+                $imagePath: form.image,
+                $comp: form.compId
+            });
+            stmt.finalize();
+            resolve(`Character [${artId}] created successfully!`);
+        });
+    });
 }
 
-function GetArticles() {
+function GetArticlesByCompId(compId) {
+    console.log(`Getting articles of comp: [${compId}]`);
+    return new Promise((resolve, reject) => {
+        db.serialize(() => {
+            db.all(`SELECT _id as id, name, imagePath FROM article WHERE comp = '${compId}'`, (err, chars) => {
+                if (err) reject(err);
+                resolve(chars);
+            });
+        });
+    });
 }
 
-function CreateAndAssignArticle(charId, form) {
+function AssignArticleToCharacterLayer(form) {
+    // Check if entry already exists!!
+    return new Promise((resolve, reject) => {
+        if (!form.artId) reject('Invalid form');
+        db.serialize(() => {
+            let stmt = db.prepare(
+                `INSERT INTO character_article (
+                    _id,
+                    position,
+                    character,
+                    article,
+                    layer
+                )
+                VALUES (
+                    $id,
+                    $position,
+                    $character,
+                    $article,
+                    $layer
+                )`
+            );
+            let charLyr = uniqid('chrlr_');
+            stmt.run({
+                $id: charLyr,
+                $position: form.position,
+                $character: form.charId,
+                $article: form.artId,
+                $layer: form.layerId
+            });
+            stmt.finalize();
+            resolve(`Article [${form.artId}] assigned to [${form.charId}]  on layer [${form.layerId}] successfully!`);
+        });
+    });
 }
 
-function AssignArticle(form) {
+function GetAssignedArticlesByLayerId(layerId) {
+    return new Promise((resolve, reject) => {
+
+    });
 }
 
-function GetArticlesOfCharacters() {
-}
-
-function GetArtTags() {
-}
-
-function GetArtTagById(id) {
-}
-
-function CreateArticleTag(form) {
-}
-
-function AssignArticleTag(form) {
-}
-
-function GetArticlesByTag() {
+function GetAssignedArticle(form) {
+    return new Promise((resolve, reject) => {
+        // if (err) resolve(false);
+        // resolve(true);
+    });
 }
 
 //#endregion

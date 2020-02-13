@@ -13,8 +13,17 @@ const characterList = (props) => {
                     name: `Child Character of compendium: [${props.compId}]`
                 });
             }}>Create Character</button>
-            <button>
+            <button onClick={() => {
+                props.newArticle({
+                    compId: props.compId,
+                    name: `Child Article of compendium: [${props.compId}]`,
+                    image: `${__dirname}`
+                });
+            }}>
                 Create Article
+            </button>
+            <button>
+                Browse Articles
             </button>
             <hr />
         </Aux>
@@ -29,8 +38,17 @@ const characterList = (props) => {
                         name: `Child Character of compendium: [${props.compId}]`
                     });
                 }}>Create Character</button>
-                <button>
+                <button onClick={() => {
+                    props.newArticle({
+                        compId: props.compId,
+                        name: `Child Article of compendium: [${props.compId}]`,
+                        image: `${__dirname}`
+                    });
+                }}>
                     Create Article
+                </button>
+                <button>
+                    Browse Articles
                 </button>
                 <hr />
                 {
@@ -38,7 +56,11 @@ const characterList = (props) => {
                         let num = idx + 1;
                         return (
                             <Aux key={elm.id}>
-                                <p onClick={() => { props.getChar(elm.id) }} className='Character tooltip'>
+                                <p onClick={() => {
+                                    // get layers by char id
+                                    props.getLayers(elm.id);
+                                    props.getChar(elm.id);
+                                }} className='Character tooltip'>
                                     <span className='tooltiptext'>{elm.id}</span>
                                     {`${num}.) Name: ${elm.name}`}
                                 </p>

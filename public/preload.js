@@ -20,19 +20,22 @@ contextBridge.exposeInMainWorld(
             "/get/comp",
             "/get/comp/id",
             "/get/comp/char",
+            "/get/comp/article",
             "/post/comp",
             "/get/char/id",
+            "/get/char/layer",
             "/post/char",
             "/post/article",
             "/get/article",
             "/get/article/id",
             "/post/article/char",
-            "/assign/article/char",
+            "/assign/article/char/layer",
             "/get/char/article",
             "/get/artTag",
             "/post/artTag",
             "/get/article/artTag",
             "/post/article/artTag",
+            "/post/layer",
             "test"
         ];
         if (validChannels.includes(channel)) {

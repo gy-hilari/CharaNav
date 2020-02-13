@@ -2,15 +2,17 @@ import React, { Component } from 'react';
 import Aux from '../../hoc/Auxi';
 import CompendiumList from '../../components/compendiumList/compendiumList'
 import CharacterList from '../../components/characterList/characterList';
-// import ArticleFilter from '../../components/articleFilter/articleFilter'
-
+import LayerList from '../../components/layerList/layerList';
 
 class Compendiums extends Component {
     state = {
         scene: 'comps',
         activeComp: {},
+        activeChar: {},
         comps: [],
         compChars: {},
+        compArts: {},
+        charLayers: {}
         // articles: [],
         // charArticles: {},
         // artTags: [],
@@ -58,14 +60,29 @@ class Compendiums extends Component {
     getChar = (id) => {
         window.api.promise('/get/char/id', id, (res) => {
             console.log(res);
+            this.setState({ activeChar: res });
+            this.setState({ scene: 'char' })
         });
     }
 
     createChar = (form) => {
-        console.log(form);
         window.api.promise('/post/char', form, (res) => {
             console.log(res);
             this.setState({ compChars: res });
+        });
+    }
+
+    getCharLayers = (charId) => {
+        window.api.promise('/get/char/layer', charId, (res) => {
+            console.log(res);
+            this.setState({ charLayers: res });
+        });
+    }
+
+    createLayer = (form) => {
+        window.api.promise('/post/layer', form, (res) => {
+            console.log(res);
+            this.setState({ charLayers: res });
         });
     }
 
@@ -76,17 +93,25 @@ class Compendiums extends Component {
     //     });
     // }
 
-    // createArticle = (form) => {
-    //     window.api.promise('/post/article', form, (res) => {
-    //         console.log(res);
-    //     });
-    // }
+    createArticle = (form) => {
+        window.api.promise('/post/article', form, (res) => {
+            console.log(res);
+            this.setState({compArts: res});
+        });
+    }
 
-    // assignArticle = (form) => {
-    //     window.api.promise('/assign/article/char', form, (res) => {
-    //         console.log(res);
-    //     });
-    // }
+    getCompArticles = (compId) => {
+        window.api.promise('/get/comp/article', compId, (res) => {
+            console.log(res);
+            this.setState({compArts: res});
+        });
+    }
+
+    assignArticle = (form) => {
+        window.api.promise('/assign/article/char/layer', form, (res) => {
+            console.log(res);
+        });
+    }
 
     // getSortedArticles = () => {
     //     window.api.promise('/get/char/article', {}, (res) => {
@@ -139,6 +164,7 @@ class Compendiums extends Component {
                     comps={this.state.comps}
                     getComp={this.getComp}
                     getChars={this.getCompChars}
+                    getArticles={this.getCompArticles}
                 />
             </Aux>
         );
@@ -149,12 +175,29 @@ class Compendiums extends Component {
                     <hr />
                     <CharacterList
                         newChar={this.createChar}
+                        newArticle={this.createArticle}
+                        getLayers={this.getCharLayers}
                         compId={this.state.activeComp.id}
                         chars={this.state.compChars}
                         getChar={this.getChar}
                     />
                 </Aux>
-            );            
+            );
+        }
+        if (this.state.scene === 'char') {
+            return (
+                <Aux>
+                    <button onClick={() => { this.setState({ scene: 'comp' }) }}>Go Back</button>
+                    <hr/>
+                    <LayerList
+                        articles={this.state.compArts}
+                        layers={this.state.charLayers}
+                        newLayer={this.createLayer}
+                        charId={this.state.activeChar.id}
+                        assign={this.assignArticle}
+                    />
+                </Aux>
+            )
         }
     };
 }
