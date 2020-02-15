@@ -3,6 +3,7 @@ import Aux from '../../hoc/Auxi';
 import CompendiumList from '../../components/compendiumList/compendiumList'
 import CharacterList from '../../components/characterList/characterList';
 import LayerList from '../../components/layerList/layerList';
+import ArticleBrowse from '../../components/articleBrowse/articleBrowse';
 
 class Compendiums extends Component {
     state = {
@@ -12,17 +13,9 @@ class Compendiums extends Component {
         comps: [],
         compChars: {},
         compArts: {},
-        charLayers: {}
-        // articles: [],
-        // charArticles: {},
-        // artTags: [],
-        // articlesByTag: {},
-        // articleFilter: ''
+        charLayers: {},
+        charArts: {}
     };
-
-    // shouldComponentUpdate(nextProps, nextState) {
-    //     return this.state.comps !== nextState.comps;
-    // }
 
     componentDidMount() {
         this.getComps();
@@ -86,74 +79,36 @@ class Compendiums extends Component {
         });
     }
 
-    // getArticles = () => {
-    //     window.api.promise('/get/article', { message: "Querying Articles..." }, (res) => {
-    //         this.setState({ articles: res });
-    //         console.log(this.state.articles);
-    //     });
-    // }
-
     createArticle = (form) => {
         window.api.promise('/post/article', form, (res) => {
             console.log(res);
-            this.setState({compArts: res});
+            this.setState({ compArts: res });
         });
     }
 
     getCompArticles = (compId) => {
         window.api.promise('/get/comp/article', compId, (res) => {
             console.log(res);
-            this.setState({compArts: res});
+            this.setState({ compArts: res });
         });
     }
 
-    assignArticle = (form) => {
+    assignArticleToChar = (form) => {
         window.api.promise('/assign/article/char/layer', form, (res) => {
             console.log(res);
         });
     }
 
-    // getSortedArticles = () => {
-    //     window.api.promise('/get/char/article', {}, (res) => {
-    //         this.setState({ charArticles: res });
-    //         console.log(res);
-    //     });
-    // }
+    getCharArticles = (charId) => {
+        window.api.promise('/get/char/article', charId, (res) => {
+            console.log(res);
+            this.setState({ charArts: res });
+        });
+    }
 
-    // getArticleTags = () => {
-    //     window.api.promise('/get/artTag', { message: "Querying Article Tags..." }, (res) => {
-    //         console.log('Article Tags:');
-    //         console.log(res);
-    //         this.setState({ artTags: res });
-    //     });
-    // }
-
-    // getArticlesByTag = () => {
-    //     window.api.promise('/get/article/artTag', { message: "Fetching Articles by Tags..." }, (res) => {
-    //         console.log('Articles Sorted by Tags:');
-    //         console.log(res);
-    //         this.setState({ articlesByTag: res });
-    //     });
-    // }
-
-    // createArticleTag = (form) => {
-    //     window.api.promise('/post/artTag', form, (res) => {
-    //         console.log(res);
-    //     });
-    // }
-
-    // assignArticleTag = (form) => {
-    //     window.api.promise('/post/article/artTag', form, (res) => {
-    //         console.log('Assigned Article Tag:');
-    //         console.log(res);
-    //     });
-    // }
-
-    // filterArticle = (value) => {
-    //     console.log('Filtering!');
-    //     this.setState({ articleFilter: value });
-    //     console.log(this.state.articleFilter);
-    // }
+    setScene = (sceneName) => {
+        this.setState({ scene: sceneName })
+    }
 
     render() {
         if (this.state.scene === 'comps') return (
@@ -180,6 +135,8 @@ class Compendiums extends Component {
                         compId={this.state.activeComp.id}
                         chars={this.state.compChars}
                         getChar={this.getChar}
+                        getArticles={this.getCharArticles}
+                        setScene={this.setScene}
                     />
                 </Aux>
             );
@@ -188,13 +145,26 @@ class Compendiums extends Component {
             return (
                 <Aux>
                     <button onClick={() => { this.setState({ scene: 'comp' }) }}>Go Back</button>
-                    <hr/>
+                    <hr />
                     <LayerList
                         articles={this.state.compArts}
                         layers={this.state.charLayers}
                         newLayer={this.createLayer}
                         charId={this.state.activeChar.id}
-                        assign={this.assignArticle}
+                        charArts={this.state.charArts}
+                        assign={this.assignArticleToChar}
+                        getArticles={this.getCharArticles}
+                    />
+                </Aux>
+            )
+        }
+        if (this.state.scene === 'article') {
+            return (
+                <Aux>
+                    <button onClick={() => { this.setState({ scene: 'comp' }) }}>Go Back</button>
+                    <hr />
+                    <ArticleBrowse
+                        articles={this.state.compArts}
                     />
                 </Aux>
             )

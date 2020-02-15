@@ -31,6 +31,7 @@ const articleList = (props) => {
                         artId: document.getElementById(`${props.layerId}-sel`).value,
                         layerId: props.layerId
                     });
+                    props.getArticles(props.charId);
                 }}>Add Article</button>
             </Aux>
         );

@@ -47,7 +47,9 @@ const characterList = (props) => {
                 }}>
                     Create Article
                 </button>
-                <button>
+                <button onClick={() => {
+                    props.setScene('article');
+                }}>
                     Browse Articles
                 </button>
                 <hr />
@@ -58,7 +60,9 @@ const characterList = (props) => {
                             <Aux key={elm.id}>
                                 <p onClick={() => {
                                     // get layers by char id
+                                    // get character_articles by char id
                                     props.getLayers(elm.id);
+                                    props.getArticles(elm.id);
                                     props.getChar(elm.id);
                                 }} className='Character tooltip'>
                                     <span className='tooltiptext'>{elm.id}</span>

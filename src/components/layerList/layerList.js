@@ -1,6 +1,7 @@
 import React from 'react';
 import Aux from '../../hoc/Auxi';
 import ArticleList from '../articleList/articleList';
+import AssignedArticleList from '../assignedArticleList/assignedArticleList';
 
 const layerList = (props) => {
     return !props.layers.length > 0 ? (
@@ -28,17 +29,31 @@ const layerList = (props) => {
                 }}>Add Layer</button>
                 <hr />
                 {
-                    props.layers.map((elm, idx) => {
+                    props.layers.map((layer, idx) => {
                         let num = idx + 1;
                         return (
-                            <Aux key={elm.id}>
-                                <p>{`${num}.) ${elm.name} | zIndex: ${elm.zIndex}`}</p>
+                            <Aux key={layer.id}>
+                                <p>{`${num}.) ${layer.name} | zIndex: ${layer.zIndex}`}</p>
                                 <ArticleList
                                     articles={props.articles}
-                                    layerId={elm.id}
+                                    layerId={layer.id}
                                     charId={props.charId}
                                     assign={props.assign}
+                                    getArticles={props.getArticles}
                                 />
+                                {
+                                    props.charArts.map((charArt, idx) => {
+                                        return charArt.layer === layer.id ? (
+                                            <Aux key={charArt.id}>
+                                                <AssignedArticleList
+                                                    charArt={charArt}
+                                                />
+                                            </Aux>
+                                        ) : (
+                                            null
+                                        )
+                                    })
+                                }
                                 <hr />
                             </Aux>
                         )

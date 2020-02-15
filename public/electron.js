@@ -339,8 +339,15 @@ promiseIpc.on('/assign/article/char/layer', (form) => {
     });
 });
 
-promiseIpc.on('/get/char/article', () => {
-    return GetArticlesOfCharacters();
+promiseIpc.on('/get/char/article', (charId) => {
+    return new Promise((resolve, reject) => {
+        GetAssignedArticlesByCharacterId(charId).then((res) => {
+            console.log(res);
+            resolve(res);
+        }).catch((err) => {
+            console.log(err);
+        });
+    });
 });
 
 promiseIpc.on('/get/artTag', () => {
@@ -575,6 +582,18 @@ function AssignArticleToCharacterLayer(form) {
             });
             stmt.finalize();
             resolve(`Article [${form.artId}] assigned to [${form.charId}]  on layer [${form.layerId}] successfully!`);
+        });
+    });
+}
+
+function GetAssignedArticlesByCharacterId(charId) {
+    return new Promise((resolve, reject) => {
+        console.log(`Getting assigned articles of char: [${charId}]`);
+        db.serialize(() => {
+            db.all(`SELECT _id as id, position, character, article, layer FROM character_article WHERE character = '${charId}'`, (err, chars) => {
+                if (err) reject(err);
+                resolve(chars);
+            });
         });
     });
 }
