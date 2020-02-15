@@ -4,6 +4,7 @@ import CompendiumList from '../../components/compendiumList/compendiumList'
 import CharacterList from '../../components/characterList/characterList';
 import LayerList from '../../components/layerList/layerList';
 import ArticleBrowse from '../../components/articleBrowse/articleBrowse';
+import ImageReciever from '../../components/imageReciever/imageReciever';
 
 class Compendiums extends Component {
     state = {
@@ -14,15 +15,46 @@ class Compendiums extends Component {
         compChars: {},
         compArts: {},
         charLayers: {},
-        charArts: {}
+        charArts: {},
+        imgDir: null
     };
 
     componentDidMount() {
         this.getComps();
+        // this.getImageDir();
+    }
+
+    getImageDir = () => {
+        window.api.promise('/get/imageDir', { message: "Querying Compendiums..." }, (res) => {
+            console.log(res);
+            this.setState({ imgDir: res });
+        });
+    }
+
+    setImageDir = (dir) => {
+        console.log(dir);
+        let imgData = {};
+        imgData['path'] = dir;
+        let img = new Image();
+        img.src = dir;
+        img.onload = () => {
+            console.log(`Image width: ${img.width}`);
+            console.log(`Image height: ${img.height}`);
+            if (img.width === img.height) {
+                imgData['class'] = 'square';
+            }
+            if (img.width > img.height) {
+                imgData['class'] = 'landscape';
+            }
+            if (img.width < img.height) {
+                imgData['class'] = 'portrait';
+            }
+            this.setState({ imgDir: imgData });
+        }
     }
 
     getComps = () => {
-        window.api.promise('/get/comp', { message: "Querying Compendiums..." }, (res) => {
+        window.api.promise('/get/comp', { message: "Getting image dir..." }, (res) => {
             console.log(res);
             this.setState({ comps: res });
         });
@@ -111,18 +143,33 @@ class Compendiums extends Component {
     }
 
     render() {
-        if (this.state.scene === 'comps') return (
-            <Aux>
-                <button onClick={() => this.createComp({ name: 'Test' })}>CREATE COMPENDIUM</button>
-                <hr />
-                <CompendiumList
-                    comps={this.state.comps}
-                    getComp={this.getComp}
-                    getChars={this.getCompChars}
-                    getArticles={this.getCompArticles}
-                />
-            </Aux>
-        );
+        if (this.state.scene === 'comps') {
+            return (
+                <Aux>
+                    {/* <img src={`${this.state.imgDir}/test2/logo192.png`} alt="ERROR"/> */}
+                    <ImageReciever
+                        image={this.state.imgDir}
+                    />
+                    {/* <img src={`${this.state.imgDir}`} alt="ERROR" /> */}
+                    <input id='select-image' type="file" accept=".png,.jpg,.jpeg,.bmp" style={{display: 'none'}} onChange={(e) => {
+                        if (e.target.files[0]) {
+                            console.log(e.target.files[0]);
+                            this.setImageDir(e.target.files[0].path);
+                        }
+                    }} />
+                    <button onClick={() => {document.getElementById('select-image').click()}}>Choose File</button>
+                    <hr />
+                    <button onClick={() => this.createComp({ name: 'Test' })}>CREATE COMPENDIUM</button>
+                    <hr />
+                    <CompendiumList
+                        comps={this.state.comps}
+                        getComp={this.getComp}
+                        getChars={this.getCompChars}
+                        getArticles={this.getCompArticles}
+                    />
+                </Aux>
+            );
+        }
         if (this.state.scene === 'comp') {
             return (
                 <Aux>

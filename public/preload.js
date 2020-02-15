@@ -23,7 +23,8 @@ contextBridge.exposeInMainWorld(
             "/get/comp/article",
             "/post/comp",
             "/get/char/id",
-            "/get/char/layer",            "/post/char",
+            "/get/char/layer",            
+            "/post/char",
             "/post/article",
             "/get/article",
             "/get/article/id",
@@ -35,6 +36,7 @@ contextBridge.exposeInMainWorld(
             "/get/article/artTag",
             "/post/article/artTag",
             "/post/layer",
+            "/get/imageDir",
             "test"
         ];
         if (validChannels.includes(channel)) {

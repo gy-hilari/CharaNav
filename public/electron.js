@@ -4,6 +4,7 @@ const app = electron.app;
 const { ipcMain } = require('electron');
 const BrowserWindow = electron.BrowserWindow;
 const fs = require('fs');
+const { readdirSync } = require('fs');
 
 const path = require('path');
 const url = require('url');
@@ -19,11 +20,33 @@ let mainWindow;
 
 //#region  INITIALIZE DATABASE ENVIRONMENT
 
+const getDirs = (path) => {
+    let dirs = {};
+    readdirSync(path, { withFileTypes: true })
+        .filter(dir => dir.isDirectory())
+        .map(dir => dirs[dir.name] = getFiles(dir.name));
+    return dirs;
+}
+
+const getFiles = (dir) => {
+    return readdirSync(`./images/${dir}`, { withFileTypes: true })
+        .filter(file => !file.isDirectory())
+        .map(file => file.name);
+}
+
+console.log(`Current image dir: ${path.resolve('./images')}`);
+console.log(getDirs('./images'));
+
 const dbDir = "charanavdata";
 const dbName = "charanav";
 if (!fs.existsSync('.' + `/${dbDir}/${dbName}.db`)) {
     fs.mkdirSync('.' + `/${dbDir}`);
     fs.createWriteStream('.' + `/${dbDir}/${dbName}.db`);
+}
+
+const imgDir = "images";
+if (!fs.existsSync('.' + `/${imgDir}`)) {
+    fs.mkdirSync('.' + `/${dbDir}`);
 }
 
 const db = new sqlite3.Database(path.join('.', `/${dbDir}/${dbName}.db`));
@@ -37,19 +60,35 @@ function createWindow() {
         defaultWidth: 800, defaultHeight: 600
     })
 
-    mainWindow = new BrowserWindow({
-        x: state.x, y: state.y,
-        width: state.width, height: state.height,
-        minWidth: 350, minHeight: 300,
-        webPreferences: {
-            nodeIntegration: false,
-            contextIsolation: true,
-            enableRemoteModule: false,
-            preload: path.join(__dirname, "/preload.js")
-        },
+    mainWindow = isDev ?
+        new BrowserWindow({
+            x: state.x, y: state.y,
+            width: state.width, height: state.height,
+            minWidth: 350, minHeight: 300,
+            webPreferences: {
+                nodeIntegration: false,
+                contextIsolation: true,
+                enableRemoteModule: false,
+                webSecurity: false,
+                preload: path.join(__dirname, "/preload.js")
+            },
 
-        frame: true
-    });
+            frame: true
+        })
+        :
+        new BrowserWindow({
+            x: state.x, y: state.y,
+            width: state.width, height: state.height,
+            minWidth: 350, minHeight: 300,
+            webPreferences: {
+                nodeIntegration: false,
+                contextIsolation: true,
+                enableRemoteModule: false,
+                preload: path.join(__dirname, "/preload.js")
+            },
+
+            frame: true
+        });
 
     const startUrl = isDev ? process.env.ELECTRON_START_URL : url.format({
         pathname: path.join(__dirname, '/../build/index.html'),
@@ -59,6 +98,7 @@ function createWindow() {
     mainWindow.loadURL(startUrl);
 
     if (isDev) mainWindow.webContents.openDevTools();
+    // mainWindow.webContents.openDevTools();
 
     state.manage(mainWindow);
 
@@ -170,7 +210,11 @@ function CheckOrCreateModels() {
 
 promiseIpc.on('test', () => {
     return "Testing IPC!!!";
-})
+});
+
+promiseIpc.on('/get/imageDir', () => {
+    return path.resolve('./images');
+});
 
 promiseIpc.on('/get/comp', () => {
     return new Promise((resolve, reject) => {
