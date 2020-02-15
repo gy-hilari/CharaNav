@@ -20,6 +20,18 @@ let mainWindow;
 
 //#region  INITIALIZE DATABASE ENVIRONMENT
 
+const dbDir = "charanavdata";
+const dbName = "charanav";
+if (!fs.existsSync('.' + `/${dbDir}/${dbName}.db`)) {
+    fs.mkdirSync('.' + `/${dbDir}`);
+    fs.createWriteStream('.' + `/${dbDir}/${dbName}.db`);
+}
+
+const imgDir = "images";
+if (!fs.existsSync('.' + `/${imgDir}`)) {
+    fs.mkdirSync('.' + `/${dbDir}`);
+}
+
 const getDirs = (path) => {
     let dirs = {};
     readdirSync(path, { withFileTypes: true })
@@ -36,18 +48,6 @@ const getFiles = (dir) => {
 
 console.log(`Current image dir: ${path.resolve('./images')}`);
 console.log(getDirs('./images'));
-
-const dbDir = "charanavdata";
-const dbName = "charanav";
-if (!fs.existsSync('.' + `/${dbDir}/${dbName}.db`)) {
-    fs.mkdirSync('.' + `/${dbDir}`);
-    fs.createWriteStream('.' + `/${dbDir}/${dbName}.db`);
-}
-
-const imgDir = "images";
-if (!fs.existsSync('.' + `/${imgDir}`)) {
-    fs.mkdirSync('.' + `/${dbDir}`);
-}
 
 const db = new sqlite3.Database(path.join('.', `/${dbDir}/${dbName}.db`));
 
