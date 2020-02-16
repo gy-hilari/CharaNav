@@ -1,0 +1,88 @@
+.canvas-interface{
+    overflow: hidden;
+    border: 1px solid black;
+    margin: 0px auto;
+    padding: 10px;
+}
+
+.article-canvas, .layers-ui{
+    margin: 5px;
+    height: 900px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.article-canvas{
+    width: 900px;
+    position: relative;
+}
+
+.layers-ui{
+    border: 1px solid black;
+    background-color: rgb(203, 217, 243);
+    filter: drop-shadow(5px 5px 5px rgba(0, 0, 0, 0.739));
+    overflow: hidden;
+}
+
+.layers-ui button{
+    margin: 0px auto;
+}
+
+.layers-ui button, .layers-ui .layer-scroll{
+    display: block;
+}
+
+.layer-scroll{
+    overflow: auto;
+}
+
+.clip-interface{
+    /* width: 99%; */
+    margin: 0px auto;
+    height: 940px;
+    position: relative;
+    overflow: hidden;
+    /* border: 1px solid black; */
+}
+
+@media only screen and (max-width: 875px){
+    .canvas-interface{
+        width: 1124px;
+        transform: translateX(-50%) scale(0.58);
+        position: absolute;
+        top: -30%;
+        left: 50%;
+        transform-origin: center;
+    }
+    .layers-ui{
+        height: 600px;
+        width: 900px;
+    }
+    .layer-scroll{
+        height: 550px;
+    }
+}
+
+@media only screen and (min-width: 875px) and (max-width: 1320px){
+    .canvas-interface{
+        width: 1125px;
+        transform: translateX(-50%) scale(0.82);
+        position: absolute;
+        top: -5%;
+        left: 50%;
+        transform-origin: center;
+    }
+    .layer-scroll{
+        height: 850px;
+    }
+}
+
+@media only screen and (min-width: 1320px){
+    .canvas-interface{
+        width: 1125px;
+        transform: scale(1);
+    }
+    .layer-scroll{
+        height: 850px;
+    }
+}

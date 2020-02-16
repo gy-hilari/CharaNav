@@ -1,0 +1,23 @@
+.targetArticle{
+    display: inline-block;
+}
+
+/* .targetArticle:hover{
+    cursor: pointer;
+} */
+  
+.articleTooltip .tooltiptext {
+    margin: 0px auto;
+    visibility: hidden;
+    opacity: 0;
+    text-align: center;
+    width: inherit;
+    transition: opacity .5s;
+
+    z-index: 1;
+}
+
+.articleTooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+}

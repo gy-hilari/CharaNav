@@ -13,7 +13,7 @@ const articleImageArray = (props) => {
                         <Aux key={`${props.dirName}-elm-${idx}`}>
                             <div onClick={() => { props.setActiveImg(imgSrc); }} src={imgSrc} className="image-select">
                                 <ImageReciever
-                                    image={{path: imgSrc, class: 'fit'}}
+                                    image={{path: imgSrc, class: 'fit hover', wrapSize: 'small'}}
                                 />
                             </div>
                         </Aux>

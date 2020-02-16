@@ -71,7 +71,7 @@ function createWindow() {
         new BrowserWindow({
             x: state.x, y: state.y,
             width: state.width, height: state.height,
-            minWidth: 350, minHeight: 300,
+            minWidth: 700, minHeight: 600,
             webPreferences: {
                 nodeIntegration: false,
                 contextIsolation: true,
@@ -159,13 +159,15 @@ function CheckOrCreateModels() {
             {
                 tableName: 'article',
                 name: { foreignKey: false, string: 'TEXT NOT NULL' },
+                text: { foreignKey: false, string: 'TEXT NOT NULL' },
                 imagePath: { foreignKey: false, string: 'TEXT NOT NULL' },
                 comp: { foreignKey: false, string: 'TEXT' }, // CAN BE NULL IF ARTICLE IS 'GLOBAL'
                 compKey: { foreignKey: true, string: 'FOREIGN KEY (comp) REFERENCES comp(_id)' }
             },
             {
                 tableName: 'character_article',
-                position: { foreignKey: false, string: 'TEXT NOT NULL' },
+                positionX: { foreignKey: false, string: 'TEXT NOT NULL' },
+                positionY: { foreignKey: false, string: 'TEXT NOT NULL' },
                 character: { foreignKey: false, string: 'TEXT NOT NULL' },
                 article: { foreignKey: false, string: 'TEXT NOT NULL' },
                 layer: { foreignKey: false, string: 'TEXT NOT NULL' },
@@ -376,7 +378,12 @@ promiseIpc.on('/get/comp/article', (compId) => {
 });
 
 promiseIpc.on('/get/article/id', (id) => {
-    return GetArticleById(id);
+    return new Promise((resolve, reject) => {
+        GetArticleById(id).then((res) => {
+            console.log(res);
+            resolve(res);
+        }).catch((err) => reject(err));
+    });
 });
 
 promiseIpc.on('/post/article/char', (form) => {
@@ -391,6 +398,17 @@ promiseIpc.on('/assign/article/char/layer', (form) => {
         }).catch((err) => {
             console.log(err);
         });
+    });
+});
+
+promiseIpc.on('/put/char/layer/pos', (form) => {
+    return new Promise((resolve, reject) => {
+        UpdateCharacterLayerPosition(form).then((res)=>{
+            console.log(res);
+            resolve(res);
+        })
+    }).catch((err) => {
+        console.log(err);
     });
 });
 
@@ -517,9 +535,6 @@ function GetCharacterById(id) {
     });
 }
 
-function GetArticleById(id) {
-}
-
 function CreateLayer(form) {
     return new Promise((resolve, reject) => {
         if (!form.name) reject('Invalid form');
@@ -563,6 +578,19 @@ function GetLayersByCharId(charId) {
     })
 }
 
+function GetArticleById(id) {
+    console.log(`Getting article: [${id}]`);
+    return new Promise((resolve, reject) => {
+        db.serialize(() => {
+            let sql = `SELECT _id as id, name, text, imagePath, comp FROM article WHERE id = '${id}'`;
+            db.get(sql, (err, char) => {
+                if (err) reject(err);
+                resolve(char);
+            });
+        });
+    });
+}
+
 function CreateArticle(form) {
     return new Promise((resolve, reject) => {
         console.log(form.image);
@@ -572,12 +600,14 @@ function CreateArticle(form) {
                 `INSERT INTO article (
                     _id,
                     name,
+                    text,
                     imagePath,
                     comp
                 )
                 VALUES (
                     $id,
                     $name,
+                    $text,
                     $imagePath,
                     $comp
                 )`
@@ -586,6 +616,7 @@ function CreateArticle(form) {
             stmt.run({
                 $id: artId,
                 $name: form.name,
+                $text: form.text,
                 $imagePath: form.image,
                 $comp: form.compId
             });
@@ -599,7 +630,7 @@ function GetArticlesByCompId(compId) {
     console.log(`Getting articles of comp: [${compId}]`);
     return new Promise((resolve, reject) => {
         db.serialize(() => {
-            db.all(`SELECT _id as id, name, imagePath FROM article WHERE comp = '${compId}'`, (err, chars) => {
+            db.all(`SELECT _id as id, name, text, imagePath FROM article WHERE comp = '${compId}'`, (err, chars) => {
                 if (err) reject(err);
                 resolve(chars);
             });
@@ -615,14 +646,16 @@ function AssignArticleToCharacterLayer(form) {
             let stmt = db.prepare(
                 `INSERT INTO character_article (
                     _id,
-                    position,
+                    positionX,
+                    positionY,
                     character,
                     article,
                     layer
                 )
                 VALUES (
                     $id,
-                    $position,
+                    $positionX,
+                    $positionY,
                     $character,
                     $article,
                     $layer
@@ -631,7 +664,8 @@ function AssignArticleToCharacterLayer(form) {
             let charLyr = uniqid('chrlr_');
             stmt.run({
                 $id: charLyr,
-                $position: form.position,
+                $positionX: form.positionX,
+                $positionY: form.positionY,
                 $character: form.charId,
                 $article: form.artId,
                 $layer: form.layerId
@@ -642,11 +676,22 @@ function AssignArticleToCharacterLayer(form) {
     });
 }
 
+function UpdateCharacterLayerPosition(form) {
+    return new Promise((resolve, reject) => {
+        db.serialize(() => {
+            db.all(`UPDATE character_article SET positionX = '${form.posX}', positionY = '${form.posY}' WHERE _id = '${form.id}'`, (err, char) => {
+                if (err) reject(err);
+                resolve(`Updated position of character_article [${form.id}] with position [${form.posX}, ${form.posY}]`);
+            });
+        });
+    });
+}
+
 function GetAssignedArticlesByCharacterId(charId) {
     return new Promise((resolve, reject) => {
         console.log(`Getting assigned articles of char: [${charId}]`);
         db.serialize(() => {
-            db.all(`SELECT _id as id, position, character, article, layer FROM character_article WHERE character = '${charId}'`, (err, chars) => {
+            db.all(`SELECT _id as id, positionX, positionY, character, article, layer FROM character_article WHERE character = '${charId}'`, (err, chars) => {
                 if (err) reject(err);
                 resolve(chars);
             });

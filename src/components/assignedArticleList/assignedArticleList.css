@@ -1,0 +1,9 @@
+.layer-article{
+    position: absolute;
+    height: 150px;
+    cursor: move;
+}
+
+.dragging{
+    filter: brightness(120%) drop-shadow(5px 5px 5px rgba(0, 0, 0, 0.335));
+}

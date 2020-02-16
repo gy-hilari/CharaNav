@@ -1,6 +1,7 @@
 import React from 'react';
 import Aux from '../../hoc/Auxi';
 import ImageReciever from '../imageReciever/imageReciever';
+import './articleBrowse.css';
 
 const articleBrowse = (props) => {
     return props.articles.length > 0 ? (
@@ -9,13 +10,24 @@ const articleBrowse = (props) => {
                 props.articles.map((article, idx) => {
                     return (
                         <Aux key={article.id}>
-                            
-                            <p>
+                            {/* <p>
                                 {`id: ${article.id} | name: ${article.name}`}
-                            </p>
-                            <ImageReciever 
-                                image={{path: article.imagePath, class: 'fit'}}
-                            />
+                            </p> */}
+                            <div className="targetArticle articleTooltip" onClick={() => {
+                                props.getArticle(article.id);
+                            }}>
+                                <p className="tooltiptext">
+                                    {/* {`id: ${article.id} | name: ${article.name}`} */}
+                                    {article.name}
+                                </p>
+                                <ImageReciever
+                                    image={{ path: article.imagePath, class: 'fit hover', wrapSize: 'tiny'}}
+                                />
+                            </div>
+                            {/* <p>
+                                {article.text}
+                            </p> */}
+                            {/* <hr/> */}
                         </Aux>
                     )
                 })
@@ -24,12 +36,12 @@ const articleBrowse = (props) => {
     )
         :
         (
-        <Aux>
-            <p>
-                No articles available!
+            <Aux>
+                <p>
+                    No articles available!
             </p>
-        </Aux>
-    )
+            </Aux>
+        )
 };
 
 export default articleBrowse;

@@ -40,7 +40,7 @@ const characterList = (props) => {
                     image={props.activeImg}
                 />
                 <input id="article-name" type="text" placeholder="Article Name" />
-                <button onClick={() => { props.toggleImgBrowse(); }}>
+                <button onClick={() => { props.setImgBrowse(!props.imgBrowse); }}>
                     Browse Images
                 </button>
                 <button onClick={() => { props.refreshDir(); }}>
@@ -60,12 +60,14 @@ const characterList = (props) => {
                         )
                     })
                 }
-                {/* <img className='article-img-sel' src={`${props.imgDir.master}/newFolder/` + props.imgDir.directories.newFolder[0]} alt="ERROR" /> */}
                 <hr />
+                <textarea id="article-text" cols="30" rows="10"></textarea>
+                <hr/>
                 <button onClick={() => {
                     props.newArticle({
                         compId: props.compId,
                         name: document.getElementById('article-name').value,
+                        text: document.getElementById('article-text').value,
                         image: props.activeImg ? props.activeImg.path : null
                     });
                 }}>
@@ -79,7 +81,9 @@ const characterList = (props) => {
                     });
                 }}>Create Character</button>
                 <button onClick={() => {
-                    props.setScene('article');
+                    props.setActiveImg(null);
+                    props.setImgBrowse(false);
+                    props.setScene('article-browse');
                 }}>
                     Browse Articles
                 </button>
@@ -90,8 +94,8 @@ const characterList = (props) => {
                         return (
                             <Aux key={elm.id}>
                                 <p onClick={() => {
-                                    // get layers by char id
-                                    // get character_articles by char id
+                                    props.setActiveImg(null);
+                                    props.setImgBrowse(false);
                                     props.getLayers(elm.id);
                                     props.getArticles(elm.id);
                                     props.getChar(elm.id);

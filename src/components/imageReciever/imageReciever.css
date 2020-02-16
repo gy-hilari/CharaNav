@@ -1,28 +1,71 @@
+@media only screen and (max-width: 500px){
+    .full{
+        height: 200px;
+    }
+}
+
+@media only screen and (min-width: 500px){
+    .full{
+        height: 300px;
+    }
+}
+
+@media only screen and (min-width: 800px){
+    .full{
+        height: 500px;
+    }
+}
+
+@media only screen and (min-width: 1280px){
+    .full{
+        height: 700px;
+    }
+}
+
+
 .small{
     width: 150px;
     height: 150px;
+}
+
+.tiny{
+    width: 100px;
+    height: 100px;
+}
+
+.wrap{
     overflow: hidden;
     margin: 0px auto;
     border-radius: 5px;
 }
 
-.small .landscape{
+.wrap:hover .hover{
+    cursor: pointer;
+    filter: brightness(140%) grayscale(70%);
+}
+
+.wrap:hover .drag{
+    cursor: move;
+    filter: brightness(140%) grayscale(70%);
+}
+
+.wrap .landscape{
     width: 200%;
     margin-left: -50%;
 }
 
-.small .portrait{
+.wrap .portrait{
     width: 200%;
     /* width: 100%; */
     margin-left: -50%;
     margin-top: -25%;
 }
 
-.small .square{
+.wrap .square{
     width: 100%;
 }
 
-.small .fit{
+.wrap .fit{
     height: 100%;
     /* margin-left: -50%; */
     /* margin-top: -50%; */

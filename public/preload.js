@@ -37,6 +37,7 @@ contextBridge.exposeInMainWorld(
             "/post/article/artTag",
             "/post/layer",
             "/get/imageDir",
+            "/put/char/layer/pos",
             "test"
         ];
         if (validChannels.includes(channel)) {

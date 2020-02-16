@@ -4,13 +4,15 @@ import CompendiumList from '../../components/compendiumList/compendiumList'
 import CharacterList from '../../components/characterList/characterList';
 import LayerList from '../../components/layerList/layerList';
 import ArticleBrowse from '../../components/articleBrowse/articleBrowse';
-import ImageReciever from '../../components/imageReciever/imageReciever';
+import ViewArticle from '../../components/viewArticle/viewArticle';
+import './compendiums.css';
 
 class Compendiums extends Component {
     state = {
         scene: 'comps',
         activeComp: {},
         activeChar: {},
+        activeArticle: {},
         comps: [],
         compChars: {},
         compArts: {},
@@ -33,13 +35,13 @@ class Compendiums extends Component {
         });
     }
 
-    toggleImageDirBrowser = () => {
-        this.setState({ imgBrowse: !this.state.imgBrowse });
+    setImageDirBrowser = (bool) => {
+        this.setState({ imgBrowse: bool });
     }
 
     setActiveImageSelect = (path) => {
         console.log(path);
-        this.setState({ activeImageSelect: { path: path, class: 'fit' } });
+        this.setState({ activeImageSelect: path ? { path: path, class: 'fit', wrapSize: 'small' } : null });
     }
 
     // getImageData = (dir) => {
@@ -122,6 +124,14 @@ class Compendiums extends Component {
         });
     }
 
+    getArticle = (id) => {
+        window.api.promise('/get/article/id', id, (res) => {
+            console.log(res);
+            this.setState({ activeArticle: res });
+            this.setState({ scene: 'article' });
+        });
+    }
+
     createArticle = (form) => {
         window.api.promise('/post/article', form, (res) => {
             console.log(res);
@@ -144,6 +154,7 @@ class Compendiums extends Component {
 
     getCharArticles = (charId) => {
         window.api.promise('/get/char/article', charId, (res) => {
+            console.log('CHARACTER ARTICLES:');
             console.log(res);
             this.setState({ charArts: res });
         });
@@ -172,7 +183,8 @@ class Compendiums extends Component {
             return (
                 <Aux>
                     <button onClick={() => {
-                        this.setState({imgBrowse: false});
+                        this.setState({ activeImageSelect: null });
+                        this.setState({ imgBrowse: false });
                         this.setState({ scene: 'comps' });
                     }}>Go Back</button>
                     <hr />
@@ -186,7 +198,7 @@ class Compendiums extends Component {
                         getArticles={this.getCharArticles}
                         setScene={this.setScene}
                         imgDir={this.state.imgDir}
-                        toggleImgBrowse={this.toggleImageDirBrowser}
+                        setImgBrowse={this.setImageDirBrowser}
                         imgBrowse={this.state.imgBrowse}
                         activeImg={this.state.activeImageSelect}
                         setActiveImg={this.setActiveImageSelect}
@@ -198,8 +210,10 @@ class Compendiums extends Component {
         if (this.state.scene === 'char') {
             return (
                 <Aux>
-                    <button onClick={() => { this.setState({ scene: 'comp' }) }}>Go Back</button>
-                    <hr />
+                    <div className="nav-ui">
+                        <button onClick={() => { this.setState({ scene: 'comp' }) }}>Go Back</button>
+                        <hr />
+                    </div>
                     <LayerList
                         articles={this.state.compArts}
                         layers={this.state.charLayers}
@@ -208,6 +222,19 @@ class Compendiums extends Component {
                         charArts={this.state.charArts}
                         assign={this.assignArticleToChar}
                         getArticles={this.getCharArticles}
+                        getArticle={this.getArticle}
+                    />
+                </Aux>
+            )
+        }
+        if (this.state.scene === 'article-browse') {
+            return (
+                <Aux>
+                    <button onClick={() => { this.setState({ scene: 'comp' }) }}>Go Back</button>
+                    <hr />
+                    <ArticleBrowse
+                        articles={this.state.compArts}
+                        getArticle={this.getArticle}
                     />
                 </Aux>
             )
@@ -215,10 +242,13 @@ class Compendiums extends Component {
         if (this.state.scene === 'article') {
             return (
                 <Aux>
-                    <button onClick={() => { this.setState({ scene: 'comp' }) }}>Go Back</button>
+                    <button onClick={() => { this.setState({ scene: 'char' }); }}>
+                        Back to Character
+                    </button>
+                    <button onClick={() => { this.setState({ scene: 'article-browse' }) }}>Browse Articles</button>
                     <hr />
-                    <ArticleBrowse
-                        articles={this.state.compArts}
+                    <ViewArticle
+                        article={this.state.activeArticle}
                     />
                 </Aux>
             )

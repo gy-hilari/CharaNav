@@ -5,8 +5,8 @@ import './imageReciever.css'
 const imageReciever = (props) => {
     return props.image ? (
         <Aux>
-            <div className="small">
-                <img className={props.image.class} src={props.image.path} alt="ERROR"/>
+            <div className={`wrap ${props.image.wrapSize}`}>
+                <img className={props.image.class} src={props.image.path} alt="ERROR" />
             </div>
         </Aux>
     ) : null;

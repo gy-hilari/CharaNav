@@ -1,5 +1,7 @@
 import React from 'react';
 import Aux from '../../hoc/Auxi';
+import ImageReciever from '../imageReciever/imageReciever'
+import './articleList.css';
 
 const articleList = (props) => {
     return !props.articles.length > 0 ? (
@@ -13,20 +15,37 @@ const articleList = (props) => {
 
             <Aux>
                 {/* <p>Showing articles of character : {`[${props.charId}]`}</p> */}
-                <select id={`${props.layerId}-sel`}>
-                    {
-                        props.articles.map((elm, idx) => {
-                            return (
-                                <Aux key={elm.id}>
-                                    <option value={elm.id}>{elm.name}</option>
-                                </Aux>
-                            )
-                        })
-                    }
-                </select>
+                <table className='article-options'>
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {
+                            props.articles.map((art, idx) => {
+                                return (
+                                    <tr key={art.id}>
+                                        <td onClick={() => { document.getElementById(`${props.layerId}-sel`).value = art.id }}>
+                                            <ImageReciever
+                                                image={{ path: art.imagePath, class: 'fit hover', wrapSize: 'tiny' }}
+                                            />
+                                        </td>
+                                        <td>
+                                            {art.name}
+                                        </td>
+                                    </tr>
+                                )
+                            })
+                        }
+                    </tbody>
+                </table>
+                <input type="hidden" id={`${props.layerId}-sel`} />
                 <button onClick={() => {
                     props.assign({
-                        position: '100, 100',
+                        positionX: 2,
+                        positionY: 350,
                         charId: props.charId,
                         artId: document.getElementById(`${props.layerId}-sel`).value,
                         layerId: props.layerId
