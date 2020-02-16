@@ -3,7 +3,7 @@
     height: 150px;
     overflow: hidden;
     margin: 0px auto;
-    border-radius: 25px;
+    border-radius: 5px;
 }
 
 .small .landscape{
@@ -20,4 +20,10 @@
 
 .small .square{
     width: 100%;
+}
+
+.small .fit{
+    height: 100%;
+    /* margin-left: -50%; */
+    /* margin-top: -50%; */
 }

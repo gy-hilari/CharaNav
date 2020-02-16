@@ -16,12 +16,14 @@ class Compendiums extends Component {
         compArts: {},
         charLayers: {},
         charArts: {},
-        imgDir: null
+        imgDir: null,
+        imgBrowse: false,
+        activeImageSelect: null
     };
 
     componentDidMount() {
         this.getComps();
-        // this.getImageDir();
+        this.getImageDir();
     }
 
     getImageDir = () => {
@@ -31,27 +33,36 @@ class Compendiums extends Component {
         });
     }
 
-    setImageDir = (dir) => {
-        console.log(dir);
-        let imgData = {};
-        imgData['path'] = dir;
-        let img = new Image();
-        img.src = dir;
-        img.onload = () => {
-            console.log(`Image width: ${img.width}`);
-            console.log(`Image height: ${img.height}`);
-            if (img.width === img.height) {
-                imgData['class'] = 'square';
-            }
-            if (img.width > img.height) {
-                imgData['class'] = 'landscape';
-            }
-            if (img.width < img.height) {
-                imgData['class'] = 'portrait';
-            }
-            this.setState({ imgDir: imgData });
-        }
+    toggleImageDirBrowser = () => {
+        this.setState({ imgBrowse: !this.state.imgBrowse });
     }
+
+    setActiveImageSelect = (path) => {
+        console.log(path);
+        this.setState({ activeImageSelect: { path: path, class: 'fit' } });
+    }
+
+    // getImageData = (dir) => {
+    //     console.log(dir);
+    //     let imgData = {};
+    //     imgData['path'] = dir;
+    //     let img = new Image();
+    //     img.src = dir;
+    //     img.onload = () => {
+    //         console.log(`Image width: ${img.width}`);
+    //         console.log(`Image height: ${img.height}`);
+    //         if (img.width === img.height) {
+    //             imgData['class'] = 'square';
+    //         }
+    //         if (img.width > img.height) {
+    //             imgData['class'] = 'landscape';
+    //         }
+    //         if (img.width < img.height) {
+    //             imgData['class'] = 'portrait';
+    //         }
+    //         this.setState({ activeImageSelect: imgData });
+    //     }
+    // }
 
     getComps = () => {
         window.api.promise('/get/comp', { message: "Getting image dir..." }, (res) => {
@@ -146,19 +157,6 @@ class Compendiums extends Component {
         if (this.state.scene === 'comps') {
             return (
                 <Aux>
-                    {/* <img src={`${this.state.imgDir}/test2/logo192.png`} alt="ERROR"/> */}
-                    <ImageReciever
-                        image={this.state.imgDir}
-                    />
-                    {/* <img src={`${this.state.imgDir}`} alt="ERROR" /> */}
-                    <input id='select-image' type="file" accept=".png,.jpg,.jpeg,.bmp" style={{display: 'none'}} onChange={(e) => {
-                        if (e.target.files[0]) {
-                            console.log(e.target.files[0]);
-                            this.setImageDir(e.target.files[0].path);
-                        }
-                    }} />
-                    <button onClick={() => {document.getElementById('select-image').click()}}>Choose File</button>
-                    <hr />
                     <button onClick={() => this.createComp({ name: 'Test' })}>CREATE COMPENDIUM</button>
                     <hr />
                     <CompendiumList
@@ -173,7 +171,10 @@ class Compendiums extends Component {
         if (this.state.scene === 'comp') {
             return (
                 <Aux>
-                    <button onClick={() => { this.setState({ scene: 'comps' }) }}>Go Back</button>
+                    <button onClick={() => {
+                        this.setState({imgBrowse: false});
+                        this.setState({ scene: 'comps' });
+                    }}>Go Back</button>
                     <hr />
                     <CharacterList
                         newChar={this.createChar}
@@ -184,6 +185,12 @@ class Compendiums extends Component {
                         getChar={this.getChar}
                         getArticles={this.getCharArticles}
                         setScene={this.setScene}
+                        imgDir={this.state.imgDir}
+                        toggleImgBrowse={this.toggleImageDirBrowser}
+                        imgBrowse={this.state.imgBrowse}
+                        activeImg={this.state.activeImageSelect}
+                        setActiveImg={this.setActiveImageSelect}
+                        refreshDir={this.getImageDir}
                     />
                 </Aux>
             );

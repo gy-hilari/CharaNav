@@ -1,0 +1,14 @@
+.image-wrap{
+    width: 100px;
+    height: 100px;
+    display: inline-block;
+    overflow: hidden;
+}
+
+.image-select:hover{
+    cursor: pointer;
+}
+
+.image-select{
+    display: inline-block;
+}

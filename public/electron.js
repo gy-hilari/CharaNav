@@ -29,7 +29,7 @@ if (!fs.existsSync('.' + `/${dbDir}/${dbName}.db`)) {
 
 const imgDir = "images";
 if (!fs.existsSync('.' + `/${imgDir}`)) {
-    fs.mkdirSync('.' + `/${dbDir}`);
+    fs.mkdirSync('.' + `/${imgDir}`);
 }
 
 const getDirs = (path) => {
@@ -41,8 +41,15 @@ const getDirs = (path) => {
 }
 
 const getFiles = (dir) => {
+    let validExtensions = [
+        ".jpg",
+        ".jpeg",
+        ".png",
+        ".bmp"
+    ];
     return readdirSync(`./images/${dir}`, { withFileTypes: true })
         .filter(file => !file.isDirectory())
+        .filter(file => validExtensions.includes(path.extname(file.name)))
         .map(file => file.name);
 }
 
@@ -213,7 +220,11 @@ promiseIpc.on('test', () => {
 });
 
 promiseIpc.on('/get/imageDir', () => {
-    return path.resolve('./images');
+    console.log('Getting image dirs!');
+    let dirData = {};
+    dirData['master'] = path.resolve('./images');
+    dirData['directories'] = getDirs('./images');
+    return dirData;
 });
 
 promiseIpc.on('/get/comp', () => {
@@ -554,8 +565,9 @@ function GetLayersByCharId(charId) {
 
 function CreateArticle(form) {
     return new Promise((resolve, reject) => {
-        if (!form.name) reject('Invalid form');
-        db.serialize(() => {
+        console.log(form.image);
+        if (!form.image) reject('Invalid form');
+        if (form.image) db.serialize(() => {
             let stmt = db.prepare(
                 `INSERT INTO article (
                     _id,

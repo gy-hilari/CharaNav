@@ -1,0 +1,7 @@
+.DirTitle:hover{
+    cursor: pointer;
+}
+
+.DirTitle{
+    color: blue;
+}

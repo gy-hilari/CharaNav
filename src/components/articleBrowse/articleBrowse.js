@@ -1,5 +1,6 @@
 import React from 'react';
 import Aux from '../../hoc/Auxi';
+import ImageReciever from '../imageReciever/imageReciever';
 
 const articleBrowse = (props) => {
     return props.articles.length > 0 ? (
@@ -8,9 +9,13 @@ const articleBrowse = (props) => {
                 props.articles.map((article, idx) => {
                     return (
                         <Aux key={article.id}>
+                            
                             <p>
-                                {article.id}
+                                {`id: ${article.id} | name: ${article.name}`}
                             </p>
+                            <ImageReciever 
+                                image={{path: article.imagePath, class: 'fit'}}
+                            />
                         </Aux>
                     )
                 })
