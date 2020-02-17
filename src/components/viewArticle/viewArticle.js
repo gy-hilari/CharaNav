@@ -10,7 +10,7 @@ const viewArticle = (props) => {
             </p>
             <hr />
             <ImageReciever
-                image={{ path: props.article.imagePath, class: 'fit', wrapSize: 'full' }}
+                image={{ path: props.article.imagePath, class: 'fit', wrapSize: 'full', master: props.master}}
             />
             <p>
                 {props.article.text}

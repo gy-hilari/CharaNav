@@ -41,7 +41,8 @@ const layerList = (props) => {
                                                                     posX={charArt.positionX}
                                                                     posY={charArt.positionY}
                                                                     getArticles={props.getArticles}
-                                                                    />
+                                                                    master={props.master}
+                                                                />
                                                             </MediaQuery>
                                                             <MediaQuery minWidth={875} maxWidth={1320}>
                                                                 <AssignedArticleList
@@ -51,7 +52,8 @@ const layerList = (props) => {
                                                                     posX={charArt.positionX}
                                                                     posY={charArt.positionY}
                                                                     getArticles={props.getArticles}
-                                                                    />
+                                                                    master={props.master}
+                                                                />
                                                             </MediaQuery>
                                                             <MediaQuery maxWidth={875}>
                                                                 <AssignedArticleList
@@ -61,6 +63,7 @@ const layerList = (props) => {
                                                                     posX={charArt.positionX}
                                                                     posY={charArt.positionY}
                                                                     getArticles={props.getArticles}
+                                                                    master={props.master}
                                                                 />
                                                             </MediaQuery>
                                                         </Aux>
@@ -97,6 +100,7 @@ const layerList = (props) => {
                                                     charId={props.charId}
                                                     assign={props.assign}
                                                     getArticles={props.getArticles}
+                                                    master={props.master}
                                                 />
                                                 <hr />
                                             </Aux>

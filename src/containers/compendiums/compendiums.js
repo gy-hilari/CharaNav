@@ -41,7 +41,7 @@ class Compendiums extends Component {
 
     setActiveImageSelect = (path) => {
         console.log(path);
-        this.setState({ activeImageSelect: path ? { path: path, class: 'fit', wrapSize: 'small' } : null });
+        this.setState({ activeImageSelect: path ? { path: path, class: 'fit', wrapSize: 'small', master: this.state.imgDir.master } : null });
     }
 
     // getImageData = (dir) => {
@@ -164,6 +164,10 @@ class Compendiums extends Component {
         this.setState({ scene: sceneName })
     }
 
+    clearActiveChar = () => {
+        this.setState({ activeChar: null });
+    }
+
     render() {
         if (this.state.scene === 'comps') {
             return (
@@ -175,6 +179,7 @@ class Compendiums extends Component {
                         getComp={this.getComp}
                         getChars={this.getCompChars}
                         getArticles={this.getCompArticles}
+                        clearChar={this.clearActiveChar}
                     />
                 </Aux>
             );
@@ -211,7 +216,10 @@ class Compendiums extends Component {
             return (
                 <Aux>
                     <div className="nav-ui">
-                        <button onClick={() => { this.setState({ scene: 'comp' }) }}>Go Back</button>
+                        <button onClick={() => {
+                            this.clearActiveChar();
+                            this.setState({ scene: 'comp' });
+                        }}>Back to Compendium</button>
                         <hr />
                     </div>
                     <LayerList
@@ -223,6 +231,7 @@ class Compendiums extends Component {
                         assign={this.assignArticleToChar}
                         getArticles={this.getCharArticles}
                         getArticle={this.getArticle}
+                        master={this.state.imgDir.master}
                     />
                 </Aux>
             )
@@ -230,11 +239,21 @@ class Compendiums extends Component {
         if (this.state.scene === 'article-browse') {
             return (
                 <Aux>
-                    <button onClick={() => { this.setState({ scene: 'comp' }) }}>Go Back</button>
+                    <button onClick={() => {
+                        this.clearActiveChar();
+                        this.setState({ scene: 'comp' });
+                    }}>Back to Compendium</button>
+                    {
+                        this.state.activeChar &&
+                        <button onClick={() => { this.setState({ scene: 'char' }); }}>
+                            Back to Character
+                        </button>
+                    }
                     <hr />
                     <ArticleBrowse
                         articles={this.state.compArts}
                         getArticle={this.getArticle}
+                        master={this.state.imgDir.master}
                     />
                 </Aux>
             )
@@ -242,13 +261,21 @@ class Compendiums extends Component {
         if (this.state.scene === 'article') {
             return (
                 <Aux>
-                    <button onClick={() => { this.setState({ scene: 'char' }); }}>
-                        Back to Character
-                    </button>
+                    <button onClick={() => {
+                        this.clearActiveChar();
+                        this.setState({ scene: 'comp' });
+                    }}>Back to Compendium</button>
+                    {
+                        this.state.activeChar &&
+                        <button onClick={() => { this.setState({ scene: 'char' }); }}>
+                            Back to Character
+                        </button>
+                    }
                     <button onClick={() => { this.setState({ scene: 'article-browse' }) }}>Browse Articles</button>
                     <hr />
                     <ViewArticle
                         article={this.state.activeArticle}
+                        master={this.state.imgDir.master}
                     />
                 </Aux>
             )

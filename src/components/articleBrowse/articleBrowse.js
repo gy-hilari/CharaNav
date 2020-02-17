@@ -21,7 +21,7 @@ const articleBrowse = (props) => {
                                     {article.name}
                                 </p>
                                 <ImageReciever
-                                    image={{ path: article.imagePath, class: 'fit hover', wrapSize: 'tiny'}}
+                                    image={{ path: article.imagePath, class: 'fit hover', wrapSize: 'tiny', master: props.master}}
                                 />
                             </div>
                             {/* <p>

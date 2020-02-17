@@ -86,7 +86,7 @@ function createWindow() {
         new BrowserWindow({
             x: state.x, y: state.y,
             width: state.width, height: state.height,
-            minWidth: 350, minHeight: 300,
+            minWidth: 700, minHeight: 600,
             webPreferences: {
                 nodeIntegration: false,
                 contextIsolation: true,

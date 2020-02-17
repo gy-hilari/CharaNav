@@ -28,7 +28,7 @@ class AssignedArticleList extends Component {
 
     putArticleStartPos = (charArtId, x, y) => {
         console.log(`UPDATING charArt : ${charArtId}`);
-        window.api.promise('/put/char/layer/pos', {id: charArtId, posX: x, posY: y}, (res) => {
+        window.api.promise('/put/char/layer/pos', { id: charArtId, posX: x, posY: y }, (res) => {
             console.log(res);
         });
     }
@@ -47,25 +47,28 @@ class AssignedArticleList extends Component {
             :
             (
                 <Aux>
-                    <Draggable
-                        scale={this.props.dragScale}
-                        bounds={`parent`}
-                        defaultPosition={{ x: parseInt(this.props.posX), y: parseInt(this.props.posY) }}
-                        onStart={() => { this.setState({ dragClass: 'dragging' }); }}
-                        onStop={() => { 
-                            this.setState({ dragClass: '' }); console.log('Finished Dragging!'); 
-                            let regex = /[+-]?\d+(\.\d+)?/g;
-                            let cssTarget = document.getElementById(this.props.charArt.id).style.transform;
-                            let floats = cssTarget.match(regex).map((num) => {
-                                return parseFloat(num);
-                            })
-                            console.log(floats);
-                            this.putArticleStartPos(this.props.charArt.id, floats[0], floats[1]);
-                            this.props.getArticles(this.props.charArt.character);
-                        }}
-                    >
-                        <img onContextMenu={() => { this.props.getArticle(this.props.charArt.article) }} className={`layer-article ${this.state.dragClass}`} id={this.props.charArt.id} src={this.state.articlePath} alt="" />
-                    </Draggable>
+                    {
+                        this.state.articlePath &&
+                        <Draggable
+                            scale={this.props.dragScale}
+                            bounds={`parent`}
+                            defaultPosition={{ x: parseInt(this.props.posX), y: parseInt(this.props.posY) }}
+                            onStart={() => { this.setState({ dragClass: 'dragging' }); }}
+                            onStop={() => {
+                                this.setState({ dragClass: '' }); console.log('Finished Dragging!');
+                                let regex = /[+-]?\d+(\.\d+)?/g;
+                                let cssTarget = document.getElementById(this.props.charArt.id).style.transform;
+                                let floats = cssTarget.match(regex).map((num) => {
+                                    return parseFloat(num);
+                                })
+                                console.log(floats);
+                                this.putArticleStartPos(this.props.charArt.id, floats[0], floats[1]);
+                                this.props.getArticles(this.props.charArt.character);
+                            }}
+                        >
+                            <img onContextMenu={() => { this.props.getArticle(this.props.charArt.article) }} className={`layer-article ${this.state.dragClass}`} id={this.props.charArt.id} src={`${this.props.master}${this.state.articlePath}`} alt="" />
+                        </Draggable>
+                    }
                 </Aux>
             )
     }

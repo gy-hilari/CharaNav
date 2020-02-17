@@ -6,7 +6,7 @@ const imageReciever = (props) => {
     return props.image ? (
         <Aux>
             <div className={`wrap ${props.image.wrapSize}`}>
-                <img className={props.image.class} src={props.image.path} alt="ERROR" />
+                <img className={props.image.class} src={`${props.image.master}${props.image.path}`} alt="ERROR" />
             </div>
         </Aux>
     ) : null;

@@ -7,12 +7,12 @@
 
 .article-canvas, .layers-ui{
     margin: 5px;
-    height: 900px;
     display: inline-block;
     vertical-align: middle;
 }
 
 .article-canvas{
+    height: 900px;
     width: 900px;
     position: relative;
 }
@@ -47,8 +47,9 @@
 
 @media only screen and (max-width: 875px){
     .canvas-interface{
-        width: 1124px;
+        width: 1125px;
         transform: translateX(-50%) scale(0.58);
+        transform-origin: center;
         position: absolute;
         top: -30%;
         left: 50%;
@@ -72,8 +73,13 @@
         left: 50%;
         transform-origin: center;
     }
+    .layers-ui{
+        height: 900px;
+        width: 200px;
+    }
     .layer-scroll{
         height: 850px;
+        width: 199px;
     }
 }
 
@@ -81,8 +87,14 @@
     .canvas-interface{
         width: 1125px;
         transform: scale(1);
+        transform-origin: center;
+    }
+    .layers-ui{
+        height: 900px;
+        width: 200px;
     }
     .layer-scroll{
         height: 850px;
+        width: 199px;
     }
 }

@@ -14,6 +14,7 @@ const CompendiumList = (props) => {
                             <p className='Compendium' onClick={() => {
                                 props.getChars(elm.id);
                                 props.getArticles(elm.id);
+                                props.clearChar();
                                 props.getComp(elm.id);
                             }}>{`${num}.)id: ${elm.id} Name: ${elm.name}`}</p>
                         </Aux>

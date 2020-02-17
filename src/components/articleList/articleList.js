@@ -29,7 +29,7 @@ const articleList = (props) => {
                                     <tr key={art.id}>
                                         <td onClick={() => { document.getElementById(`${props.layerId}-sel`).value = art.id }}>
                                             <ImageReciever
-                                                image={{ path: art.imagePath, class: 'fit hover', wrapSize: 'tiny' }}
+                                                image={{ path: art.imagePath, class: 'fit hover', wrapSize: 'tiny', master: props.master }}
                                             />
                                         </td>
                                         <td>
