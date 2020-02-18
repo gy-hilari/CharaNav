@@ -11,6 +11,10 @@ const characterForm = (props) => {
                     compId: props.compId,
                     name: document.getElementById('newChar-name').value
                 });
+                if (
+                    props.compId &&
+                    document.getElementById('newChar-name').value
+                ) props.setFormMode(null);
             }}>
                 Create Character
                 </button>

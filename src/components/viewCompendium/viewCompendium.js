@@ -7,13 +7,17 @@ import CharacterForm from '../characterForm/characterForm';
 import './viewCompendium.css'
 
 class viewCompendium extends Component {
+
+    refreshForms = () => {
+        this.props.setActiveImg(null);
+        this.props.setImgBrowse(false);
+    }
     render() {
-        return (
+        return this.props.comp ? (
             <Aux>
-                <p>Showing character list of {`[${this.props.compId}]`}!</p>
+                <p>Showing character list of {`[${this.props.comp.name}]`}!</p>
                 <button onClick={() => {
-                    this.props.setActiveImg(null);
-                    this.props.setImgBrowse(false);
+                    this.refreshForms();
                     // this.props.setScene('character-browse');
                     this.props.setFormMode('null');
                     this.props.setBrowseMode('char');
@@ -21,8 +25,7 @@ class viewCompendium extends Component {
                     Browse Characters
                     </button>
                 <button onClick={() => {
-                    this.props.setActiveImg(null);
-                    this.props.setImgBrowse(false);
+                    this.refreshForms();
                     // this.props.setScene('article-browse');
                     this.props.setFormMode('null');
                     this.props.setBrowseMode('article');
@@ -46,7 +49,7 @@ class viewCompendium extends Component {
                         }
                         <CharacterForm
                             formMode={this.props.formMode}
-                            compId={this.props.compId}
+                            compId={this.props.comp.id}
                             newChar={this.props.newChar}
                             setFormMode={this.props.setFormMode}
                         />
@@ -74,10 +77,11 @@ class viewCompendium extends Component {
                             imgDir={this.props.imgDir}
                             imgBrowse={this.props.imgBrowse}
                             setActiveImg={this.props.setActiveImg}
-                            compId={this.props.compId}
+                            compId={this.props.comp.id}
                             activeImg={this.props.activeImg}
                             formMode={this.props.formMode}
                             setFormMode={this.props.setFormMode}
+                            refresh={this.refreshForms}
                         />
                     </Aux>
                 }
@@ -99,7 +103,7 @@ class viewCompendium extends Component {
                     browseMode={this.props.browseMode}
                 />
             </Aux>
-        );
+        ) : null;
     }
 };
 

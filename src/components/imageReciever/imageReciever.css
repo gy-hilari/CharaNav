@@ -33,6 +33,11 @@
     height: 100px;
 }
 
+.tinier{
+    width: 80px;
+    height: 80px;    
+}
+
 .wrap{
     overflow: hidden;
     margin: 0px auto;

@@ -45,6 +45,13 @@ const articleForm = (props) => {
                     text: document.getElementById('article-text').value,
                     image: props.activeImg ? props.activeImg.path : null
                 });
+                if (
+                    document.getElementById('article-name').value &&
+                    document.getElementById('article-text').value 
+                ) {
+                    props.refresh();
+                    props.setFormMode(null);  
+                } 
             }}>
                 Create Article
             </button>

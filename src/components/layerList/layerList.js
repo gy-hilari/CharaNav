@@ -5,65 +5,58 @@ import ArticleList from '../articleList/articleList';
 import AssignedArticleList from '../assignedArticleList/assignedArticleList';
 import './layerList.css';
 
-const layerList = (props) => {
-    return !props.layers.length > 0 ? (
-        <Aux>
-            <button onClick={() => {
-                props.newLayer({
-                    name: `Layer of char : [${props.charId}]`,
-                    zIndex: 100,
-                    charId: props.charId
-                });
-            }}>Add Layer</button>
-            <hr />
-            <p>No layers yet!</p>
-        </Aux>
-    )
-        :
-        (
-            <Aux>
-                <div className="clip-interface">
+class LayerList extends Component {
+    state = {
+        assigningLayer: false,
+        activeLayerData: null,
+        activeLayerImage: null
+    }
+
+    render() {
+        return this.props.layers ?
+            (
+                <Aux>
                     <div className="canvas-interface" id="canvas-interface">
                         <div className="article-canvas">
                             {
-                                props.layers.map((layer) => {
+                                this.props.layers.map((layer) => {
                                     return (
                                         <Aux key={`${layer.id}-articles`}>
                                             {
-                                                props.charArts.map((charArt, idx) => {
+                                                this.props.charArts.map((charArt, idx) => {
                                                     return charArt.layer === layer.id ? (
                                                         <Aux key={charArt.id}>
                                                             <MediaQuery minWidth={1320}>
                                                                 <AssignedArticleList
                                                                     charArt={charArt}
-                                                                    getArticle={props.getArticle}
-                                                                    dragScale={1}
+                                                                    getArticle={this.props.getArticle}
+                                                                    dragScale={.96}
                                                                     posX={charArt.positionX}
                                                                     posY={charArt.positionY}
-                                                                    getArticles={props.getArticles}
-                                                                    master={props.master}
+                                                                    getArticles={this.props.getArticles}
+                                                                    master={this.props.master}
                                                                 />
                                                             </MediaQuery>
                                                             <MediaQuery minWidth={875} maxWidth={1320}>
                                                                 <AssignedArticleList
                                                                     charArt={charArt}
-                                                                    getArticle={props.getArticle}
+                                                                    getArticle={this.props.getArticle}
                                                                     dragScale={0.82}
                                                                     posX={charArt.positionX}
                                                                     posY={charArt.positionY}
-                                                                    getArticles={props.getArticles}
-                                                                    master={props.master}
+                                                                    getArticles={this.props.getArticles}
+                                                                    master={this.props.master}
                                                                 />
                                                             </MediaQuery>
                                                             <MediaQuery maxWidth={875}>
                                                                 <AssignedArticleList
                                                                     charArt={charArt}
-                                                                    getArticle={props.getArticle}
+                                                                    getArticle={this.props.getArticle}
                                                                     dragScale={0.58}
                                                                     posX={charArt.positionX}
                                                                     posY={charArt.positionY}
-                                                                    getArticles={props.getArticles}
-                                                                    master={props.master}
+                                                                    getArticles={this.props.getArticles}
+                                                                    master={this.props.master}
                                                                 />
                                                             </MediaQuery>
                                                         </Aux>
@@ -78,41 +71,58 @@ const layerList = (props) => {
                             }
                         </div>
                         <div className="layers-ui">
+                            {
+                                // ADD MODE & MENU: "ASSIGN ARTICLE FORM" --> CONVERT TO CLASS
+                                // STATE / PROPS: CURRENT ACTIVE LAYER
+                            }
                             <button onClick={() => {
-                                props.newLayer({
-                                    name: `Layer of char : [${props.charId}]`,
+                                this.props.newLayer({
+                                    name: `Layer of char : [${this.props.charId}]`,
                                     zIndex: 100,
-                                    charId: props.charId
+                                    charId: this.props.charId
                                 });
                             }}>Add Layer</button>
                             <hr />
                             <div className="layer-scroll">
                                 {
-                                    props.layers.map((layer, idx) => {
+                                    this.props.layers.length > 0 &&
+                                    this.props.layers.map((layer, idx) => {
                                         let num = idx + 1;
                                         return (
                                             <Aux key={layer.id}>
                                                 <p>{`Layer [${num}]`}</p>
+                                                {
+                                                    this.state.assigningLayer === false &&
+                                                    <button onClick={() => {
+                                                        this.setState({ assigningLayer: true, activeLayerData: {layerId: layer.id, charId: this.props.charId}});
+                                                    }}>Add Article</button>
+                                                }
                                                 {/* <p>{`${num}.) ${layer.name} | zIndex: ${layer.zIndex}`}</p> */}
                                                 <ArticleList
-                                                    articles={props.articles}
+                                                    articles={this.props.articles}
                                                     layerId={layer.id}
-                                                    charId={props.charId}
-                                                    assign={props.assign}
-                                                    getArticles={props.getArticles}
-                                                    master={props.master}
+                                                    charId={this.props.charId}
+                                                    assign={this.props.assign}
+                                                    getArticles={this.props.getArticles}
+                                                    master={this.props.master}
                                                 />
                                                 <hr />
                                             </Aux>
                                         )
                                     })
                                 }
+                                {
+                                    !this.props.layers.length > 0 &&
+                                    <p>
+                                        No layers yet!
+                                    </p>
+                                }
                             </div>
                         </div>
                     </div>
-                </div>
-            </Aux>
-        );
+                </Aux>
+            ) : null;
+    }
 };
 
-export default layerList;
+export default LayerList;

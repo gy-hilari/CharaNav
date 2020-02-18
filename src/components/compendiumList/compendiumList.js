@@ -16,7 +16,7 @@ const CompendiumList = (props) => {
                                 props.getArticles(elm.id);
                                 props.clearChar();
                                 props.getComp(elm.id);
-                            }}>{`${num}.)id: ${elm.id} Name: ${elm.name}`}</p>
+                            }}>{`${num}.) ${elm.name}`}</p>
                         </Aux>
                     );
                 })

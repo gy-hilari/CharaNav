@@ -454,7 +454,7 @@ function GetCompendiums() {
 function CreateCompendium(form) {
     return new Promise((resolve, reject) => {
         if (!form.name) reject('Invalid form!');
-        db.serialize(() => {
+        if(form.name) db.serialize(() => {
             let stmt = db.prepare(
                 `INSERT INTO comp (
                     _id,
@@ -501,7 +501,7 @@ function GetCharactersByCompId(compId) {
 function CreateCharacter(form) {
     return new Promise((resolve, reject) => {
         if (!form.name) reject('Invalid form');
-        db.serialize(() => {
+        if(form.name) db.serialize(() => {
             let stmt = db.prepare(
                 `INSERT INTO character (
                     _id,

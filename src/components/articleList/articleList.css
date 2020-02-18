@@ -1,3 +1,8 @@
+.article-option-wrap{
+    max-height: 150px;
+    overflow-y: scroll;
+}
+
 .article-options{
     margin: 0px auto;
 }
