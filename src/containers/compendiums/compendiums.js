@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Aux from '../../hoc/Auxi';
 import CompendiumList from '../../components/compendiumList/compendiumList'
-import CharacterList from '../../components/characterList/characterList';
+import ViewCompendium from '../../components/viewCompendium/viewCompendium';
 import LayerList from '../../components/layerList/layerList';
 import ArticleBrowse from '../../components/articleBrowse/articleBrowse';
 import ViewArticle from '../../components/viewArticle/viewArticle';
@@ -20,7 +20,9 @@ class Compendiums extends Component {
         charArts: {},
         imgDir: null,
         imgBrowse: false,
-        activeImageSelect: null
+        activeImageSelect: null,
+        formMode: null,
+        browseMode: 'char'
     };
 
     componentDidMount() {
@@ -43,28 +45,6 @@ class Compendiums extends Component {
         console.log(path);
         this.setState({ activeImageSelect: path ? { path: path, class: 'fit', wrapSize: 'small', master: this.state.imgDir.master } : null });
     }
-
-    // getImageData = (dir) => {
-    //     console.log(dir);
-    //     let imgData = {};
-    //     imgData['path'] = dir;
-    //     let img = new Image();
-    //     img.src = dir;
-    //     img.onload = () => {
-    //         console.log(`Image width: ${img.width}`);
-    //         console.log(`Image height: ${img.height}`);
-    //         if (img.width === img.height) {
-    //             imgData['class'] = 'square';
-    //         }
-    //         if (img.width > img.height) {
-    //             imgData['class'] = 'landscape';
-    //         }
-    //         if (img.width < img.height) {
-    //             imgData['class'] = 'portrait';
-    //         }
-    //         this.setState({ activeImageSelect: imgData });
-    //     }
-    // }
 
     getComps = () => {
         window.api.promise('/get/comp', { message: "Getting image dir..." }, (res) => {
@@ -168,6 +148,14 @@ class Compendiums extends Component {
         this.setState({ activeChar: null });
     }
 
+    setFormMode = (mode) => {
+        this.setState({ formMode: mode });
+    }
+
+    setBrowseMode = (mode) => {
+        this.setState({ browseMode: mode });
+    }
+
     render() {
         if (this.state.scene === 'comps') {
             return (
@@ -193,7 +181,7 @@ class Compendiums extends Component {
                         this.setState({ scene: 'comps' });
                     }}>Go Back</button>
                     <hr />
-                    <CharacterList
+                    <ViewCompendium
                         newChar={this.createChar}
                         newArticle={this.createArticle}
                         getLayers={this.getCharLayers}
@@ -208,6 +196,14 @@ class Compendiums extends Component {
                         activeImg={this.state.activeImageSelect}
                         setActiveImg={this.setActiveImageSelect}
                         refreshDir={this.getImageDir}
+                        formMode={this.state.formMode}
+                        setFormMode={this.setFormMode}
+                        setBrowseMode={this.setBrowseMode}
+                        browseMode={this.state.browseMode}
+
+                        compArts={this.state.compArts}
+                        getArticle={this.getArticle}
+                        master={this.state.imgDir.master}
                     />
                 </Aux>
             );
@@ -271,7 +267,6 @@ class Compendiums extends Component {
                             Back to Character
                         </button>
                     }
-                    <button onClick={() => { this.setState({ scene: 'article-browse' }) }}>Browse Articles</button>
                     <hr />
                     <ViewArticle
                         article={this.state.activeArticle}

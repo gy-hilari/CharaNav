@@ -642,7 +642,7 @@ function AssignArticleToCharacterLayer(form) {
     // Check if entry already exists!!
     return new Promise((resolve, reject) => {
         if (!form.artId) reject('Invalid form');
-        db.serialize(() => {
+        if(form.artId) db.serialize(() => {
             let stmt = db.prepare(
                 `INSERT INTO character_article (
                     _id,
