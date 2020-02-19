@@ -22,6 +22,10 @@
     }
 }
 
+.medium{
+    width: 250px;
+    height: 250px;
+}
 
 .small{
     width: 150px;

@@ -160,6 +160,7 @@ class Compendiums extends Component {
         if (this.state.scene === 'comps') {
             return (
                 <Aux>
+                    <button onClick={() => {console.log(new Date(Date.now()).toISOString())}}>Date Test</button>
                     <input type="text" id="create-comp-name"/>
                     <button onClick={() => this.createComp({ name: document.getElementById('create-comp-name').value })}>CREATE COMPENDIUM</button>
                     <hr />
@@ -217,7 +218,6 @@ class Compendiums extends Component {
                             this.clearActiveChar();
                             this.setState({ scene: 'comp' });
                         }}>Back to Compendium</button>
-                        <hr />
                     </div>
                     <LayerList
                         articles={this.state.compArts}

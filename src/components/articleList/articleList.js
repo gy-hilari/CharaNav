@@ -5,7 +5,7 @@ import './articleList.css';
 
 class ArticleList extends Component {
     state = {
-        assigningLayer: false,
+        // assigningLayer: false,
         activeLayerImage: null
     }
     render() {
@@ -19,20 +19,13 @@ class ArticleList extends Component {
                 <Aux>
                     {
                         this.state.activeLayerImage &&
-                        <ImageReciever
-                            image={{ path: this.state.activeLayerImage, class: 'fit', wrapSize: 'tiny', master: this.props.master }}
-                        />
+                        <div className="active-article">
+                            <ImageReciever
+                                image={{ path: this.state.activeLayerImage, class: 'fit', wrapSize: 'small', master: this.props.master }}
+                            />
+                        </div>
                     }
                     {
-                        // REFACTOR TO PARENT COMPONENT
-                        this.state.assigningLayer === false &&
-                        <button onClick={() => {
-                            this.setState({ assigningLayer: true });
-                        }}>Add Article</button>
-
-                    }
-                    {
-                        this.state.assigningLayer &&
                         <Aux>
                             <div className="article-option-wrap">
                                 <table className='article-options'>
@@ -77,10 +70,11 @@ class ArticleList extends Component {
                                 });
                                 this.props.getArticles(this.props.charId);
                                 this.setState({ activeLayerImage: null });
+                                this.props.layerMode(false);
                             }}>Confirm</button>
                             <button onClick={() => {
-                                this.setState({ assigningLayer: false });
                                 this.setState({ activeLayerImage: null });
+                                this.props.layerMode(false);
                             }}>Cancel</button>
                         </Aux>
                     }

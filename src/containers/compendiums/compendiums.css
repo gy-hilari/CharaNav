@@ -1,5 +1,7 @@
 .nav-ui{
     background-color: lightblue;
+    position: fixed;
     z-index: 1000;
-    height: 10%;
+    height: 30px;
+    width: 100%;
 }

@@ -6,7 +6,18 @@ const imageReciever = (props) => {
     return props.image ? (
         <Aux>
             <div className={`wrap ${props.image.wrapSize}`}>
-                <img className={props.image.class} src={`${props.image.master}${props.image.path}`} alt="ERROR" />
+                {
+                    !props.hover &&
+                    <img onClick={props.click} className={props.image.class} src={`${props.image.master}${props.image.path}`} alt="ERROR" />
+                }
+                {
+                    props.hover &&
+                    <img
+                        onMouseEnter={props.hover.on}
+                        onMouseLeave={props.hover.off}
+                        onClick={props.click}
+                        className={props.image.class} src={`${props.image.master}${props.image.path}`} alt="ERROR" />
+                }
             </div>
         </Aux>
     ) : null;
