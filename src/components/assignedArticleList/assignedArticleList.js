@@ -68,6 +68,7 @@ class AssignedArticleList extends Component {
                         >
                             {/* PLACE Z-INDEX DATA IN INLINE STYLE VIA layer z-index PROP */}
                             <img
+                                style={{ zIndex: `${this.props.zIndex}` }}
                                 onContextMenu={() => { this.props.getArticle(this.props.charArt.article) }} className={`layer-article draggable dragging`} id={this.props.charArt.id} src={`${this.props.master}${this.state.articlePath}`} alt="" />
                         </Draggable>
                     }
@@ -92,6 +93,7 @@ class AssignedArticleList extends Component {
                         >
                             {/* PLACE Z-INDEX DATA IN INLINE STYLE VIA layer z-index PROP */}
                             <img
+                                style={{ zIndex: `${this.props.zIndex}` }}
                                 onContextMenu={() => { this.props.getArticle(this.props.charArt.article) }} className={`layer-article draggable ${this.state.dragClass}`} id={this.props.charArt.id} src={`${this.props.master}${this.state.articlePath}`} alt="" />
                         </Draggable>
                     }
@@ -110,14 +112,21 @@ class AssignedArticleList extends Component {
                         this.props.dragMode === 'disabled' && this.state.articlePath && this.props.activeCharArt === this.props.charArt.id &&
                         <img
                             style={
-                                { transform: `translateX(${this.props.posX}px) translateY(${this.props.posY}px)` }}
+                                {
+                                    transform: `translateX(${this.props.posX}px) translateY(${this.props.posY}px)`,
+                                    zIndex: `${this.props.zIndex}`
+                                }}
                             onClick={() => { this.props.getArticle(this.props.charArt.article) }} className={`layer-article static dragging`} id={this.props.charArt.id} src={`${this.props.master}${this.state.articlePath}`} alt="" />
                     }
                     {
                         this.props.dragMode === 'disabled' && this.state.articlePath && this.props.activeCharArt !== this.props.charArt.id &&
                         <img
                             style={
-                                { transform: `translateX(${this.props.posX}px) translateY(${this.props.posY}px)` }}
+                                {
+                                    transform: `translateX(${this.props.posX}px) translateY(${this.props.posY}px)`,
+                                    zIndex: `${this.props.zIndex}`
+                                }}
+
                             onClick={() => { this.props.getArticle(this.props.charArt.article) }} className={`layer-article static`} id={this.props.charArt.id} src={`${this.props.master}${this.state.articlePath}`} alt="" />
                     }
                 </Aux>

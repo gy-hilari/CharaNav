@@ -413,6 +413,18 @@ promiseIpc.on('/put/char/layer/pos', (form) => {
     });
 });
 
+promiseIpc.on('/put/layer/swap', (form) => {
+    return new Promise((resolve, reject) => {
+        SwapLayerZIndex(form).then((res) => {
+            console.log(res);
+            resolve(res);
+        }).catch((err) => {
+            console.log(err);
+            resolve(err);
+        });
+    });
+});
+
 promiseIpc.on('/get/char/article', (charId) => {
     return new Promise((resolve, reject) => {
         GetAssignedArticlesByCharacterId(charId).then((res) => {
@@ -538,10 +550,6 @@ function GetCharacterById(id) {
 
 function CreateLayer(form) {
     return new Promise((resolve, reject) => {
-        // Get layers by CHAR ID
-        // Order by created at
-        // Limit 1 --> Get zIndex value +1
-        // If there is no layer yet, set value to 0
         GetNewestLayerByCharId(form.charId).then((layer) => {
             console.log(layer[0] ? layer[0] : 'No layer found');
             let zValue = layer[0] ? parseInt(layer[0].zIndex) + 1 : 0;
@@ -582,7 +590,7 @@ function GetLayersByCharId(charId) {
     return new Promise((resolve, reject) => {
         console.log(`Getting layers of char: [${charId}]`);
         db.serialize(() => {
-            db.all(`SELECT _id as id, name, createdAt, zIndex FROM layer WHERE character = '${charId}' ORDER BY createdAt DESC`, (err, chars) => {
+            db.all(`SELECT _id as id, name, createdAt, zIndex FROM layer WHERE character = '${charId}' ORDER BY zIndex DESC`, (err, chars) => {
                 if (err) reject(err);
                 resolve(chars);
             });
@@ -600,6 +608,71 @@ function GetNewestLayerByCharId(charId) {
             });
         });
     })
+}
+
+function SwapLayerZIndex(form) {
+    // QUERY TARGET LAYER WHERE Z-INDEX === CURRENT zIndex - 1
+    // IF UNDEFINED, REJECT
+    return new Promise((resolve, reject) => {
+        GetLayerById(form.targetLayerId).then((layer) => {
+            let targetLayer = layer ? layer : null;
+            if (!targetLayer) reject(`No layer with target id: [${form.targetLayerId}]`);
+            // SHIFT VALUE = 1 OR -1
+            let shiftValue = parseInt(targetLayer.zIndex) + form.shiftValue;
+            console.log(`Shift Value: ${shiftValue}`);
+            if (shiftValue < 0) reject(`No layers below layer: [${form.targetLayerId}]`);
+            GetLayerByZIndex(shiftValue).then((sLayer) => {
+                console.log(sLayer);
+                let swapLayer = sLayer ? sLayer : null;
+                if (!swapLayer) reject(`No layer with swap zIndex: [${shiftValue}]`);
+                let swap = swapLayer.zIndex;
+                UpdateLayerZIndex({layer: swapLayer, zIndex: targetLayer.zIndex}).then((res) => {
+                    console.log(res);
+                    UpdateLayerZIndex({layer: targetLayer, zIndex: swap}).then((res)=> {
+                        console.log(res);
+                        resolve(`Swapped zIndex of [${form.targetLayerId}] & [${swapLayer.id}] successfully!`);
+                    });
+                });
+                // swapLayer.zIndex = targetLayer.zIndex;
+                // targetLayer.zIndex = swap;
+            });
+        });
+    })
+}
+
+function GetLayerById(layerId) {
+    return new Promise((resolve, reject) => {
+        db.serialize(() => {
+            let sql = `SELECT _id as id, name, createdAt, zIndex, character FROM layer WHERE id = '${layerId}'`;
+            db.get(sql, (err, layer) => {
+                if (err) reject(err);
+                resolve(layer);
+            });
+        });
+    });
+}
+
+function GetLayerByZIndex(zIndex) {
+    return new Promise((resolve, reject) => {
+        db.serialize(() => {
+            let sql = `SELECT _id as id, name, createdAt, zIndex, character FROM layer WHERE zIndex = '${zIndex}'`;
+            db.get(sql, (err, layer) => {
+                if (err) reject(err);
+                resolve(layer);
+            });
+        });
+    });
+}
+
+function UpdateLayerZIndex(form) {
+    return new Promise((resolve, reject) => {
+        db.serialize(() => {
+            db.all(`UPDATE layer SET zIndex = '${form.zIndex}' WHERE _id = '${form.layer.id}' AND character = '${form.layer.character}'`, (err, layer) => {
+                if (err) reject(err);
+                resolve(`Updated zIndex of layer [${form.layerId}] with value [${form.zIndex}]`);
+            });
+        });
+    });
 }
 
 function GetArticleById(id) {
@@ -722,6 +795,7 @@ function GetAssignedArticlesByCharacterId(charId) {
         });
     });
 }
+
 
 function GetAssignedArticlesByLayerId(layerId) {
     return new Promise((resolve, reject) => {

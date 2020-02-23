@@ -222,6 +222,7 @@ class Compendiums extends Component {
                     <LayerList
                         articles={this.state.compArts}
                         layers={this.state.charLayers}
+                        refresh={this.getCharLayers}
                         newLayer={this.createLayer}
                         charId={this.state.activeChar.id}
                         charArts={this.state.charArts}

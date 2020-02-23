@@ -61,6 +61,11 @@
     overflow: auto;
 }
 
+.layer-scroll div{
+    border: 1px solid black;
+    border-radius: 12px;
+}
+
 .clip-interface{
     /* width: 99%; */
     margin: 0px auto;

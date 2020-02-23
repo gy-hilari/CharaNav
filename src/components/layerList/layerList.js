@@ -11,7 +11,7 @@ class LayerList extends Component {
         activeLayerData: null,
         activeLayerImage: null,
         activeCharArt: null,
-        dragState : 'disabled'
+        dragState: 'disabled'
     }
 
     layerMode = (mode) => {
@@ -20,6 +20,18 @@ class LayerList extends Component {
 
     setActiveCharArt = (id) => {
         this.setState({ activeCharArt: id });
+    }
+
+    shiftLayerZIndex = (form) => {
+        window.api.promise('/put/layer/swap', form, (res) => {
+            console.log(res);
+            this.refreshLayers();
+        });
+    }
+
+    refreshLayers = () => {
+        console.log('REFRESHING LAYERS!');
+        this.props.refresh(this.props.charId);
     }
 
     render() {
@@ -48,6 +60,7 @@ class LayerList extends Component {
                                                                         getArticles={this.props.getArticles}
                                                                         master={this.props.master}
                                                                         activeCharArt={this.state.activeCharArt}
+                                                                        zIndex={layer.zIndex}
                                                                     />
                                                                 </MediaQuery>
                                                                 <MediaQuery minWidth={875} maxWidth={1320}>
@@ -61,6 +74,7 @@ class LayerList extends Component {
                                                                         getArticles={this.props.getArticles}
                                                                         master={this.props.master}
                                                                         activeCharArt={this.state.activeCharArt}
+                                                                        zIndex={layer.zIndex}
                                                                     />
                                                                 </MediaQuery>
                                                                 <MediaQuery maxWidth={875}>
@@ -74,6 +88,7 @@ class LayerList extends Component {
                                                                         getArticles={this.props.getArticles}
                                                                         master={this.props.master}
                                                                         activeCharArt={this.state.activeCharArt}
+                                                                        zIndex={layer.zIndex}
                                                                     />
                                                                 </MediaQuery>
                                                             </Aux>
@@ -93,10 +108,10 @@ class LayerList extends Component {
                                     // STATE / PROPS: CURRENT ACTIVE LAYER
                                 }
                                 <p>Lock Layers</p>
-                                <input type="checkbox" className="drag-toggle" id="character-edit-toggle" onChange={()=>{
+                                <input type="checkbox" className="drag-toggle" id="character-edit-toggle" onChange={() => {
                                     // console.log(document.getElementById('character-edit-toggle').checked);
-                                    this.setState({dragState: this.state.dragState === true ? 'disabled' : true});
-                                }} defaultChecked/>
+                                    this.setState({ dragState: this.state.dragState === true ? 'disabled' : true });
+                                }} defaultChecked />
                                 <button onClick={() => {
                                     this.props.newLayer({
                                         name: `Layer of char : [${this.props.charId}]`,
@@ -111,36 +126,43 @@ class LayerList extends Component {
                                         this.props.layers.map((layer, idx) => {
                                             return (
                                                 <Aux key={layer.id}>
-                                                    <p>{`Layer [${layer.zIndex}]`}</p>
-                                                    {
-                                                        // this.state.assigningLayer === false &&
+                                                    <div>
+                                                        <p>{`Layer [${layer.zIndex}]`}</p>
                                                         <button onClick={() => {
-                                                            this.setState({ assigningLayer: true, activeLayerData: { layerId: layer.id, charId: this.props.charId } });
-                                                        }}>Add Article</button>
-                                                    }
-                                                    {/* <p>{`${num}.) ${layer.name} | zIndex: ${layer.zIndex}`}</p> */}
-                                                    <hr />
-                                                    {
-                                                        this.props.charArts.map((charArt, idx) => {
-                                                            return charArt.layer === layer.id ? (
-                                                                <Aux key={charArt.id}>
-                                                                    <AssignedArticleList
-                                                                        charArt={charArt}
-                                                                        getArticle={this.props.getArticle}
-                                                                        dragMode={false}
-                                                                        // dragScale={.96}
-                                                                        // posX={charArt.positionX}
-                                                                        // posY={charArt.positionY}
-                                                                        getArticles={this.props.getArticles}
-                                                                        master={this.props.master}
-                                                                        setActive={this.setActiveCharArt}
-                                                                    />
-                                                                </Aux>
-                                                            ) : (
-                                                                    null
-                                                                )
-                                                        })
-                                                    }
+                                                            this.shiftLayerZIndex({targetLayerId: layer.id, shiftValue: 1});
+                                                        }}>Up</button>
+                                                        <button onClick={() => {
+                                                            this.shiftLayerZIndex({targetLayerId: layer.id, shiftValue: -1});
+                                                        }}>Down</button>
+                                                        {
+                                                            // this.state.assigningLayer === false &&
+                                                            <button onClick={() => {
+                                                                this.setState({ assigningLayer: true, activeLayerData: { layerId: layer.id, charId: this.props.charId } });
+                                                            }}>Add Article</button>
+                                                        }
+                                                        {/* <p>{`${num}.) ${layer.name} | zIndex: ${layer.zIndex}`}</p> */}
+                                                        {
+                                                            this.props.charArts.map((charArt, idx) => {
+                                                                return charArt.layer === layer.id ? (
+                                                                    <Aux key={charArt.id}>
+                                                                        <AssignedArticleList
+                                                                            charArt={charArt}
+                                                                            getArticle={this.props.getArticle}
+                                                                            dragMode={false}
+                                                                            // dragScale={.96}
+                                                                            // posX={charArt.positionX}
+                                                                            // posY={charArt.positionY}
+                                                                            getArticles={this.props.getArticles}
+                                                                            master={this.props.master}
+                                                                            setActive={this.setActiveCharArt}
+                                                                        />
+                                                                    </Aux>
+                                                                ) : (
+                                                                        null
+                                                                    )
+                                                            })
+                                                        }
+                                                    </div>
                                                 </Aux>
                                             )
                                         })
