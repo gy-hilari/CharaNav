@@ -84,9 +84,9 @@
         height: 600px;
         width: 900px;
     }
-    /* .layer-scroll{
-        height: 550px;
-    } */
+    .layer-scroll{
+        height: 80%;
+    }
 }
 
 @media only screen and (min-width: 875px) and (max-width: 1320px){
@@ -102,10 +102,9 @@
         height: 900px;
         width: 200px;
     }
-    /* .layer-scroll{
-        height: 850px;
-        width: 199px;
-    } */
+    .layer-scroll{
+        height: 87%;
+    }
 }
 
 @media only screen and (min-width: 1320px){
@@ -121,8 +120,7 @@
         height: 900px;
         width: 200px;
     }
-    /* .layer-scroll{
-        height: 850px;
-        width: 199px;
-    } */
+    .layer-scroll{
+        height: 87%;
+    }
 }

@@ -10,7 +10,8 @@ class LayerList extends Component {
         assigningLayer: false,
         activeLayerData: null,
         activeLayerImage: null,
-        activeCharArt: null
+        activeCharArt: null,
+        dragState : 'disabled'
     }
 
     layerMode = (mode) => {
@@ -40,7 +41,7 @@ class LayerList extends Component {
                                                                     <AssignedArticleList
                                                                         charArt={charArt}
                                                                         getArticle={this.props.getArticle}
-                                                                        dragMode={true}
+                                                                        dragMode={this.state.dragState}
                                                                         dragScale={.96}
                                                                         posX={charArt.positionX}
                                                                         posY={charArt.positionY}
@@ -53,7 +54,7 @@ class LayerList extends Component {
                                                                     <AssignedArticleList
                                                                         charArt={charArt}
                                                                         getArticle={this.props.getArticle}
-                                                                        dragMode={true}
+                                                                        dragMode={this.state.dragState}
                                                                         dragScale={0.82}
                                                                         posX={charArt.positionX}
                                                                         posY={charArt.positionY}
@@ -66,7 +67,7 @@ class LayerList extends Component {
                                                                     <AssignedArticleList
                                                                         charArt={charArt}
                                                                         getArticle={this.props.getArticle}
-                                                                        dragMode={true}
+                                                                        dragMode={this.state.dragState}
                                                                         dragScale={0.58}
                                                                         posX={charArt.positionX}
                                                                         posY={charArt.positionY}
@@ -91,6 +92,11 @@ class LayerList extends Component {
                                     // ADD MODE & MENU: "ASSIGN ARTICLE FORM" --> CONVERT TO CLASS
                                     // STATE / PROPS: CURRENT ACTIVE LAYER
                                 }
+                                <p>Lock Layers</p>
+                                <input type="checkbox" className="drag-toggle" id="character-edit-toggle" onChange={()=>{
+                                    // console.log(document.getElementById('character-edit-toggle').checked);
+                                    this.setState({dragState: this.state.dragState === true ? 'disabled' : true});
+                                }} defaultChecked/>
                                 <button onClick={() => {
                                     this.props.newLayer({
                                         name: `Layer of char : [${this.props.charId}]`,
@@ -103,10 +109,9 @@ class LayerList extends Component {
                                     {
                                         this.props.layers.length > 0 &&
                                         this.props.layers.map((layer, idx) => {
-                                            let num = idx + 1;
                                             return (
                                                 <Aux key={layer.id}>
-                                                    <p>{`Layer [${num}]`}</p>
+                                                    <p>{`Layer [${layer.zIndex}]`}</p>
                                                     {
                                                         // this.state.assigningLayer === false &&
                                                         <button onClick={() => {

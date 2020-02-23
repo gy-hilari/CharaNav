@@ -154,6 +154,7 @@ function CheckOrCreateModels() {
                 name: { foreignKey: false, string: 'TEXT NOT NULL' },
                 zIndex: { foreignKey: false, string: 'TEXT NOT NULL' }, // MAKE A LINKED LIST FOR THESE!
                 character: { foreignKey: false, string: 'TEXT NOT NULL' },
+                createdAt: { foreignKey: false, string: 'TEXT NOT NULL' },
                 charKey: { foreignKey: true, string: 'FOREIGN KEY (character) REFERENCES character(_id)' }
             },
             {
@@ -403,7 +404,7 @@ promiseIpc.on('/assign/article/char/layer', (form) => {
 
 promiseIpc.on('/put/char/layer/pos', (form) => {
     return new Promise((resolve, reject) => {
-        UpdateCharacterLayerPosition(form).then((res)=>{
+        UpdateCharacterLayerPosition(form).then((res) => {
             console.log(res);
             resolve(res);
         })
@@ -454,7 +455,7 @@ function GetCompendiums() {
 function CreateCompendium(form) {
     return new Promise((resolve, reject) => {
         if (!form.name) reject('Invalid form!');
-        if(form.name) db.serialize(() => {
+        if (form.name) db.serialize(() => {
             let stmt = db.prepare(
                 `INSERT INTO comp (
                     _id,
@@ -501,7 +502,7 @@ function GetCharactersByCompId(compId) {
 function CreateCharacter(form) {
     return new Promise((resolve, reject) => {
         if (!form.name) reject('Invalid form');
-        if(form.name) db.serialize(() => {
+        if (form.name) db.serialize(() => {
             let stmt = db.prepare(
                 `INSERT INTO character (
                     _id,
@@ -537,31 +538,42 @@ function GetCharacterById(id) {
 
 function CreateLayer(form) {
     return new Promise((resolve, reject) => {
-        if (!form.name) reject('Invalid form');
-        db.serialize(() => {
-            let stmt = db.prepare(
-                `INSERT INTO layer (
-                    _id,
-                    name,
-                    zIndex,
-                    character
-                )
-                VALUES (
-                    $id,
-                    $name,
-                    $zIndex,
-                    $charId
-                )`
-            );
-            let lyrId = uniqid('lyr_');
-            stmt.run({
-                $id: lyrId,
-                $name: form.name,
-                $zIndex: form.zIndex,
-                $charId: form.charId
+        // Get layers by CHAR ID
+        // Order by created at
+        // Limit 1 --> Get zIndex value +1
+        // If there is no layer yet, set value to 0
+        GetNewestLayerByCharId(form.charId).then((layer) => {
+            console.log(layer[0] ? layer[0] : 'No layer found');
+            let zValue = layer[0] ? parseInt(layer[0].zIndex) + 1 : 0;
+            if (!form.name) reject('Invalid form');
+            db.serialize(() => {
+                let stmt = db.prepare(
+                    `INSERT INTO layer (
+                        _id,
+                        name,
+                        zIndex,
+                        createdAt,
+                        character
+                    )
+                    VALUES (
+                        $id,
+                        $name,
+                        $zIndex,
+                        $createdAt,
+                        $charId
+                    )`
+                );
+                let lyrId = uniqid('lyr_');
+                stmt.run({
+                    $id: lyrId,
+                    $name: form.name,
+                    $zIndex: zValue,
+                    $createdAt: new Date(Date.now()).toISOString(),
+                    $charId: form.charId
+                });
+                stmt.finalize();
+                resolve(`Character [${lyrId}] created successfully!`);
             });
-            stmt.finalize();
-            resolve(`Character [${lyrId}] created successfully!`);
         });
     });
 }
@@ -570,9 +582,21 @@ function GetLayersByCharId(charId) {
     return new Promise((resolve, reject) => {
         console.log(`Getting layers of char: [${charId}]`);
         db.serialize(() => {
-            db.all(`SELECT _id as id, name, zIndex FROM layer WHERE character = '${charId}'`, (err, chars) => {
+            db.all(`SELECT _id as id, name, createdAt, zIndex FROM layer WHERE character = '${charId}' ORDER BY createdAt DESC`, (err, chars) => {
                 if (err) reject(err);
                 resolve(chars);
+            });
+        });
+    })
+}
+
+function GetNewestLayerByCharId(charId) {
+    return new Promise((resolve, reject) => {
+        console.log(`Getting newest layer of char: [${charId}]`);
+        db.serialize(() => {
+            db.all(`SELECT _id as id, name, createdAt, zIndex FROM layer WHERE character = '${charId}' ORDER BY createdAt DESC LIMIT 1`, (err, char) => {
+                if (err) reject(err);
+                resolve(char);
             });
         });
     })
@@ -642,7 +666,7 @@ function AssignArticleToCharacterLayer(form) {
     // Check if entry already exists!!
     return new Promise((resolve, reject) => {
         if (!form.artId) reject('Invalid form');
-        if(form.artId) db.serialize(() => {
+        if (form.artId) db.serialize(() => {
             let stmt = db.prepare(
                 `INSERT INTO character_article (
                     _id,

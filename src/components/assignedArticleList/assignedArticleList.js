@@ -66,11 +66,13 @@ class AssignedArticleList extends Component {
                                 this.props.getArticles(this.props.charArt.character);
                             }}
                         >
-                            <img onContextMenu={() => { this.props.getArticle(this.props.charArt.article) }} className={`layer-article dragging`} id={this.props.charArt.id} src={`${this.props.master}${this.state.articlePath}`} alt="" />
+                            {/* PLACE Z-INDEX DATA IN INLINE STYLE VIA layer z-index PROP */}
+                            <img
+                                onContextMenu={() => { this.props.getArticle(this.props.charArt.article) }} className={`layer-article draggable dragging`} id={this.props.charArt.id} src={`${this.props.master}${this.state.articlePath}`} alt="" />
                         </Draggable>
                     }
                     {
-                        this.props.dragMode === true && this.state.articlePath && this.props.activeCharArt != this.props.charArt.id &&
+                        this.props.dragMode === true && this.state.articlePath && this.props.activeCharArt !== this.props.charArt.id &&
                         <Draggable
                             scale={this.props.dragScale}
                             bounds={`parent`}
@@ -88,7 +90,9 @@ class AssignedArticleList extends Component {
                                 this.props.getArticles(this.props.charArt.character);
                             }}
                         >
-                            <img onContextMenu={() => { this.props.getArticle(this.props.charArt.article) }} className={`layer-article ${this.state.dragClass}`} id={this.props.charArt.id} src={`${this.props.master}${this.state.articlePath}`} alt="" />
+                            {/* PLACE Z-INDEX DATA IN INLINE STYLE VIA layer z-index PROP */}
+                            <img
+                                onContextMenu={() => { this.props.getArticle(this.props.charArt.article) }} className={`layer-article draggable ${this.state.dragClass}`} id={this.props.charArt.id} src={`${this.props.master}${this.state.articlePath}`} alt="" />
                         </Draggable>
                     }
                     {
@@ -101,6 +105,20 @@ class AssignedArticleList extends Component {
                             click={() => { this.props.getArticle(this.props.charArt.article) }}
                             image={{ path: this.state.articlePath, class: 'fit hover', wrapSize: 'tinier', master: this.props.master }}
                         />
+                    }
+                    {
+                        this.props.dragMode === 'disabled' && this.state.articlePath && this.props.activeCharArt === this.props.charArt.id &&
+                        <img
+                            style={
+                                { transform: `translateX(${this.props.posX}px) translateY(${this.props.posY}px)` }}
+                            onClick={() => { this.props.getArticle(this.props.charArt.article) }} className={`layer-article static dragging`} id={this.props.charArt.id} src={`${this.props.master}${this.state.articlePath}`} alt="" />
+                    }
+                    {
+                        this.props.dragMode === 'disabled' && this.state.articlePath && this.props.activeCharArt !== this.props.charArt.id &&
+                        <img
+                            style={
+                                { transform: `translateX(${this.props.posX}px) translateY(${this.props.posY}px)` }}
+                            onClick={() => { this.props.getArticle(this.props.charArt.article) }} className={`layer-article static`} id={this.props.charArt.id} src={`${this.props.master}${this.state.articlePath}`} alt="" />
                     }
                 </Aux>
             )

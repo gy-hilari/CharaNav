@@ -72,7 +72,6 @@ class viewCompendium extends Component {
                         <ArticleForm
                             newArticle={this.props.newArticle}
                             setImgBrowse={this.props.setImgBrowse}
-                            imgBrowse={this.props.imgBrowse}
                             refreshDir={this.props.refreshDir}
                             imgDir={this.props.imgDir}
                             imgBrowse={this.props.imgBrowse}

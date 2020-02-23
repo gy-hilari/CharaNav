@@ -1,6 +1,14 @@
 .layer-article{
     position: absolute;
     height: 150px;
+}
+
+.static:hover{
+    filter: brightness(120%);
+    cursor: pointer;
+}
+
+.draggable{
     cursor: move;
 }
 
