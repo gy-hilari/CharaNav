@@ -12,6 +12,10 @@ class ArticleList extends Component {
         return !this.props.articles.length > 0 ? (
             <Aux>
                 <p>No articles created in compendium yet!</p>
+                <button onClick={() => {
+                    this.setState({ activeLayerImage: null });
+                    this.props.layerMode(false);
+                }}>Close</button>
             </Aux>
         )
             :
