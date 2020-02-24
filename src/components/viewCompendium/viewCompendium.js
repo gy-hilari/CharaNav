@@ -94,12 +94,14 @@ class viewCompendium extends Component {
                     getArticles={this.props.getArticles}
                     setImgBrowse={this.props.setImgBrowse}
                     browseMode={this.props.browseMode}
+                    delete={this.props.deleteChar}
                 />
                 <ArticleBrowse
                     articles={this.props.compArts}
                     getArticle={this.props.getArticle}
                     master={this.props.master}
                     browseMode={this.props.browseMode}
+                    delete={this.props.deleteArticle}
                 />
             </Aux>
         ) : null;

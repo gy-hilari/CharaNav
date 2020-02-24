@@ -17,6 +17,9 @@ const CompendiumList = (props) => {
                                 props.clearChar();
                                 props.getComp(elm.id);
                             }}>{`${num}.) ${elm.name}`}</p>
+                            <button onClick={() => {
+                                props.delete(elm.id);
+                            }}>Delete</button>
                         </Aux>
                     );
                 })

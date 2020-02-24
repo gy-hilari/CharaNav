@@ -14,16 +14,22 @@ const articleBrowse = (props) => {
                             {/* <p>
                                 {`id: ${article.id} | name: ${article.name}`}
                             </p> */}
-                            <div className="targetArticle articleTooltip" onClick={() => {
-                                props.getArticle(article.id);
-                            }}>
-                                <p className="tooltiptext">
-                                    {/* {`id: ${article.id} | name: ${article.name}`} */}
-                                    {article.name}
-                                </p>
-                                <ImageReciever
-                                    image={{ path: article.imagePath, class: 'fit hover', wrapSize: 'tiny', master: props.master }}
-                                />
+                            <div>
+                                <div className="targetArticle articleTooltip" onClick={() => {
+                                    props.getArticle(article.id);
+                                }}>
+                                    <p className="tooltiptext">
+                                        {/* {`id: ${article.id} | name: ${article.name}`} */}
+                                        {article.name}
+                                    </p>
+                                    <ImageReciever
+                                        image={{ path: article.imagePath, class: 'fit hover', wrapSize: 'tiny', master: props.master }}
+                                    />
+                                </div>
+                                <button onClick={() => {
+                                    console.log(article.id);
+                                    props.delete(article.id);
+                                }}>{`Delete [${article.name}]`}</button>
                             </div>
                             {/* <p>
                                 {article.text}
@@ -40,7 +46,7 @@ const articleBrowse = (props) => {
                 </p>
             }
         </Aux>
-    ):null;
+    ) : null;
     // return props.articles.length > 0 ? (
     //     <Aux>
     //         {

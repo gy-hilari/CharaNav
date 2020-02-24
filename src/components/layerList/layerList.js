@@ -176,7 +176,9 @@ class LayerList extends Component {
                                                             console.log(document.getElementById(`${layer.id}-name`).value);
                                                             this.updateLayerName({id: layer.id, name: document.getElementById(`${layer.id}-name`).value});
                                                         }}>Rename</button>
-
+                                                        <button onClick={() => {
+                                                            this.props.delete(layer.id);
+                                                        }}>Delete Layer</button>
                                                         <hr />
                                                         <button onClick={() => {
                                                             console.log('test');

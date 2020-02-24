@@ -67,6 +67,13 @@ class Compendiums extends Component {
             this.setState({ comps: res });
         });
     }
+    
+    deleteCompById = (compId) => {
+        window.api.promise('/delete/comp', compId, (res) => {
+            console.log(res);
+            this.getComps();
+        });
+    }
 
     getCompChars = (compId) => {
         window.api.promise('/get/comp/char', compId, (res) => {
@@ -90,6 +97,13 @@ class Compendiums extends Component {
         });
     }
 
+    deleteCharById = (charId) => {
+        window.api.promise('/delete/char', charId, (res) => {
+            console.log(res);
+            this.getCompChars(this.state.activeComp.id);
+        });
+    }
+
     getCharLayers = (charId) => {
         window.api.promise('/get/char/layer', charId, (res) => {
             console.log(res);
@@ -101,6 +115,13 @@ class Compendiums extends Component {
         window.api.promise('/post/layer', form, (res) => {
             console.log(res);
             this.setState({ charLayers: res });
+        });
+    }
+
+    deleteLayerById = (layerId) => {
+        window.api.promise('/delete/layer', layerId, (res) => {
+            console.log(res);
+            this.getCharLayers(this.state.activeChar.id);
         });
     }
 
@@ -116,6 +137,13 @@ class Compendiums extends Component {
         window.api.promise('/post/article', form, (res) => {
             console.log(res);
             this.setState({ compArts: res });
+        });
+    }
+
+    deleteArticleById = (artId) => {
+        window.api.promise('/delete/article', artId, (res) => {
+            console.log(res);
+            this.getCompArticles(this.state.activeComp.id);
         });
     }
 
@@ -170,6 +198,7 @@ class Compendiums extends Component {
                         getChars={this.getCompChars}
                         getArticles={this.getCompArticles}
                         clearChar={this.clearActiveChar}
+                        delete={this.deleteCompById}
                     />
                 </Aux>
             );
@@ -185,7 +214,9 @@ class Compendiums extends Component {
                     <hr />
                     <ViewCompendium
                         newChar={this.createChar}
+                        deleteChar={this.deleteCharById}
                         newArticle={this.createArticle}
+                        deleteArticle={this.deleteArticleById}
                         getLayers={this.getCharLayers}
                         comp={this.state.activeComp}
                         chars={this.state.compChars}
@@ -231,6 +262,7 @@ class Compendiums extends Component {
                         getArticle={this.getArticle}
                         getChar={this.getChar}
                         master={this.state.imgDir.master}
+                        delete={this.deleteLayerById}
                     />
                 </Aux>
             )

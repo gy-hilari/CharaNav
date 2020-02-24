@@ -20,6 +20,9 @@ const characterBrowse = (props) => {
                                 <span className='tooltiptext'>{elm.id}</span>
                                 {`${num}.) Name: ${elm.name}`}
                             </p>
+                            <button onClick={() => {
+                                props.delete(elm.id);
+                            }}>{`Delete ${elm.name}`}</button>
                         </Aux>
                     );
                 })

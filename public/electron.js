@@ -270,6 +270,17 @@ promiseIpc.on('/post/comp', (form) => {
     });
 });
 
+promiseIpc.on('/delete/comp', (compId) => {
+    return new Promise((resolve, reject) => {
+        DeleteCompendiumById(compId).then((res) => {
+            console.log(res);
+            resolve(res);
+        }).catch((err) => {
+            resolve(`Compendium [${compId}] not found!`)
+        });
+    })
+});
+
 promiseIpc.on('/get/char/id', (id) => {
     return new Promise((resolve, reject) => {
         GetCharacterById(id).then((res) => {
@@ -295,6 +306,17 @@ promiseIpc.on('/post/char', (form) => {
             });
         });
     });
+});
+
+promiseIpc.on('/delete/char', (charId) => {
+    return new Promise((resolve, reject) => {
+        DeleteCharacterById(charId).then((res) => {
+            console.log(res);
+            resolve(res);
+        }).catch((err) => {
+            resolve(`Character [${charId}] not found!`)
+        });
+    })
 });
 
 promiseIpc.on('/post/char/article', (form) => {
@@ -333,6 +355,17 @@ promiseIpc.on('/post/layer', (form) => {
     });
 });
 
+promiseIpc.on('/delete/layer', (lyrId) => {
+    return new Promise((resolve, reject) => {
+        DeleteLayerById(lyrId).then((res) => {
+            console.log(res);
+            resolve(res);
+        }).catch((err) => {
+            resolve(`Layer [${lyrId}] not found!`)
+        });
+    })
+});
+
 promiseIpc.on('/get/char/layer', (charId) => {
     return new Promise((resolve, reject) => {
         GetLayersByCharId(charId).then((res) => {
@@ -365,6 +398,17 @@ promiseIpc.on('/post/article', (form) => {
             });
         });
     });
+});
+
+promiseIpc.on('/delete/article', (artId) => {
+    return new Promise((resolve, reject) => {
+        DeleteArticleById(artId).then((res) => {
+            console.log(res);
+            resolve(res);
+        }).catch((err) => {
+            resolve(`Article [${artId}] not found!`)
+        });
+    })
 });
 
 promiseIpc.on('/get/comp/article', (compId) => {
@@ -876,18 +920,150 @@ function GetAssignedArticlesByCharacterId(charId) {
     });
 }
 
-
-function GetAssignedArticlesByLayerId(layerId) {
+function DeleteCompendiumById(id) {
     return new Promise((resolve, reject) => {
+        db.serialize(() => {
+            DeleteCharactersByCompId(id).then(() => {
+                DeleteArticlesByCompId(id).then(() => {
+                    let sql = `DELETE FROM comp WHERE _id = '${id}'`;
+                    db.all(sql, (err) => {
+                        if (err) reject(err);
+                        resolve(`Deleted compendium [${id}]`);
+                    });
+                });
+            });
+        });
+    });
+}
+
+function DeleteCharactersByCompId(compId) {
+    return new Promise((resolve, reject) => {
+        db.serialize(() => {
+            GetCharactersByCompId(compId).then((chars) => {
+                Promise.all(chars.map(char => {
+                    Promise.all([
+                        DeleteLayersByCharId(char.id),
+                        DeleteCharArtsByCharId(char.id)
+                    ]);
+                })).then(() => {
+                    let sql = `DELETE FROM character WHERE comp = '${compId}'`;
+                    db.all(sql, (err) => {
+                        if (err) reject(err);
+                        resolve(`Deleted characters from comp: [${compId}]`);
+                    });
+                });
+            });
+        });
+    });
+}
+
+function DeleteCharacterById(charId) {
+    return new Promise((resolve, reject) => {
+        Promise.all([
+            DeleteLayersByCharId(charId),
+            DeleteCharArtsByCharId(charId)
+        ]).then(() => {
+            let sql = `DELETE FROM character WHERE _id = '${charId}'`;
+            db.all(sql, (err) => {
+                if (err) reject(err);
+                resolve(`Deleted character: [${charId}]`);
+            });
+        });
 
     });
 }
 
-function GetAssignedArticle(form) {
+function DeleteLayersByCharId(charId) {
     return new Promise((resolve, reject) => {
-        // if (err) resolve(false);
-        // resolve(true);
+        db.serialize(() => {
+            let sql = `DELETE FROM layer WHERE character = '${charId}'`;
+            db.all(sql, (err) => {
+                if (err) reject(err);
+                resolve(`Deleted layers of character: [${charId}]`);
+            });
+        });
     });
 }
+
+function DeleteCharArtsByCharId(charId) {
+    return new Promise((resolve, reject) => {
+        db.serialize(() => {
+            let sql = `DELETE FROM character_article WHERE character = '${charId}'`;
+            db.all(sql, (err) => {
+                if (err) reject(err);
+                resolve(`Deleted charArts of character: [${charId}]`);
+            });
+        });
+    });
+}
+
+function DeleteArticlesByCompId(compId) {
+    return new Promise((resolve, reject) => {
+        db.serialize(() => {
+            GetArticlesByCompId(compId).then((articles) => {
+                Promise.all(articles.map(article => {
+                    DeleteCharArtsByArticleId(article.id);
+                })).then(() => {
+                    let sql = `DELETE FROM article WHERE comp = '${compId}'`;
+                    db.all(sql, (err) => {
+                        if (err) reject(err);
+                        resolve(`Deleted articles from comp: [${compId}]`);
+                    });
+                });
+            });
+        });
+    });
+}
+
+function DeleteArticleById(artId) {
+    return new Promise((resolve, reject) => {
+        DeleteCharArtsByArticleId(artId).then(() => {
+            let sql = `DELETE FROM article WHERE _id = '${artId}'`;
+            db.all(sql, (err) => {
+                if (err) reject(err);
+                resolve(`Deleted article: [${artId}]`);
+            });
+        });
+
+    });
+}
+
+function DeleteCharArtsByArticleId(artId) {
+    return new Promise((resolve, reject) => {
+        db.serialize(() => {
+            let sql = `DELETE FROM character_article WHERE article = '${artId}'`;
+            db.all(sql, (err) => {
+                if (err) reject(err);
+                resolve(`Deleted charArts of article: [${artId}]`);
+            });
+        });
+    });
+}
+
+function DeleteLayerById(lyrId) {
+    return new Promise((resolve, reject) => {
+        DeleteCharArtsByLayerId(lyrId).then(() => {
+            let sql = `DELETE FROM layer WHERE _id = '${lyrId}'`;
+            db.all(sql, (err) => {
+                if (err) reject(err);
+                resolve(`Deleted article: [${lyrId}]`);
+            });
+        });
+
+    });
+}
+
+function DeleteCharArtsByLayerId(lyrId) {
+    return new Promise((resolve, reject) => {
+        db.serialize(() => {
+            let sql = `DELETE FROM character_article WHERE layer = '${lyrId}'`;
+            db.all(sql, (err) => {
+                if (err) reject(err);
+                resolve(`Deleted charArts of layer: [${lyrId}]`);
+            });
+        });
+    });
+}
+
 
 //#endregion
