@@ -28,9 +28,34 @@ class LayerList extends Component {
             this.refreshLayers();
         });
     }
+    
+    updateLayerName = (form) => {
+        window.api.promise('/put/layer/name', form, (res) => {
+            console.log(res);
+            this.refreshLayers();
+        });        
+    }
 
     updateCharArtScale = (form) => {
         window.api.promise('/put/char/layer/scale', form, (res) => {
+            console.log(res);
+            this.refreshCharArts();
+            this.refreshCharacter();
+        });
+    }
+
+    updateCharArtStartPos = (charArtId, x, y) => {
+        console.log(`UPDATING charArt : ${charArtId}`);
+        window.api.promise('/put/char/layer/pos', { id: charArtId, posX: x, posY: y }, (res) => {
+            console.log(res);
+            this.refreshCharArts();
+            this.refreshCharacter();
+        });
+    }
+
+    resetCharArtPosAndScale = (charArtId) => {
+        console.log(`RESETTING charArt : ${charArtId}`);
+        window.api.promise('/put/char/layer/reset', charArtId, (res) => {
             console.log(res);
             this.refreshCharArts();
         });
@@ -44,6 +69,10 @@ class LayerList extends Component {
     refreshCharArts = () => {
         console.log('REFRESHING CHARARTS!');
         this.props.getArticles(this.props.charId);
+    }
+
+    refreshCharacter = () => {
+        this.props.getChar(this.props.charId);
     }
 
     render() {
@@ -141,11 +170,14 @@ class LayerList extends Component {
                                                     <div className="layer-section">
                                                         {/* <p>{`Layer [${layer.zIndex}]`}</p> */}
                                                         {/* <p>{layer.name}</p> */}
-                                                        <input type="text" id="" defaultValue={layer.name}/>
+                                                        <input type="text" id={`${layer.id}-name`} defaultValue={layer.name} />
 
-                                                        <button>Rename</button>
-                                                        
-                                                        <hr/>
+                                                        <button onClick={()=>{
+                                                            console.log(document.getElementById(`${layer.id}-name`).value);
+                                                            this.updateLayerName({id: layer.id, name: document.getElementById(`${layer.id}-name`).value});
+                                                        }}>Rename</button>
+
+                                                        <hr />
                                                         <button onClick={() => {
                                                             console.log('test');
                                                             this.shiftLayerZIndex({ targetLayerId: layer.id, shiftValue: 1 });
@@ -173,9 +205,23 @@ class LayerList extends Component {
                                                                             master={this.props.master}
                                                                             setActive={this.setActiveCharArt}
                                                                         />
-                                                                        <p>
-                                                                            {`Scale: ${charArt.scale}`}
-                                                                        </p>
+                                                                        {
+                                                                            this.state.dragState === 'disabled' &&
+                                                                            <Aux>
+                                                                                <button onClick={() => {
+                                                                                    this.updateCharArtScale({
+                                                                                        charArtId: charArt.id,
+                                                                                        scale: 15
+                                                                                    });
+                                                                                }}>Reset Scale</button>
+                                                                                <button onClick={() => {
+                                                                                    this.updateCharArtStartPos(charArt.id, 2, 350);
+                                                                                }}>Re-Center</button>
+                                                                                <p>
+                                                                                    {`Scale: ${charArt.scale}`}
+                                                                                </p>
+                                                                            </Aux>
+                                                                        }
                                                                         <input type="range" id={`${charArt.id}-range`} defaultValue={charArt.scale}
                                                                             onMouseUp={() => {
                                                                                 console.log(`charArt[${charArt.id}] scale value: ${document.getElementById(`${charArt.id}-range`).value}`);

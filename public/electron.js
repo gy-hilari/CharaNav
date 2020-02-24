@@ -152,7 +152,7 @@ function CheckOrCreateModels() {
             {
                 tableName: 'layer',
                 name: { foreignKey: false, string: 'TEXT NOT NULL' },
-                zIndex: { foreignKey: false, string: 'TEXT NOT NULL' }, // MAKE A LINKED LIST FOR THESE!
+                zIndex: { foreignKey: false, string: 'INT NOT NULL' }, // MAKE A LINKED LIST FOR THESE!
                 character: { foreignKey: false, string: 'TEXT NOT NULL' },
                 createdAt: { foreignKey: false, string: 'TEXT NOT NULL' },
                 charKey: { foreignKey: true, string: 'FOREIGN KEY (character) REFERENCES character(_id)' }
@@ -167,9 +167,9 @@ function CheckOrCreateModels() {
             },
             {
                 tableName: 'character_article',
-                positionX: { foreignKey: false, string: 'TEXT NOT NULL' },
-                positionY: { foreignKey: false, string: 'TEXT NOT NULL' },
-                scale: {foreignKey: false, string: 'INT NOT NULL'},
+                positionX: { foreignKey: false, string: 'INT NOT NULL' },
+                positionY: { foreignKey: false, string: 'INT NOT NULL' },
+                scale: { foreignKey: false, string: 'INT NOT NULL' },
                 character: { foreignKey: false, string: 'TEXT NOT NULL' },
                 article: { foreignKey: false, string: 'TEXT NOT NULL' },
                 layer: { foreignKey: false, string: 'TEXT NOT NULL' },
@@ -414,9 +414,9 @@ promiseIpc.on('/put/char/layer/pos', (form) => {
     });
 });
 
-promiseIpc.on('/put/char/layer/pos', (form) => {
+promiseIpc.on('/put/char/layer/reset', (charArtId) => {
     return new Promise((resolve, reject) => {
-        UpdateCharacterLayerPosition(form).then((res) => {
+        ResetCharacterLayerByCharArtId(charArtId).then((res) => {
             console.log(res);
             resolve(res);
         })
@@ -428,6 +428,18 @@ promiseIpc.on('/put/char/layer/pos', (form) => {
 promiseIpc.on('/put/layer/swap', (form) => {
     return new Promise((resolve, reject) => {
         SwapLayerZIndex(form).then((res) => {
+            console.log(res);
+            resolve(res);
+        }).catch((err) => {
+            console.log(err);
+            resolve(err);
+        });
+    });
+});
+
+promiseIpc.on('/put/layer/name', (form) => {
+    return new Promise((resolve, reject) => {
+        UpdateLayerName(form).then((res) => {
             console.log(res);
             resolve(res);
         }).catch((err) => {
@@ -576,7 +588,7 @@ function CreateLayer(form) {
     return new Promise((resolve, reject) => {
         GetNewestLayerByCharId(form.charId).then((layer) => {
             console.log(layer[0] ? layer[0] : 'No layer found');
-            let zValue = layer[0] ? parseInt(layer[0].zIndex) + 1 : 0;
+            let zValue = layer[0] ? layer[0].zIndex + 1 : 0;
             if (!form.name) reject('Invalid form');
             db.serialize(() => {
                 let stmt = db.prepare(
@@ -610,6 +622,17 @@ function CreateLayer(form) {
     });
 }
 
+function UpdateLayerName(form) {
+    return new Promise((resolve, reject) => {
+        db.serialize(() => {
+            db.all(`UPDATE layer SET name = '${form.name}' WHERE _id = '${form.id}'`, (err, char) => {
+                if (err) reject(err);
+                resolve(`Updated name of layer [${form.id}] to [${form.name}]`);
+            });
+        });
+    });
+}
+
 function GetLayersByCharId(charId) {
     return new Promise((resolve, reject) => {
         console.log(`Getting layers of char: [${charId}]`);
@@ -626,7 +649,7 @@ function GetNewestLayerByCharId(charId) {
     return new Promise((resolve, reject) => {
         console.log(`Getting newest layer of char: [${charId}]`);
         db.serialize(() => {
-            db.all(`SELECT _id as id, name, createdAt, zIndex FROM layer WHERE character = '${charId}' ORDER BY createdAt DESC LIMIT 1`, (err, char) => {
+            db.all(`SELECT _id as id, name, createdAt, zIndex FROM layer WHERE character = '${charId}' ORDER BY zIndex DESC LIMIT 1`, (err, char) => {
                 if (err) reject(err);
                 resolve(char);
             });
@@ -642,17 +665,17 @@ function SwapLayerZIndex(form) {
             let targetLayer = layer ? layer : null;
             if (!targetLayer) reject(`No layer with target id: [${form.targetLayerId}]`);
             // SHIFT VALUE = 1 OR -1
-            let shiftValue = parseInt(targetLayer.zIndex) + form.shiftValue;
+            let shiftValue = targetLayer.zIndex + form.shiftValue;
             console.log(`Shift Value: ${shiftValue}`);
             if (shiftValue < 0) reject(`No layers below layer: [${form.targetLayerId}]`);
-            GetLayerByZIndex({zIndex: shiftValue, character: targetLayer.character}).then((sLayer) => {
+            GetLayerByZIndex({ zIndex: shiftValue, character: targetLayer.character }).then((sLayer) => {
                 console.log(sLayer);
                 let swapLayer = sLayer ? sLayer : null;
                 if (!swapLayer) reject(`No layer with swap zIndex: [${shiftValue}]`);
                 let swap = swapLayer.zIndex;
-                UpdateLayerZIndex({layer: swapLayer, zIndex: targetLayer.zIndex}).then((res) => {
+                UpdateLayerZIndex({ layer: swapLayer, zIndex: targetLayer.zIndex }).then((res) => {
                     console.log(res);
-                    UpdateLayerZIndex({layer: targetLayer, zIndex: swap}).then((res)=> {
+                    UpdateLayerZIndex({ layer: targetLayer, zIndex: swap }).then((res) => {
                         console.log(res);
                         resolve(`Swapped zIndex of [${targetLayer.id}] & [${swapLayer.id}] successfully!`);
                     });
@@ -817,6 +840,17 @@ function UpdateCharacterLayerScale(form) {
             db.all(`UPDATE character_article SET scale = '${form.scale}' WHERE _id = '${form.charArtId}'`, (err, char) => {
                 if (err) reject(err);
                 resolve(`Updated scale of character_article [${form.charArtId}] to: [${form.scale}]`);
+            });
+        });
+    });
+}
+
+function ResetCharacterLayerByCharArtId(charArtId) {
+    return new Promise((resolve, reject) => {
+        db.serialize(() => {
+            db.all(`UPDATE character_article SET scale = 15, positionX = '2', positionY = '350' WHERE _id = '${charArtId}'`, (err, char) => {
+                if (err) reject(err);
+                resolve(`Reset position and scale of character_article [${charArtId}] to defaults`);
             });
         });
     });

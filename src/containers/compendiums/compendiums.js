@@ -229,6 +229,7 @@ class Compendiums extends Component {
                         assign={this.assignArticleToChar}
                         getArticles={this.getCharArticles}
                         getArticle={this.getArticle}
+                        getChar={this.getChar}
                         master={this.state.imgDir.master}
                     />
                 </Aux>

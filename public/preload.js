@@ -39,7 +39,9 @@ contextBridge.exposeInMainWorld(
             "/get/imageDir",
             "/put/char/layer/pos",
             "/put/char/layer/scale",
+            "/put/char/layer/reset",
             "/put/layer/swap",
+            "/put/layer/name",
             "test"
         ];
         if (validChannels.includes(channel)) {
