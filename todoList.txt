@@ -1,3 +1,8 @@
 - Make all deletion methods
 - Make update methods for LAYER NAME
 - Make Non-Entry Article
+- Fix SQLITE3 data types
+ - TEXT NOT NULL --> INT NOT NULL
+
+- Add "RESET" button 
+	--> Allows for unlocked draggable bounds

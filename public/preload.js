@@ -38,6 +38,7 @@ contextBridge.exposeInMainWorld(
             "/post/layer",
             "/get/imageDir",
             "/put/char/layer/pos",
+            "/put/char/layer/scale",
             "/put/layer/swap",
             "test"
         ];

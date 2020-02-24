@@ -29,9 +29,21 @@ class LayerList extends Component {
         });
     }
 
+    updateCharArtScale = (form) => {
+        window.api.promise('/put/char/layer/scale', form, (res) => {
+            console.log(res);
+            this.refreshCharArts();
+        });
+    }
+
     refreshLayers = () => {
         console.log('REFRESHING LAYERS!');
         this.props.refresh(this.props.charId);
+    }
+
+    refreshCharArts = () => {
+        console.log('REFRESHING CHARARTS!');
+        this.props.getArticles(this.props.charId);
     }
 
     render() {
@@ -114,7 +126,7 @@ class LayerList extends Component {
                                 }} defaultChecked />
                                 <button onClick={() => {
                                     this.props.newLayer({
-                                        name: `Layer of char : [${this.props.charId}]`,
+                                        // name: `Layer`,
                                         zIndex: 100,
                                         charId: this.props.charId
                                     });
@@ -126,13 +138,20 @@ class LayerList extends Component {
                                         this.props.layers.map((layer, idx) => {
                                             return (
                                                 <Aux key={layer.id}>
-                                                    <div>
-                                                        <p>{`Layer [${layer.zIndex}]`}</p>
+                                                    <div className="layer-section">
+                                                        {/* <p>{`Layer [${layer.zIndex}]`}</p> */}
+                                                        {/* <p>{layer.name}</p> */}
+                                                        <input type="text" id="" defaultValue={layer.name}/>
+
+                                                        <button>Rename</button>
+                                                        
+                                                        <hr/>
                                                         <button onClick={() => {
-                                                            this.shiftLayerZIndex({targetLayerId: layer.id, shiftValue: 1});
+                                                            console.log('test');
+                                                            this.shiftLayerZIndex({ targetLayerId: layer.id, shiftValue: 1 });
                                                         }}>Up</button>
                                                         <button onClick={() => {
-                                                            this.shiftLayerZIndex({targetLayerId: layer.id, shiftValue: -1});
+                                                            this.shiftLayerZIndex({ targetLayerId: layer.id, shiftValue: -1 });
                                                         }}>Down</button>
                                                         {
                                                             // this.state.assigningLayer === false &&
@@ -149,13 +168,22 @@ class LayerList extends Component {
                                                                             charArt={charArt}
                                                                             getArticle={this.props.getArticle}
                                                                             dragMode={false}
-                                                                            // dragScale={.96}
-                                                                            // posX={charArt.positionX}
-                                                                            // posY={charArt.positionY}
+                                                                            // ARTICLE SCALE
                                                                             getArticles={this.props.getArticles}
                                                                             master={this.props.master}
                                                                             setActive={this.setActiveCharArt}
                                                                         />
+                                                                        <p>
+                                                                            {`Scale: ${charArt.scale}`}
+                                                                        </p>
+                                                                        <input type="range" id={`${charArt.id}-range`} defaultValue={charArt.scale}
+                                                                            onMouseUp={() => {
+                                                                                console.log(`charArt[${charArt.id}] scale value: ${document.getElementById(`${charArt.id}-range`).value}`);
+                                                                                this.updateCharArtScale({
+                                                                                    charArtId: charArt.id,
+                                                                                    scale: document.getElementById(`${charArt.id}-range`).value
+                                                                                });
+                                                                            }} />
                                                                     </Aux>
                                                                 ) : (
                                                                         null

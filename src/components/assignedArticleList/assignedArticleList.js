@@ -51,7 +51,7 @@ class AssignedArticleList extends Component {
                         this.props.dragMode === true && this.state.articlePath && this.props.activeCharArt === this.props.charArt.id &&
                         <Draggable
                             scale={this.props.dragScale}
-                            bounds={`parent`}
+                            // bounds={`parent`}
                             defaultPosition={{ x: parseInt(this.props.posX), y: parseInt(this.props.posY) }}
                             onStart={() => { this.setState({ dragClass: 'dragging' }); }}
                             onStop={() => {
@@ -68,7 +68,10 @@ class AssignedArticleList extends Component {
                         >
                             {/* PLACE Z-INDEX DATA IN INLINE STYLE VIA layer z-index PROP */}
                             <img
-                                style={{ zIndex: `${this.props.zIndex}` }}
+                                style={{
+                                    zIndex: `${this.props.zIndex}`,
+                                    height: `${this.props.charArt.scale}%`
+                                }}
                                 onContextMenu={() => { this.props.getArticle(this.props.charArt.article) }} className={`layer-article draggable dragging`} id={this.props.charArt.id} src={`${this.props.master}${this.state.articlePath}`} alt="" />
                         </Draggable>
                     }
@@ -76,7 +79,7 @@ class AssignedArticleList extends Component {
                         this.props.dragMode === true && this.state.articlePath && this.props.activeCharArt !== this.props.charArt.id &&
                         <Draggable
                             scale={this.props.dragScale}
-                            bounds={`parent`}
+                            // bounds={`parent`}
                             defaultPosition={{ x: parseInt(this.props.posX), y: parseInt(this.props.posY) }}
                             onStart={() => { this.setState({ dragClass: 'dragging' }); }}
                             onStop={() => {
@@ -93,7 +96,10 @@ class AssignedArticleList extends Component {
                         >
                             {/* PLACE Z-INDEX DATA IN INLINE STYLE VIA layer z-index PROP */}
                             <img
-                                style={{ zIndex: `${this.props.zIndex}` }}
+                                style={{
+                                    zIndex: `${this.props.zIndex}`,
+                                    height: `${this.props.charArt.scale}%`
+                                }}
                                 onContextMenu={() => { this.props.getArticle(this.props.charArt.article) }} className={`layer-article draggable ${this.state.dragClass}`} id={this.props.charArt.id} src={`${this.props.master}${this.state.articlePath}`} alt="" />
                         </Draggable>
                     }
@@ -114,7 +120,8 @@ class AssignedArticleList extends Component {
                             style={
                                 {
                                     transform: `translateX(${this.props.posX}px) translateY(${this.props.posY}px)`,
-                                    zIndex: `${this.props.zIndex}`
+                                    zIndex: `${this.props.zIndex}`,
+                                    height: `${this.props.charArt.scale}%`
                                 }}
                             onClick={() => { this.props.getArticle(this.props.charArt.article) }} className={`layer-article static dragging`} id={this.props.charArt.id} src={`${this.props.master}${this.state.articlePath}`} alt="" />
                     }
@@ -124,7 +131,8 @@ class AssignedArticleList extends Component {
                             style={
                                 {
                                     transform: `translateX(${this.props.posX}px) translateY(${this.props.posY}px)`,
-                                    zIndex: `${this.props.zIndex}`
+                                    zIndex: `${this.props.zIndex}`,
+                                    height: `${this.props.charArt.scale}%`
                                 }}
 
                             onClick={() => { this.props.getArticle(this.props.charArt.article) }} className={`layer-article static`} id={this.props.charArt.id} src={`${this.props.master}${this.state.articlePath}`} alt="" />
