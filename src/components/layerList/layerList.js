@@ -28,12 +28,12 @@ class LayerList extends Component {
             this.refreshLayers();
         });
     }
-    
+
     updateLayerName = (form) => {
         window.api.promise('/put/layer/name', form, (res) => {
             console.log(res);
             this.refreshLayers();
-        });        
+        });
     }
 
     updateCharArtScale = (form) => {
@@ -73,6 +73,14 @@ class LayerList extends Component {
 
     refreshCharacter = () => {
         this.props.getChar(this.props.charId);
+    }
+
+    deleteCharArtById = (charArtId) => {
+        window.api.promise('/delete/article/char/layer', charArtId, (res) => {
+            console.log(res);
+            this.refreshCharArts();
+            this.refreshCharacter();
+        });
     }
 
     render() {
@@ -172,9 +180,9 @@ class LayerList extends Component {
                                                         {/* <p>{layer.name}</p> */}
                                                         <input type="text" id={`${layer.id}-name`} defaultValue={layer.name} />
 
-                                                        <button onClick={()=>{
+                                                        <button onClick={() => {
                                                             console.log(document.getElementById(`${layer.id}-name`).value);
-                                                            this.updateLayerName({id: layer.id, name: document.getElementById(`${layer.id}-name`).value});
+                                                            this.updateLayerName({ id: layer.id, name: document.getElementById(`${layer.id}-name`).value });
                                                         }}>Rename</button>
                                                         <button onClick={() => {
                                                             this.props.delete(layer.id);
@@ -232,6 +240,9 @@ class LayerList extends Component {
                                                                                     scale: document.getElementById(`${charArt.id}-range`).value
                                                                                 });
                                                                             }} />
+                                                                        <button onClick={() => {
+                                                                            this.deleteCharArtById(charArt.id);
+                                                                        }}>Unassign Article</button>
                                                                     </Aux>
                                                                 ) : (
                                                                         null

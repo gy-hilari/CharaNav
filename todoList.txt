@@ -1,2 +1,1 @@
-- ADD VALIDATION --> ANTI SQL INJECTION
-	--> Convert SQL literals into stmt.prepare(); via sqlite3 API
+-- STYLIZATION!!!

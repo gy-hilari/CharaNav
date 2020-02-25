@@ -432,10 +432,6 @@ promiseIpc.on('/get/article/id', (id) => {
     });
 });
 
-promiseIpc.on('/post/article/char', (form) => {
-    return CreateAndAssignArticle(form);
-});
-
 promiseIpc.on('/assign/article/char/layer', (form) => {
     return new Promise((resolve, reject) => {
         AssignArticleToCharacterLayer(form).then((res) => {
@@ -445,6 +441,18 @@ promiseIpc.on('/assign/article/char/layer', (form) => {
             console.log(err);
         });
     });
+});
+
+promiseIpc.on('/delete/article/char/layer', (charArtId) => {
+    return new Promise((resolve, reject) => {
+        DeleteCharArtById(charArtId).then((res) => {
+            console.log(res);
+            resolve(res);
+        }).catch((err) => {
+            console.log(err);
+            resolve(`CharArt [${charArtId}] not found!`);
+        });
+    })
 });
 
 promiseIpc.on('/put/char/layer/pos', (form) => {
@@ -570,11 +578,16 @@ function GetCompendiumById(id) {
     console.log(id);
     return new Promise((resolve, reject) => {
         db.serialize(() => {
-            let sql = `SELECT _id as id, name FROM comp WHERE id = '${id}'`;
-            db.get(sql, (err, comp) => {
+            let stmt = db.prepare(
+                `SELECT _id as id, name
+                FROM comp WHERE id = $id
+                `);
+
+            stmt.get({ $id: id }, (err, comp) => {
                 if (err) reject(err);
                 resolve(comp);
             });
+            stmt.finalize();
         });
     });
 }
@@ -583,10 +596,15 @@ function GetCharactersByCompId(compId) {
     console.log(`Getting characters of comp: [${compId}]`);
     return new Promise((resolve, reject) => {
         db.serialize(() => {
-            db.all(`SELECT _id as id, name FROM character WHERE comp = '${compId}'`, (err, chars) => {
+            let stmt = db.prepare(
+                `SELECT _id as id, name
+                FROM character WHERE comp = $id
+                `);
+            stmt.all({ $id: compId }, (err, chars) => {
                 if (err) reject(err);
                 resolve(chars);
             });
+            stmt.finalize();
         });
     });
 }
@@ -619,18 +637,23 @@ function GetCharacterById(id) {
     console.log(`Getting character with id: [${id}]`);
     return new Promise((resolve, reject) => {
         db.serialize(() => {
-            let sql = `SELECT _id as id, name, comp FROM character WHERE id = '${id}'`;
-            db.get(sql, (err, char) => {
+            // let sql = `SELECT _id as id, name, comp FROM character WHERE id = '${id}'`;
+            let stmt = db.prepare(
+                `SELECT _id as id, name, comp
+                FROM character WHERE id = $id
+                `);
+            stmt.get({ $id: id }, (err, char) => {
                 if (err) reject(err);
                 resolve(char);
             });
+            stmt.finalize();
         });
     });
 }
 
 function CreateLayer(form) {
     return new Promise((resolve, reject) => {
-        GetNewestLayerByCharId(form.charId).then((layer) => {
+        GetHighestLayerByCharId(form.charId).then((layer) => {
             console.log(layer[0] ? layer[0] : 'No layer found');
             let zValue = layer[0] ? layer[0].zIndex + 1 : 0;
             if (!form.name) reject('Invalid form');
@@ -669,10 +692,15 @@ function CreateLayer(form) {
 function UpdateLayerName(form) {
     return new Promise((resolve, reject) => {
         db.serialize(() => {
-            db.all(`UPDATE layer SET name = '${form.name}' WHERE _id = '${form.id}'`, (err, char) => {
+            let stmt = db.prepare(
+                ` UPDATE layer SET name = $name
+                WHERE _id = $id
+                `);
+            stmt.all({ $name: form.name, $id: form.id }, (err, char) => {
                 if (err) reject(err);
                 resolve(`Updated name of layer [${form.id}] to [${form.name}]`);
             });
+            stmt.finalize();
         });
     });
 }
@@ -681,22 +709,34 @@ function GetLayersByCharId(charId) {
     return new Promise((resolve, reject) => {
         console.log(`Getting layers of char: [${charId}]`);
         db.serialize(() => {
-            db.all(`SELECT _id as id, name, createdAt, zIndex FROM layer WHERE character = '${charId}' ORDER BY zIndex DESC`, (err, chars) => {
+            let stmt = db.prepare(
+                `SELECT _id as id, name, createdAt, zIndex 
+                FROM layer WHERE character = $char
+                ORDER BY zIndex DESC
+                `);
+            stmt.all({ $char: charId }, (err, chars) => {
                 if (err) reject(err);
                 resolve(chars);
             });
+            stmt.finalize();
         });
     })
 }
 
-function GetNewestLayerByCharId(charId) {
+function GetHighestLayerByCharId(charId) {
     return new Promise((resolve, reject) => {
-        console.log(`Getting newest layer of char: [${charId}]`);
+        console.log(`Getting highest layer of char: [${charId}]`);
         db.serialize(() => {
-            db.all(`SELECT _id as id, name, createdAt, zIndex FROM layer WHERE character = '${charId}' ORDER BY zIndex DESC LIMIT 1`, (err, char) => {
+            let stmt = db.prepare(
+                `SELECT _id as id, name, createdAt, zIndex 
+                FROM layer WHERE character = $char
+                ORDER BY zIndex DESC LIMIT 1
+                `);
+            stmt.all({ $char: charId }, (err, char) => {
                 if (err) reject(err);
                 resolve(char);
             });
+            stmt.finalize();
         });
     })
 }
@@ -724,8 +764,6 @@ function SwapLayerZIndex(form) {
                         resolve(`Swapped zIndex of [${targetLayer.id}] & [${swapLayer.id}] successfully!`);
                     });
                 });
-                // swapLayer.zIndex = targetLayer.zIndex;
-                // targetLayer.zIndex = swap;
             });
         });
     })
@@ -734,11 +772,16 @@ function SwapLayerZIndex(form) {
 function GetLayerById(layerId) {
     return new Promise((resolve, reject) => {
         db.serialize(() => {
-            let sql = `SELECT _id as id, name, createdAt, zIndex, character FROM layer WHERE id = '${layerId}'`;
-            db.get(sql, (err, layer) => {
+            let stmt = db.prepare(
+                `SELECT _id as id, name, createdAt, zIndex, character
+                FROM layer WHERE id = $id
+                `);
+            // let sql = `SELECT _id as id, name, createdAt, zIndex, character FROM layer WHERE id = '${layerId}'`;
+            stmt.get({ $id: layerId }, (err, layer) => {
                 if (err) reject(err);
                 resolve(layer);
             });
+            stmt.finalize();
         });
     });
 }
@@ -746,11 +789,17 @@ function GetLayerById(layerId) {
 function GetLayerByZIndex(form) {
     return new Promise((resolve, reject) => {
         db.serialize(() => {
-            let sql = `SELECT _id as id, name, createdAt, zIndex, character FROM layer WHERE zIndex = '${form.zIndex}' AND character = '${form.character}'`;
-            db.get(sql, (err, layer) => {
+            let stmt = db.prepare(
+                `SELECT _id as id, name, createdAt, zIndex, character
+                FROM layer WHERE zIndex = $zIndex
+                AND character = $char
+                `);
+            // let sql = `SELECT _id as id, name, createdAt, zIndex, character FROM layer WHERE zIndex = '${form.zIndex}' AND character = '${form.character}'`;
+            stmt.get({ $zIndex: form.zIndex, $char: form.character }, (err, layer) => {
                 if (err) reject(err);
                 resolve(layer);
             });
+            stmt.finalize();
         });
     });
 }
@@ -758,10 +807,17 @@ function GetLayerByZIndex(form) {
 function UpdateLayerZIndex(form) {
     return new Promise((resolve, reject) => {
         db.serialize(() => {
-            db.all(`UPDATE layer SET zIndex = '${form.zIndex}' WHERE _id = '${form.layer.id}' AND character = '${form.layer.character}'`, (err, layer) => {
+            let stmt = db.prepare(
+                `UPDATE layer SET zIndex = $zIndex
+                WHERE _id = $id
+                AND character = $char
+                `);
+            // db.all(`UPDATE layer SET zIndex = '${form.zIndex}' WHERE _id = '${form.layer.id}' AND character = '${form.layer.character}'`, (err, layer) => {
+            stmt.all({ $zIndex: form.zIndex, $id: form.layer.id, $char: form.layer.character }, (err, layer) => {
                 if (err) reject(err);
-                resolve(`Updated zIndex of layer [${form.layerId}] with value [${form.zIndex}]`);
+                resolve(`Updated zIndex of layer [${form.layer.id}] with value [${form.zIndex}]`);
             });
+            stmt.finalize();
         });
     });
 }
@@ -770,11 +826,16 @@ function GetArticleById(id) {
     console.log(`Getting article: [${id}]`);
     return new Promise((resolve, reject) => {
         db.serialize(() => {
-            let sql = `SELECT _id as id, name, text, imagePath, comp FROM article WHERE id = '${id}'`;
-            db.get(sql, (err, char) => {
+            let stmt = db.prepare(
+                `SELECT _id as id, name, text, imagePath, comp
+                FROM article WHERE id = $id
+                `);
+            // let sql = `SELECT _id as id, name, text, imagePath, comp FROM article WHERE id = '${id}'`;
+            stmt.get({ $id: id }, (err, char) => {
                 if (err) reject(err);
                 resolve(char);
             });
+            stmt.finalize();
         });
     });
 }
@@ -818,10 +879,15 @@ function GetArticlesByCompId(compId) {
     console.log(`Getting articles of comp: [${compId}]`);
     return new Promise((resolve, reject) => {
         db.serialize(() => {
-            db.all(`SELECT _id as id, name, text, imagePath FROM article WHERE comp = '${compId}'`, (err, chars) => {
+            let stmt = db.prepare(
+                `SELECT _id as id, name, text, imagePath
+                FROM article WHERE comp = $comp
+                `);
+            stmt.all({ $comp: compId }, (err, chars) => {
                 if (err) reject(err);
                 resolve(chars);
             });
+            stmt.finalize();
         });
     });
 }
@@ -870,10 +936,18 @@ function AssignArticleToCharacterLayer(form) {
 function UpdateCharacterLayerPosition(form) {
     return new Promise((resolve, reject) => {
         db.serialize(() => {
-            db.all(`UPDATE character_article SET positionX = '${form.posX}', positionY = '${form.posY}' WHERE _id = '${form.id}'`, (err, char) => {
+            let stmt = db.prepare(
+                `UPDATE character_article SET 
+                positionX = $posX,
+                positionY = $posY
+                WHERE _id = $id
+                `);
+            // db.all(`UPDATE character_article SET positionX = '${form.posX}', positionY = '${form.posY}' WHERE _id = '${form.id}'`, (err, char) => {
+            stmt.all({ $posX: form.posX, $posY: form.posY, $id: form.id }, (err, char) => {
                 if (err) reject(err);
                 resolve(`Updated position of character_article [${form.id}] with position [${form.posX}, ${form.posY}]`);
             });
+            stmt.finalize();
         });
     });
 }
@@ -881,10 +955,16 @@ function UpdateCharacterLayerPosition(form) {
 function UpdateCharacterLayerScale(form) {
     return new Promise((resolve, reject) => {
         db.serialize(() => {
-            db.all(`UPDATE character_article SET scale = '${form.scale}' WHERE _id = '${form.charArtId}'`, (err, char) => {
+            let stmt = db.prepare(
+                `UPDATE character_article SET scale = $scale
+                WHERE _id = $id
+                `);
+            // db.all(`UPDATE character_article SET scale = '${form.scale}' WHERE _id = '${form.charArtId}'`, (err, char) => {
+            stmt.all({ $scale: form.scale, $id: form.charArtId }, (err, char) => {
                 if (err) reject(err);
                 resolve(`Updated scale of character_article [${form.charArtId}] to: [${form.scale}]`);
             });
+            stmt.finalize();
         });
     });
 }
@@ -892,10 +972,15 @@ function UpdateCharacterLayerScale(form) {
 function ResetCharacterLayerByCharArtId(charArtId) {
     return new Promise((resolve, reject) => {
         db.serialize(() => {
-            db.all(`UPDATE character_article SET scale = 15, positionX = '2', positionY = '350' WHERE _id = '${charArtId}'`, (err, char) => {
+            let stmt = db.prepare(
+                `UPDATE character_article SET scale = 15, positionX = '2', positionY = '350'
+                WHERE _id = $id
+                `);
+            stmt.all({ $id: charArtId }, (err, char) => {
                 if (err) reject(err);
                 resolve(`Reset position and scale of character_article [${charArtId}] to defaults`);
             });
+            stmt.finalize();
         });
     });
 }
@@ -904,18 +989,22 @@ function GetAssignedArticlesByCharacterId(charId) {
     return new Promise((resolve, reject) => {
         console.log(`Getting assigned articles of char: [${charId}]`);
         db.serialize(() => {
-            db.all(`SELECT 
-                    _id as id, 
-                    positionX, 
-                    positionY, 
-                    scale,
-                    character, 
-                    article, 
-                    layer 
-                    FROM character_article WHERE character = '${charId}'`, (err, chars) => {
+            let stmt = db.prepare(
+                `SELECT 
+                _id as id, 
+                positionX, 
+                positionY, 
+                scale,
+                character, 
+                article, 
+                layer 
+                FROM character_article WHERE character = $char
+                `);
+            stmt.all({ $char: charId }, (err, chars) => {
                 if (err) reject(err);
                 resolve(chars);
             });
+            stmt.finalize();
         });
     });
 }
@@ -925,11 +1014,12 @@ function DeleteCompendiumById(id) {
         db.serialize(() => {
             DeleteCharactersByCompId(id).then(() => {
                 DeleteArticlesByCompId(id).then(() => {
-                    let sql = `DELETE FROM comp WHERE _id = '${id}'`;
-                    db.all(sql, (err) => {
+                    let stmt = db.prepare(`DELETE FROM comp WHERE _id = $id`);
+                    stmt.all({ $id: id }, (err) => {
                         if (err) reject(err);
                         resolve(`Deleted compendium [${id}]`);
                     });
+                    stmt.finalize();
                 });
             });
         });
@@ -946,11 +1036,13 @@ function DeleteCharactersByCompId(compId) {
                         DeleteCharArtsByCharId(char.id)
                     ]);
                 })).then(() => {
-                    let sql = `DELETE FROM character WHERE comp = '${compId}'`;
-                    db.all(sql, (err) => {
+                    let stmt = db.prepare(`DELETE FROM character WHERE _id = $id`);
+                    // let sql = `DELETE FROM character WHERE comp = '${compId}'`;
+                    stmt.all({ $id: compId }, (err) => {
                         if (err) reject(err);
                         resolve(`Deleted characters from comp: [${compId}]`);
                     });
+                    stmt.finalize();
                 });
             });
         });
@@ -963,11 +1055,12 @@ function DeleteCharacterById(charId) {
             DeleteLayersByCharId(charId),
             DeleteCharArtsByCharId(charId)
         ]).then(() => {
-            let sql = `DELETE FROM character WHERE _id = '${charId}'`;
-            db.all(sql, (err) => {
+            let stmt = db.prepare(`DELETE FROM character WHERE _id = $id`);
+            stmt.all({ $id: charId }, (err) => {
                 if (err) reject(err);
                 resolve(`Deleted character: [${charId}]`);
             });
+            stmt.finalize();
         });
 
     });
@@ -976,11 +1069,12 @@ function DeleteCharacterById(charId) {
 function DeleteLayersByCharId(charId) {
     return new Promise((resolve, reject) => {
         db.serialize(() => {
-            let sql = `DELETE FROM layer WHERE character = '${charId}'`;
-            db.all(sql, (err) => {
+            let stmt = db.prepare(`DELETE FROM layer WHERE character = $id`);
+            stmt.all({ $id: charId }, (err) => {
                 if (err) reject(err);
                 resolve(`Deleted layers of character: [${charId}]`);
             });
+            stmt.finalize();
         });
     });
 }
@@ -988,11 +1082,12 @@ function DeleteLayersByCharId(charId) {
 function DeleteCharArtsByCharId(charId) {
     return new Promise((resolve, reject) => {
         db.serialize(() => {
-            let sql = `DELETE FROM character_article WHERE character = '${charId}'`;
-            db.all(sql, (err) => {
+            let stmt = db.prepare(`DELETE FROM character_article WHERE character = $id`);
+            stmt.all({ $id: charId }, (err) => {
                 if (err) reject(err);
                 resolve(`Deleted charArts of character: [${charId}]`);
             });
+            stmt.finalize();
         });
     });
 }
@@ -1004,11 +1099,12 @@ function DeleteArticlesByCompId(compId) {
                 Promise.all(articles.map(article => {
                     DeleteCharArtsByArticleId(article.id);
                 })).then(() => {
-                    let sql = `DELETE FROM article WHERE comp = '${compId}'`;
-                    db.all(sql, (err) => {
+                    let stmt = db.prepare(`DELETE FROM article WHERE comp = $id`);
+                    stmt.all({ $id: compId }, (err) => {
                         if (err) reject(err);
                         resolve(`Deleted articles from comp: [${compId}]`);
                     });
+                    stmt.finalize();
                 });
             });
         });
@@ -1018,11 +1114,12 @@ function DeleteArticlesByCompId(compId) {
 function DeleteArticleById(artId) {
     return new Promise((resolve, reject) => {
         DeleteCharArtsByArticleId(artId).then(() => {
-            let sql = `DELETE FROM article WHERE _id = '${artId}'`;
-            db.all(sql, (err) => {
+            let stmt = db.prepare(`DELETE FROM article WHERE _id = $id`);
+            stmt.all({ $id: artId }, (err) => {
                 if (err) reject(err);
                 resolve(`Deleted article: [${artId}]`);
             });
+            stmt.finalize();
         });
 
     });
@@ -1031,11 +1128,12 @@ function DeleteArticleById(artId) {
 function DeleteCharArtsByArticleId(artId) {
     return new Promise((resolve, reject) => {
         db.serialize(() => {
-            let sql = `DELETE FROM character_article WHERE article = '${artId}'`;
-            db.all(sql, (err) => {
+            let stmt = db.prepare(`DELETE FROM character_article WHERE article = $id`);
+            stmt.all({ $id: artId }, (err) => {
                 if (err) reject(err);
                 resolve(`Deleted charArts of article: [${artId}]`);
             });
+            stmt.finalize();
         });
     });
 }
@@ -1043,11 +1141,12 @@ function DeleteCharArtsByArticleId(artId) {
 function DeleteLayerById(lyrId) {
     return new Promise((resolve, reject) => {
         DeleteCharArtsByLayerId(lyrId).then(() => {
-            let sql = `DELETE FROM layer WHERE _id = '${lyrId}'`;
-            db.all(sql, (err) => {
+            let stmt = db.prepare(`DELETE FROM layer WHERE _id = $id`);
+            stmt.all({ $id: lyrId }, (err) => {
                 if (err) reject(err);
                 resolve(`Deleted article: [${lyrId}]`);
             });
+            stmt.finalize();
         });
 
     });
@@ -1056,11 +1155,25 @@ function DeleteLayerById(lyrId) {
 function DeleteCharArtsByLayerId(lyrId) {
     return new Promise((resolve, reject) => {
         db.serialize(() => {
-            let sql = `DELETE FROM character_article WHERE layer = '${lyrId}'`;
-            db.all(sql, (err) => {
+            let stmt = db.prepare(`DELETE FROM character_article WHERE layer = $id`);
+            stmt.all({ $id: lyrId }, (err) => {
                 if (err) reject(err);
                 resolve(`Deleted charArts of layer: [${lyrId}]`);
             });
+            stmt.finalize();
+        });
+    });
+}
+
+function DeleteCharArtById(charArtId) {
+    return new Promise((resolve, reject) => {
+        db.serialize(() => {
+            let stmt = db.prepare(`DELETE FROM character_article WHERE _id = $id`);
+            stmt.all({ $id: charArtId }, (err) => {
+                if (err) reject(err);
+                resolve(`Deleted charArt: [${charArtId}]`);
+            });
+            stmt.finalize();
         });
     });
 }
