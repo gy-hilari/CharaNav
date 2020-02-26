@@ -1,1 +1,8 @@
 -- STYLIZATION!!!
+	--> Incorporate more modals
+
+-- FRONT END VALIDATION
+	--> ON PROMISE REJECTION
+		--> PRELOAD.js ???
+
+-- ADD THUMBNAIL FIELD TO CHARACTER  MODE

@@ -219,6 +219,10 @@ class Compendiums extends Component {
                         deleteArticle={this.deleteArticleById}
                         getLayers={this.getCharLayers}
                         comp={this.state.activeComp}
+                        refresh={(id) => { 
+                            this.getComp(id);
+                            this.getComps();
+                        }}
                         chars={this.state.compChars}
                         getChar={this.getChar}
                         getArticles={this.getCharArticles}
@@ -253,8 +257,13 @@ class Compendiums extends Component {
                     <LayerList
                         articles={this.state.compArts}
                         layers={this.state.charLayers}
+                        refreshAll={(id) => {
+                            this.getChar(id);
+                            this.getCompChars(this.state.activeComp.id);
+                        }}
                         refresh={this.getCharLayers}
                         newLayer={this.createLayer}
+                        char={this.state.activeChar}
                         charId={this.state.activeChar.id}
                         charArts={this.state.charArts}
                         assign={this.assignArticleToChar}
@@ -306,6 +315,10 @@ class Compendiums extends Component {
                     <ViewArticle
                         article={this.state.activeArticle}
                         master={this.state.imgDir.master}
+                        refresh={(id) => {
+                            this.getArticle(id);
+                            this.getCompArticles(this.state.activeComp.id);
+                        }}
                     />
                 </Aux>
             )

@@ -11,7 +11,9 @@ class LayerList extends Component {
         activeLayerData: null,
         activeLayerImage: null,
         activeCharArt: null,
-        dragState: 'disabled'
+        dragState: 'disabled',
+        editing: false,
+        editLayer: null
     }
 
     layerMode = (mode) => {
@@ -26,6 +28,13 @@ class LayerList extends Component {
         window.api.promise('/put/layer/swap', form, (res) => {
             console.log(res);
             this.refreshLayers();
+        });
+    }
+
+    updateCharName = (form) => {
+        window.api.promise('/put/char/name', form, (res) => {
+            console.log(res);
+            this.props.refreshAll(this.props.charId);
         });
     }
 
@@ -89,6 +98,29 @@ class LayerList extends Component {
                 <Aux>
                     {
                         <div className="canvas-interface" id="canvas-interface">
+                            {
+                                !this.state.editing &&
+                                <h2 onDoubleClick={() => {
+                                    this.setState({ editing: true });
+                                }}>{this.props.char.name}</h2>
+                            }{
+                                this.state.editing &&
+                                <input type="text"
+                                    style={{ display: 'block', margin: '0px auto' }}
+                                    id={`${this.props.charId}-edit`}
+                                    placeholder={this.props.char.name}
+                                    onKeyPress={(e) => {
+                                        if (e.key === 'Enter') {
+                                            console.log(document.getElementById(`${this.props.charId}-edit`).value);
+                                            this.updateCharName({
+                                                id: this.props.charId,
+                                                name: document.getElementById(`${this.props.charId}-edit`).value
+                                            });
+                                            this.setState({ editing: false });
+                                        }
+                                    }}
+                                />
+                            }
                             <div className="article-canvas">
                                 {
                                     this.props.layers.map((layer) => {
@@ -178,12 +210,23 @@ class LayerList extends Component {
                                                     <div className="layer-section">
                                                         {/* <p>{`Layer [${layer.zIndex}]`}</p> */}
                                                         {/* <p>{layer.name}</p> */}
-                                                        <input type="text" id={`${layer.id}-name`} defaultValue={layer.name} />
-
-                                                        <button onClick={() => {
-                                                            console.log(document.getElementById(`${layer.id}-name`).value);
-                                                            this.updateLayerName({ id: layer.id, name: document.getElementById(`${layer.id}-name`).value });
-                                                        }}>Rename</button>
+                                                        {
+                                                            this.state.editLayer !== layer.id &&
+                                                            <p onDoubleClick={() => {
+                                                                this.setState({ editLayer: layer.id });
+                                                            }}>{layer.name}</p>
+                                                        }
+                                                        {
+                                                            this.state.editLayer === layer.id &&
+                                                            <Aux>
+                                                                <input type="text" id={`${layer.id}-name`} defaultValue={layer.name} />
+                                                                <button onClick={() => {
+                                                                    console.log(document.getElementById(`${layer.id}-name`).value);
+                                                                    this.updateLayerName({ id: layer.id, name: document.getElementById(`${layer.id}-name`).value });
+                                                                    this.setState({ editLayer: null });
+                                                                }}>Rename</button>
+                                                            </Aux>
+                                                        }
                                                         <button onClick={() => {
                                                             this.props.delete(layer.id);
                                                         }}>Delete Layer</button>

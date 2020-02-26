@@ -8,14 +8,52 @@ import './viewCompendium.css'
 
 class viewCompendium extends Component {
 
+    state = {
+        editing: false
+    }
+
     refreshForms = () => {
         this.props.setActiveImg(null);
         this.props.setImgBrowse(false);
     }
+
+    updateCompName = (form) => {
+        window.api.promise('/put/comp/name', form, (res) => {
+            console.log(res);
+        });
+    }
+
     render() {
         return this.props.comp ? (
             <Aux>
-                <p>Showing character list of {`[${this.props.comp.name}]`}!</p>
+                {
+                    !this.state.editing &&
+                    <h2 onDoubleClick={() => {
+                        this.setState({ editing: true });
+                    }}>{this.props.comp.name}</h2>
+                }
+                {
+                    this.state.editing &&
+                    <Aux>
+                        <input
+                            type="text"
+                            id={`${this.props.comp.id}-edit`}
+                            placeholder={this.props.comp.name}
+                            onKeyPress={(e) => {
+                                if (e.key === 'Enter') {
+                                    console.log(document.getElementById(`${this.props.comp.id}-edit`).value);
+                                    this.updateCompName({
+                                        id: this.props.comp.id,
+                                        name: document.getElementById(`${this.props.comp.id}-edit`).value
+                                    });
+                                    this.props.refresh(this.props.comp.id);
+                                    this.setState({ editing: false });
+                                }
+                            }}
+                        />
+                        <hr />
+                    </Aux>
+                }
                 <button onClick={() => {
                     this.refreshForms();
                     // this.props.setScene('character-browse');

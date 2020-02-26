@@ -270,6 +270,18 @@ promiseIpc.on('/post/comp', (form) => {
     });
 });
 
+promiseIpc.on('/put/comp/name', (form) => {
+    return new Promise((resolve, reject) => {
+        UpdateCompendiumName(form).then((res) => {
+            console.log(res);
+            resolve(res);
+        });
+    }).catch((err) => {
+        console.log(err);
+        resolve(`Error updating comp [${form.id}]`);
+    });
+});
+
 promiseIpc.on('/delete/comp', (compId) => {
     return new Promise((resolve, reject) => {
         DeleteCompendiumById(compId).then((res) => {
@@ -305,6 +317,18 @@ promiseIpc.on('/post/char', (form) => {
                 resolve(res);
             });
         });
+    });
+});
+
+promiseIpc.on('/put/char/name', (form) => {
+    return new Promise((resolve, reject) => {
+        UpdateCharacterName(form).then((res) => {
+            console.log(res);
+            resolve(res);
+        });
+    }).catch((err) => {
+        console.log(err);
+        resolve(`Error updating character [${form.id}]`);
     });
 });
 
@@ -397,6 +421,30 @@ promiseIpc.on('/post/article', (form) => {
                 resolve(res);
             });
         });
+    });
+});
+
+promiseIpc.on('/put/article/name', (form) => {
+    return new Promise((resolve, reject) => {
+        UpdateArticleName(form).then((res) => {
+            console.log(res);
+            resolve(res);
+        });
+    }).catch((err) => {
+        console.log(err);
+        resolve(`Error updating name of article [${form.id}]`);
+    });
+});
+
+promiseIpc.on('/put/article/text', (form) => {
+    return new Promise((resolve, reject) => {
+        UpdateArticleText(form).then((res) => {
+            console.log(res);
+            resolve(res);
+        });
+    }).catch((err) => {
+        console.log(err);
+        resolve(`Error updating text of article [${form.id}]`);
     });
 });
 
@@ -592,6 +640,22 @@ function GetCompendiumById(id) {
     });
 }
 
+function UpdateCompendiumName(form) {
+    return new Promise((resolve, reject) => {
+        db.serialize(() => {
+            let stmt = db.prepare(
+                ` UPDATE comp SET name = $name
+                WHERE _id = $id
+                `);
+            stmt.all({ $id: form.id, $name: form.name }, (err) => {
+                if (err) reject(err);
+                resolve(`Successfully edited comp [${form.id}] name to [${form.name}]`);
+            });
+            stmt.finalize();
+        });
+    });
+}
+
 function GetCharactersByCompId(compId) {
     console.log(`Getting characters of comp: [${compId}]`);
     return new Promise((resolve, reject) => {
@@ -645,6 +709,22 @@ function GetCharacterById(id) {
             stmt.get({ $id: id }, (err, char) => {
                 if (err) reject(err);
                 resolve(char);
+            });
+            stmt.finalize();
+        });
+    });
+}
+
+function UpdateCharacterName(form) {
+    return new Promise((resolve, reject) => {
+        db.serialize(() => {
+            let stmt = db.prepare(
+                ` UPDATE character SET name = $name
+                WHERE _id = $id
+                `);
+            stmt.all({ $id: form.id, $name: form.name }, (err) => {
+                if (err) reject(err);
+                resolve(`Successfully edited character [${form.id}] name to [${form.name}]`);
             });
             stmt.finalize();
         });
@@ -886,6 +966,38 @@ function GetArticlesByCompId(compId) {
             stmt.all({ $comp: compId }, (err, chars) => {
                 if (err) reject(err);
                 resolve(chars);
+            });
+            stmt.finalize();
+        });
+    });
+}
+
+function UpdateArticleName(form) {
+    return new Promise((resolve, reject) => {
+        db.serialize(() => {
+            let stmt = db.prepare(
+                ` UPDATE article SET name = $name
+                WHERE _id = $id
+                `);
+            stmt.all({ $id: form.id, $name: form.name }, (err) => {
+                if (err) reject(err);
+                resolve(`Successfully edited article [${form.id}] name to [${form.name}]`);
+            });
+            stmt.finalize();
+        });
+    });
+}
+
+function UpdateArticleText(form) {
+    return new Promise((resolve, reject) => {
+        db.serialize(() => {
+            let stmt = db.prepare(
+                ` UPDATE article SET text = $text
+                WHERE _id = $id
+                `);
+            stmt.all({ $id: form.id, $text: form.text }, (err) => {
+                if (err) reject(err);
+                resolve(`Successfully edited character [${form.id}] text to [${form.text}]`);
             });
             stmt.finalize();
         });
