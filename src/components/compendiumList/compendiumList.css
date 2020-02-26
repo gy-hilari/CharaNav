@@ -1,8 +1,54 @@
-.Compendium:hover{
+/* .Compendium:hover{
     cursor: pointer;
-}
+} */
 
 .Compendium{
-    color: rgb(127, 172, 255);
-    border-bottom: 1px dotted black;
+    color: #cce6f4;
+    margin: 0px;
+    /* border-bottom: 1px dotted black; */
+}
+
+.buffer{
+    margin-bottom: 20px;
+}
+/* .Compendium:hover{
+    color: #ffe2e5;
+    filter: drop-shadow(2px 2px 2px #175676);
+} */
+
+.comp-card{
+    background-color: #4ba3c3;
+    border-radius: 2px;
+    /* background-image: linear-gradient(#4ba3c3, #3985a1); */
+    padding: 10px;
+    margin: -4px 2px;
+    /* margin-bottom: -8px; */
+    /* transition: background-color .5s, transform .5s; */
+    /* border: none; */
+    transform: scale(.9);
+    transition: background-color .2s, transform .3s, filter .5s;
+}
+
+.comp-scroller{
+    margin: 20px auto 0px auto;
+    width: 80%;
+    height: 94%;
+    overflow-y: auto;
+}
+
+.comp-scroller::-webkit-scrollbar{
+    display: none;
+}
+
+.comp-card:hover{
+    cursor: pointer;
+    /* background-image: linear-gradient(#efa1ae, #efa1ae); */
+    background-color: #cee5f2;
+    /* filter: drop-shadow(-5px 5px 5px #175676); */
+    transform:translateY(-5px) scale(1);
+    /* border: 3px inset; */
+}
+
+.comp-card:hover h4{
+    color: #536b78;
 }

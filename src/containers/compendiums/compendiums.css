@@ -1,7 +1,15 @@
-.nav-ui{
+.nav-ui {
     background-color: lightblue;
     position: fixed;
     z-index: 1000;
     height: 30px;
     width: 100%;
+}
+
+html, body, #root, .App, .App>.main-scene {
+    height: 100%;
+}
+
+.main-scene {
+    background-color: #175676;
 }
