@@ -22,7 +22,8 @@ class Compendiums extends Component {
         imgBrowse: false,
         activeImageSelect: null,
         formMode: null,
-        browseMode: 'char'
+        browseMode: 'char',
+        creatingComp: false
     };
 
     componentDidMount() {
@@ -191,8 +192,35 @@ class Compendiums extends Component {
                     {
                         this.state.scene === 'comps' &&
                         <Aux>
-                            <input type="text" id="create-comp-name" />
-                            <button onClick={() => this.createComp({ name: document.getElementById('create-comp-name').value })}>CREATE COMPENDIUM</button>
+                            {
+                                // !this.state.creatingComp &&
+                                // <Aux>
+                                //     <button onClick={() => {
+                                //         this.setState({ creatingComp: true });
+                                //     }}>New Compendium</button>
+                                // </Aux>
+                            }
+                            <button onClick={() => {
+                                this.setState({ creatingComp: true });
+                            }}>New Compendium</button>
+                            {
+                                this.state.creatingComp &&
+                                <Aux>
+                                    <div className="compendium-form">
+                                        <input type="text" id="create-comp-name" placeholder="Compendium Name" />
+                                        <p className="create-comp-confirm" onClick={() => {
+                                            if (document.getElementById('create-comp-name').value.length > 0) {
+                                                this.createComp({ name: document.getElementById('create-comp-name').value });
+                                                this.setState({ creatingComp: false });                                                
+                                            }
+                                        }}>Create Compendium</p>
+                                        <p className="create-comp-cancel" onClick={() => {
+                                            this.setState({ creatingComp: false });
+                                        }}>Cancel</p>
+                                    </div>
+                                    <div className="backdrop"></div>
+                                </Aux>
+                            }
                             <CompendiumList
                                 comps={this.state.comps}
                                 getComp={this.getComp}

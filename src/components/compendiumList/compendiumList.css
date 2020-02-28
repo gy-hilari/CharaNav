@@ -51,4 +51,5 @@
 
 .comp-card:hover h4{
     color: #536b78;
+    user-select: none;
 }

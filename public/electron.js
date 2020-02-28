@@ -141,6 +141,7 @@ function CheckOrCreateModels() {
         let tables = [
             {
                 tableName: 'comp',
+                createdAt: { foreignKey: false, string: 'TEXT NOT NULL' },
                 name: { foreignKey: false, string: 'TEXT NOT NULL' }
             },
             {
@@ -592,7 +593,7 @@ function GetCompendiums() {
     console.log('Getting Compendiums!');
     return new Promise((resolve, reject) => {
         db.serialize(() => {
-            db.all(`SELECT _id as id, name FROM comp`, (err, comps) => {
+            db.all(`SELECT _id as id, name, createdAt FROM comp ORDER BY createdAt DESC`, (err, comps) => {
                 if (err) reject(err);
                 resolve(comps);
             });
@@ -607,15 +608,21 @@ function CreateCompendium(form) {
             let stmt = db.prepare(
                 `INSERT INTO comp (
                     _id,
-                    name
+                    name,
+                    createdAt
                 )
                 VALUES (
                     $id,
-                    $name
+                    $name,
+                    $createdAt
                 )`
             );
             let compId = uniqid('cmp_');
-            stmt.run({ $id: compId, $name: form.name });
+            stmt.run({
+                $id: compId,
+                $name: form.name,
+                $createdAt: new Date(Date.now()).toISOString()
+            });
             stmt.finalize();
             resolve(`Compendium [${compId}] created successfully!`);
         });

@@ -54,7 +54,8 @@ contextBridge.exposeInMainWorld(
             "test"
         ];
         if (validChannels.includes(channel)) {
-            promiseIpc.send(channel, data).then((res) => {func(res)});
+            promiseIpc.send(channel, data).then((res) => { func(res) });
+            // ADD CATCH ROUTE TO PROCESS FRONT-END VALIDATION!!!
         } else {
             console.log(`[${channel}] is an invalide route!`);
         }
