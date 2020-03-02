@@ -1,0 +1,65 @@
+.char-card{
+    background-color: #4ba3c3;
+    border-radius: 2px;
+    /* background-image: linear-gradient(#4ba3c3, #3985a1); */
+    padding: 10px;
+    margin: -4px 2px;
+    /* margin-bottom: -8px; */
+    /* transition: background-color .5s, transform .5s; */
+    /* border: none; */
+    transform: scale(.9);
+    transition: background-color .2s, transform .3s, filter .5s;
+}
+
+.char-card:hover{
+    /* cursor: pointer; */
+    /* background-image: linear-gradient(#efa1ae, #efa1ae); */
+    background-color: #cee5f2;
+    /* filter: drop-shadow(-5px 5px 5px #175676); */
+    transform:translateY(-5px) scale(1);
+    /* border: 3px inset; */
+}
+
+.char-card h4{
+    color: #cce6f4;
+    margin: 0px auto;
+    width: max-content;
+    transition: margin .5s;
+    user-select: none;
+    font-size: inherit;
+    transition: font-size .2s;
+}
+
+.char-card h4:hover{
+    cursor: pointer;
+    color: #0d9bcf !important;
+    font-size: 20px;
+}
+
+.char-card:hover h4{
+    margin: 20px auto;
+    color: #536b78;
+    user-select: none;
+}
+
+.char-delete {
+    color: #9f9999;
+    background-color: #c8bebe;
+    width: max-content;
+    margin: 0px auto;
+    padding: 5px 15px;
+    font-size: 12px;
+    transition: font-size .5s;
+}
+
+.char-delete:hover{
+    cursor: pointer;
+    color: #963c3c;
+    padding: 10px 20px;
+    font-size: 14px;
+    background-color: #f5aeae;
+}
+
+.char-error{
+    color: #cce6f4;
+}

@@ -1,10 +1,11 @@
 .targetArticle{
     display: inline-block;
+    vertical-align: top;
+    /* background-color: #cce6f4; */
+    margin: 0px;
+    padding: 0px;
+    height: max-content;
 }
-
-/* .targetArticle:hover{
-    cursor: pointer;
-} */
   
 .articleTooltip .tooltiptext {
     margin: 0px auto;
@@ -20,4 +21,108 @@
 .articleTooltip:hover .tooltiptext {
     visibility: visible;
     opacity: 1;
+}
+
+.image-wrap {
+    width: 100px;
+    height: 100px;     
+    display: inline-block;
+    vertical-align: middle;
+    transition: width .5s, height .5s;
+}
+
+@media only screen and (max-height: 540px){
+    .targetArticle:hover .image-wrap{
+        height: 200px;        
+    }
+}
+
+@media only screen and (min-height: 540px){
+    .targetArticle:hover .image-wrap{
+        height: 300px;        
+    }
+}
+
+.image-wrap img{
+    height: 100%;
+    filter: brightness(80%) contrast(80%);
+}
+
+.targetArticle:hover .image-wrap{
+    transform: translateY(-15%);
+    width: max-content;
+    /* height: 200px; */
+    cursor: pointer;
+    filter: drop-shadow(5px 5px 5px black);
+}
+
+.targetArticle:hover .image-wrap img{
+    filter: brightness(100%);
+}
+
+.targetArticle:hover .image-wrap img:hover{
+    filter: brightness(120%);
+}
+
+.article-delete, .article-name{
+    display: none;
+    visibility: hidden;
+}
+
+.article-name{
+    color: #cce6f4;
+    margin-top: -1%;
+    padding-bottom: 5px;
+    border-bottom: 2px solid #cce6f4;
+}
+
+.article-delete{
+    width: max-content;
+    margin: 0px auto;
+    padding: 5px;
+    transition: background-color .2s;
+}
+
+.targetArticle:hover .article-delete:hover{
+    cursor: pointer;
+    color: #f8dede;
+    background-color: #e05656;
+    border: 2px inset;
+}
+
+.targetArticle:hover{
+    padding: 10px;
+    margin: 0px 10px;
+    height: 70%;
+    border: 2px solid #cce6f4;
+
+    background-color: #175676d5;
+    /* backdrop-filter: blur(5px); */
+    width: 90%;
+    left: 48%;
+    top: 25%;
+    position: fixed;
+    z-index: 100;
+    transform: translateY(-5%) translateX(-50%); 
+}
+
+.targetArticle:hover .article-delete{
+    position: relative;
+    z-index: 101;
+    display: block;
+    visibility: visible;
+    color: #f4cccc;
+    border: 2px solid #f4cccc;
+    border-radius: 5px;
+}
+
+.targetArticle:hover .article-name{
+    position: relative;
+    z-index: 101;
+    display: block;
+    visibility: visible;
+}
+
+.article-error{
+    color: #cce6f4;
 }

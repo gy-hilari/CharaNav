@@ -1,0 +1,81 @@
+.article-image-scroller{
+    margin: 5px;
+    border: 1px inset;
+    border-radius: 5px;
+    max-height: 280px;
+    overflow-y: scroll;
+}
+
+/* #article-name{
+    font-size: 22px;
+    text-align: center;
+    border-radius: 5px;
+    display: block;
+    margin: 0px auto;
+    padding: 5px;
+} */
+
+#article-text{
+    border-radius: 5px;
+    padding:10px;
+    max-height: 180px;
+    font-size: 22px;
+    text-align: center;
+    width: 90%;
+    display: block;
+    margin: 5px auto 5px auto;
+    resize: none;
+    overflow-y: scroll;
+}
+
+/* #article-name:focus, #article-text:focus{
+    outline: none;
+} */
+
+#article-name{
+    text-align: center;
+    display: block;
+    margin: 10px auto 10px auto;
+    font-size: 20px;
+    color: #175676;
+    border: 2px solid #175676;
+    background-color: #b2c9d4;
+    padding: 8px;
+    border-radius: 5px;
+    transition: background-color .5s;
+}
+
+#article-name:focus{
+    outline: none;
+    background-color: white;
+}
+
+
+.art-form-button{
+    display: inline-block;
+    margin: 2px;
+    width: max-content;
+    padding: 5px 10px;
+    color: #175676;
+    background-color: #cce6f4;
+    border: 2px solid #175676;
+    border-radius: 10px;
+    /* border-style: outset; */
+    transition: background-color .2s;
+    user-select: none;
+}
+
+.art-form-button:hover{
+    cursor: pointer;
+    border: 2px inset;
+}
+
+.art-form-confirm:hover{
+    color: #536b78;
+    background-color: #ccf4e6;
+}
+
+.art-form-cancel:hover{
+    color: #536b78;
+    background-color: #f4cccc;
+}

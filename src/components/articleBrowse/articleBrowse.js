@@ -11,80 +11,37 @@ const articleBrowse = (props) => {
                 props.articles.map((article, idx) => {
                     return (
                         <Aux key={article.id}>
-                            {/* <p>
-                                {`id: ${article.id} | name: ${article.name}`}
-                            </p> */}
-                            <div>
-                                <div className="targetArticle articleTooltip" onClick={() => {
+                            <div className="targetArticle articleTooltip">
+                                {/* <p className="tooltiptext">
+                                    {article.name}
+                                </p> */}
+                                <div className="image-wrap" onClick={() => {
                                     props.getArticle(article.id);
                                 }}>
-                                    <p className="tooltiptext">
-                                        {/* {`id: ${article.id} | name: ${article.name}`} */}
-                                        {article.name}
-                                    </p>
-                                    <ImageReciever
+                                    {/* <ImageReciever
                                         image={{ path: article.imagePath, class: 'fit hover', wrapSize: 'tiny', master: props.master }}
-                                    />
+                                    /> */}
+                                    <img src={`${props.master}${article.imagePath}`} alt=""/>
                                 </div>
-                                <button onClick={() => {
+                                <h2 className="article-name">{article.name}</h2>
+                                <h4 className="article-delete" onClick={() => {
                                     console.log(article.id);
                                     props.delete(article.id);
-                                }}>{`Delete [${article.name}]`}</button>
+                                }}>{`Delete [${article.name}]`}</h4>
                             </div>
-                            {/* <p>
-                                {article.text}
-                            </p> */}
-                            {/* <hr/> */}
+
                         </Aux>
                     )
                 })
             }
             {
                 !props.articles.length > 0 &&
-                <p>
+                <h2 className="article-error">
                     No articles available!
-                </p>
+                </h2>
             }
         </Aux>
     ) : null;
-    // return props.articles.length > 0 ? (
-    //     <Aux>
-    //         {
-    //             props.articles.map((article, idx) => {
-    //                 return (
-    //                     <Aux key={article.id}>
-    //                         {/* <p>
-    //                             {`id: ${article.id} | name: ${article.name}`}
-    //                         </p> */}
-    //                         <div className="targetArticle articleTooltip" onClick={() => {
-    //                             props.getArticle(article.id);
-    //                         }}>
-    //                             <p className="tooltiptext">
-    //                                 {/* {`id: ${article.id} | name: ${article.name}`} */}
-    //                                 {article.name}
-    //                             </p>
-    //                             <ImageReciever
-    //                                 image={{ path: article.imagePath, class: 'fit hover', wrapSize: 'tiny', master: props.master }}
-    //                             />
-    //                         </div>
-    //                         {/* <p>
-    //                             {article.text}
-    //                         </p> */}
-    //                         {/* <hr/> */}
-    //                     </Aux>
-    //                 )
-    //             })
-    //         }
-    //     </Aux>
-    // )
-    //     :
-    //     (
-    //         <Aux>
-    //             <p>
-    //                 No articles available!
-    //             </p>
-    //         </Aux>
-    //     )
 };
 
 export default articleBrowse;

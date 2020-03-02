@@ -50,6 +50,8 @@ class LayerList extends Component {
             console.log(res);
             this.refreshCharArts();
             this.refreshCharacter();
+            document.getElementById(`${form.charArtId}-range`).value = form.scale;
+            console.log(document.getElementById(`${form.charArtId}-range`).value);
         });
     }
 
@@ -188,19 +190,20 @@ class LayerList extends Component {
                                     // ADD MODE & MENU: "ASSIGN ARTICLE FORM" --> CONVERT TO CLASS
                                     // STATE / PROPS: CURRENT ACTIVE LAYER
                                 }
-                                <p>Lock Layers</p>
-                                <input type="checkbox" className="drag-toggle" id="character-edit-toggle" onChange={() => {
-                                    // console.log(document.getElementById('character-edit-toggle').checked);
-                                    this.setState({ dragState: this.state.dragState === true ? 'disabled' : true });
-                                }} defaultChecked />
-                                <button onClick={() => {
-                                    this.props.newLayer({
-                                        // name: `Layer`,
-                                        zIndex: 100,
-                                        charId: this.props.charId
-                                    });
-                                }}>Add Layer</button>
-                                <hr />
+                                <div className="layers-controls">
+                                    <p>Lock Layers</p>
+                                    <input type="checkbox" className="drag-toggle" id="character-edit-toggle" onChange={() => {
+                                        // console.log(document.getElementById('character-edit-toggle').checked);
+                                        this.setState({ dragState: this.state.dragState === true ? 'disabled' : true });
+                                    }} defaultChecked />
+                                    <button onClick={() => {
+                                        this.props.newLayer({
+                                            // name: `Layer`,
+                                            zIndex: 100,
+                                            charId: this.props.charId
+                                        });
+                                    }}>Add Layer</button>
+                                </div>
                                 <div className="layer-scroll">
                                     {
                                         this.props.layers.length > 0 &&
@@ -270,11 +273,11 @@ class LayerList extends Component {
                                                                                 <button onClick={() => {
                                                                                     this.updateCharArtStartPos(charArt.id, 2, 350);
                                                                                 }}>Re-Center</button>
-                                                                                <p>
-                                                                                    {`Scale: ${charArt.scale}`}
-                                                                                </p>
                                                                             </Aux>
                                                                         }
+                                                                        <p>
+                                                                            {`Scale: ${charArt.scale}`}
+                                                                        </p>
                                                                         <input type="range" id={`${charArt.id}-range`} defaultValue={charArt.scale}
                                                                             onMouseUp={() => {
                                                                                 console.log(`charArt[${charArt.id}] scale value: ${document.getElementById(`${charArt.id}-range`).value}`);

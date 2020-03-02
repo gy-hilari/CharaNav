@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Aux from '../../hoc/Auxi';
 import ImageReciever from '../imageReciever/imageReciever';
+import './viewArticle.css';
 
 class ViewArticle extends Component {
     state = {
@@ -25,13 +26,14 @@ class ViewArticle extends Component {
     render() {
         return (
             <Aux>
+                <div className="liner"></div>
                 {
                     !this.state.editName &&
-                    <p onDoubleClick={() => {
+                    <h2 className="article-title" onDoubleClick={() => {
                         this.setState({ editName: true });
                     }}>
                         {this.props.article.name}
-                    </p>
+                    </h2>
                 }
                 {
                     this.state.editName &&
@@ -50,17 +52,22 @@ class ViewArticle extends Component {
                         }}
                     />
                 }
-                <hr />
-                <ImageReciever
-                    image={{ path: this.props.article.imagePath, class: 'fit', wrapSize: 'full', master: this.props.master }}
-                />
+                <div className="article-image-wrap">
+                    <ImageReciever
+                        image={{ path: this.props.article.imagePath, class: 'fit', wrapSize: 'full', master: this.props.master }}
+                    />                    
+                </div>
                 {
                     !this.state.editDesc &&
-                    <p onDoubleClick={() => {
-                        this.setState({ editDesc: true });
-                    }}>
-                        {this.props.article.text}
-                    </p>
+                    <Aux>
+                        <div className="article-text">
+                            <p onDoubleClick={() => {
+                                this.setState({ editDesc: true });
+                            }}>
+                                {this.props.article.text}
+                            </p>
+                        </div>
+                    </Aux>
                 }
                 {
                     this.state.editDesc &&

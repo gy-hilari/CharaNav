@@ -1,31 +1,23 @@
-.Character:hover{
-    cursor: pointer;
-}
-
-.Character{
-    color: rgb(101, 83, 255);
-}
-
-.tooltip {
+/* .tooltip {
     position: relative;
     display: block;
-    border-bottom: 1px dotted black;
-  }
+  } */
   
 .tooltip .tooltiptext {
     visibility: hidden;
     opacity: 0;
-    width: 200%;
-    bottom: 210%;
-    left: 50%;
+    width: 50%;
+    bottom: 75%;
+    left: 125%;
     margin-left: -100%; 
-    background-color: black;
+    background-color: #4ba3c3;
     color: #fff;
     text-align: center;
     border-radius: 6px;
     padding: 5px 0;
     transition: opacity .5s;
 
+    font-size: 10px;
     /* Position the tooltip */
     position: absolute; 
     z-index: 1;
@@ -40,3 +32,85 @@
     width: 120px;
 }
 
+.form-ui{
+    display: block;
+    margin-top: -15px;
+    padding-top: 20px;
+    margin-bottom: 25px;
+    border-top: 2px solid #cee5f2;
+}
+
+.char-form, .article-form{
+    max-height: 80%;
+    overflow-y: auto;
+    padding: 2%;
+    z-index: 101;
+    position: fixed;
+    transform: translateX(-50%);
+    left: 50%;
+    top: 25%;
+    background-color: #cee5f2;
+    border-radius: 3px;
+    filter: drop-shadow(5px 5px 5px #0f2530);
+}
+
+@media only screen and (max-width: 875px){
+    .char-form, .article-form{
+        width: 60%;
+    }
+}
+
+@media only screen and (min-width: 875px){
+    .char-form, .article-form{
+        width: 40%;
+    }
+}
+
+
+.backdrop {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    z-index: 100;
+    left: 0;
+    top: 0;
+    background-color: rgba(0, 0, 0, .5);
+}
+
+.comp-title{
+    margin-top: 20px;
+    color: #cee5f2;
+}
+
+.browse-button, .form-button{
+    position: relative;
+    margin: 10px 5px 0px 5px;
+    display: inline-block;
+    width: max-content;
+    padding: 5px 10px;
+    color: #cce6f4;
+    background-color: #175676;
+    border: 2px solid #cce6f4;
+    border-radius: 10px;
+    /* border-style: outset; */
+    transition: border-style 1s, background-color .2s;
+    user-select: none;
+}
+
+.browse-button:hover, .form-button:hover{
+    cursor: pointer;
+    border-style: inset;
+    color: #536b78;
+    background-color: #cce6f4;
+}
+
+.buffer{
+    margin-bottom: 20px;
+}
+
+.scroller{
+    margin: 10px auto 0px auto;
+    width: 80%;
+    height: 76%;
+    overflow-y: auto;
+}

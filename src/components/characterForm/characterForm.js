@@ -1,12 +1,13 @@
 import React from 'react';
 import Aux from '../../hoc/Auxi';
+import './characterForm.css';
 
 const characterForm = (props) => {
     return props.formMode === 'char' ? (
         <Aux>
             <h2>New Character:</h2>
-            <input id="newChar-name" type="text" placeholder="name" />
-            <button onClick={() => {
+            <input id="newChar-name" type="text" placeholder="Character Name" />
+            <h4 className="button confirm" onClick={() => {
                 props.newChar({
                     compId: props.compId,
                     name: document.getElementById('newChar-name').value
@@ -17,14 +18,12 @@ const characterForm = (props) => {
                 ) props.setFormMode(null);
             }}>
                 Create Character
-                </button>
-            <button onClick={() => {
+                </h4>
+            <h4 className="button cancel" onClick={() => {
                 props.setFormMode(null);
             }}>
                 Cancel
-            </button>
-
-            <hr />
+            </h4>
         </Aux>
     ) : null;
 };

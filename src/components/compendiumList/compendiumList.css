@@ -30,9 +30,9 @@
 }
 
 .comp-scroller{
-    margin: 20px auto 0px auto;
+    margin: 10px auto 0px auto;
     width: 80%;
-    height: 94%;
+    height: 86%;
     overflow-y: auto;
 }
 

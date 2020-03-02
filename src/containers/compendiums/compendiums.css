@@ -1,10 +1,38 @@
 .nav-ui {
-    background-color: lightblue;
+    background-color: #4ba3c3;
     position: fixed;
     z-index: 1000;
     height: 30px;
     width: 100%;
+    padding: 10px;
+    /* filter: drop-shadow(2px 2px 5px rgba(0, 0, 0, 0.506)); */
 }
+
+.nav-button{
+    position: relative;
+    margin: 10px auto 0px auto;
+    display: inline-block;
+    width: max-content;
+    padding: 5px 10px;
+    color: #cce6f4;
+    background-color: #175676;
+    border: 2px solid #cce6f4;
+    border-radius: 10px;
+    /* border-style: outset; */
+    transition: border-style 1s, background-color .2s;
+    user-select: none;
+}
+
+.nav-button:hover{
+    cursor: pointer;
+    border-style: inset;
+    color: #536b78;
+    background-color: #cce6f4;
+}
+
+/* .buffer{
+    margin-bottom: 5px;
+} */
 
 html, body, #root, .App, .App>.main-scene {
     height: 100%;
@@ -12,6 +40,9 @@ html, body, #root, .App, .App>.main-scene {
 
 .main-scene {
     background-color: #175676;
+    overflow-y: auto;
+    overflow-x: hidden;
+    position: relative;
 }
 
 .compendium-form {
@@ -28,38 +59,41 @@ html, body, #root, .App, .App>.main-scene {
     filter: drop-shadow(5px 5px 5px #0f2530);
 }
 
-.compendium-form input {
-    text-align: center;
-}
-
 .compendium-form input{
+    text-align: center;
     display: block;
     margin: 0px auto 10px auto;
     font-size: 20px;
+    color: #175676;
+    border: 2px solid #175676;
+    background-color: #b2c9d4;
+    padding: 8px;
     border-radius: 5px;
+    transition: background-color .5s;
 }
 
 .compendium-form input:focus{
     outline: none;
+    background-color: white;
 }
 
-.compendium-form p {
+.compendium-form h4 {
     display: inline-block;
     margin: 2px;
     width: max-content;
-    padding: 5px;
-    color: #cce6f4;
-    background-color: #4ba3c3;
-    border: 1px outset;
+    padding: 5px 10px;
+    color: #175676;
+    background-color: #cce6f4;
+    border: 2px solid #175676;
     border-radius: 10px;
     /* border-style: outset; */
-    transition: border-style 1s, background-color .2s;
+    transition: background-color .2s;
     user-select: none;
 }
 
-.compendium-form p:hover {
+.compendium-form h4:hover {
     cursor: pointer;
-    border-style: inset;
+    border: 2px inset;
 }
 
 .create-comp-confirm:hover{
