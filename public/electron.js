@@ -930,8 +930,14 @@ function GetArticleById(id) {
 function CreateArticle(form) {
     return new Promise((resolve, reject) => {
         console.log(form.image);
-        if (!form.image) reject('Invalid form');
-        if (form.image) db.serialize(() => {
+        // FFS ADD SOME REAL VALIDATION LATER 
+        if (!form.image ||
+            !form.text.length > 0 ||
+            !form.name.length > 0) reject('Invalid form');
+        if (form.image &&
+            form.text.length > 0 &&
+            form.name.length > 0
+        ) db.serialize(() => {
             let stmt = db.prepare(
                 `INSERT INTO article (
                     _id,

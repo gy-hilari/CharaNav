@@ -23,7 +23,9 @@ class Compendiums extends Component {
         activeImageSelect: null,
         formMode: null,
         browseMode: 'char',
-        creatingComp: false
+        creatingComp: false,
+        deleting: false,
+        deleteData: null
     };
 
     componentDidMount() {
@@ -185,10 +187,41 @@ class Compendiums extends Component {
         this.setState({ browseMode: mode });
     }
 
+    deleteConfirm = (delData) => {
+        this.setState({ deleting: true, deleteData: delData });
+    }
+
     render() {
         return (
             <Aux>
                 <div className="main-scene">
+                    {
+                        this.state.deleting &&
+                        <Aux>
+                            <div className="delete-confirmer">
+                                <h2>
+                                    Delete <span>"{this.state.deleteData.name}"</span>?
+                                </h2>
+                                <button onClick={() => {
+                                    this.setState({ deleting: false });
+                                }}>Cancel</button>
+                                <button onClick={() => {
+                                    if (this.state.deleteData.route === 'comp') {
+                                        this.deleteCompById(this.state.deleteData.id);
+                                    }
+                                    if (this.state.deleteData.route === 'char') {
+                                        this.deleteCharById(this.state.deleteData.id);
+                                    }
+                                    if (this.state.deleteData.route === 'art') {
+                                        this.deleteArticleById(this.state.deleteData.id);
+                                    }
+                                    this.setState({ deleteData: null });
+                                    this.setState({ deleting: false });
+                                }}>Delete</button>
+                            </div>
+                            <div className="backdrop"></div>
+                        </Aux>
+                    }
                     {
                         this.state.scene === 'comps' &&
                         <Aux>
@@ -229,6 +262,7 @@ class Compendiums extends Component {
                                 getArticles={this.getCompArticles}
                                 clearChar={this.clearActiveChar}
                                 delete={this.deleteCompById}
+                                deleteConfirm={this.deleteConfirm}
                             />
                         </Aux>
                     }
@@ -266,6 +300,8 @@ class Compendiums extends Component {
                                 setFormMode={this.setFormMode}
                                 setBrowseMode={this.setBrowseMode}
                                 browseMode={this.state.browseMode}
+
+                                deleteConfirm={this.deleteConfirm}
 
                                 compArts={this.state.compArts}
                                 getArticle={this.getArticle}
@@ -310,9 +346,9 @@ class Compendiums extends Component {
                             }}>Back to Compendium</h4>
                             {
                                 this.state.activeChar &&
-                                <button onClick={() => { this.setState({ scene: 'char' }); }}>
+                                <h4 className="nav-button" onClick={() => { this.setState({ scene: 'char' }); }}>
                                     Back to Character
-                                </button>
+                                </h4>
                             }
                             <hr />
                             <ArticleBrowse
@@ -327,13 +363,14 @@ class Compendiums extends Component {
                         <Aux>
                             <h4 className="nav-button" onClick={() => {
                                 this.clearActiveChar();
+                                this.setBrowseMode('article');
                                 this.setState({ scene: 'comp' });
                             }}>Back to Compendium</h4>
                             {
                                 this.state.activeChar &&
-                                <button onClick={() => { this.setState({ scene: 'char' }); }}>
+                                <h4 className="nav-button" onClick={() => { this.setState({ scene: 'char' }); }}>
                                     Back to Character
-                                </button>
+                                </h4>
                             }
                             <ViewArticle
                                 article={this.state.activeArticle}

@@ -2,21 +2,22 @@
     cursor: pointer;
 } */
 
-.Compendium{
+.Compendium {
     color: #cce6f4;
     margin: 0px;
     /* border-bottom: 1px dotted black; */
 }
 
-.buffer{
+.buffer {
     margin-bottom: 20px;
 }
+
 /* .Compendium:hover{
     color: #ffe2e5;
     filter: drop-shadow(2px 2px 2px #175676);
 } */
 
-.comp-card{
+.comp-card {
     background-color: #4ba3c3;
     border-radius: 2px;
     /* background-image: linear-gradient(#4ba3c3, #3985a1); */
@@ -26,30 +27,58 @@
     /* transition: background-color .5s, transform .5s; */
     /* border: none; */
     transform: scale(.9);
-    transition: background-color .2s, transform .3s, filter .5s;
+    transition: background-color .2s, transform .3s, filter .5s, padding .5s;
 }
 
-.comp-scroller{
+.comp-scroller {
     margin: 10px auto 0px auto;
     width: 80%;
     height: 86%;
     overflow-y: auto;
 }
 
-.comp-scroller::-webkit-scrollbar{
+.comp-scroller::-webkit-scrollbar {
     display: none;
 }
 
-.comp-card:hover{
-    cursor: pointer;
+.comp-card:hover {
+    padding: 25px 10px;
     /* background-image: linear-gradient(#efa1ae, #efa1ae); */
     background-color: #cee5f2;
     /* filter: drop-shadow(-5px 5px 5px #175676); */
-    transform:translateY(-5px) scale(1);
+    transform: translateY(-5px) scale(1);
     /* border: 3px inset; */
 }
 
-.comp-card:hover h4{
+.comp-card h4{
+    transition: font-size .2s;
+}
+
+.comp-card:hover h4 {
     color: #536b78;
     user-select: none;
+}
+
+.comp-card h4:hover {
+    cursor: pointer;
+    color: #0d9bcf !important;
+    font-size: 20px;
+}
+
+.comp-delete {
+    color: #9f9999;
+    background-color: #c8bebe;
+    width: max-content;
+    margin: 10px auto 0px auto;
+    padding: 5px 15px;
+    font-size: 12px;
+    transition: font-size .5s;
+}
+
+.comp-delete:hover {
+    cursor: pointer;
+    color: #963c3c;
+    padding: 10px 20px;
+    font-size: 14px;
+    background-color: #f5aeae;
 }

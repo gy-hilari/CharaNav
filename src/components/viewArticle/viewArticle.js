@@ -15,7 +15,7 @@ class ViewArticle extends Component {
             this.props.refresh(this.props.article.id);
         });
     }
-    
+
     updateArticleText = (form) => {
         window.api.promise('/put/article/text', form, (res) => {
             console.log(res);
@@ -37,25 +37,38 @@ class ViewArticle extends Component {
                 }
                 {
                     this.state.editName &&
-                    <input type="text"
-                        id={`${this.props.article.id}-edit-name`}
-                        placeholder={this.props.article.name}
-                        onKeyPress={(e) => {
-                            if (e.key === 'Enter') {
-                                console.log(document.getElementById(`${this.props.article.id}-edit-name`).value);
-                                this.updateArticleName({
-                                    id: this.props.article.id,
-                                    name: document.getElementById(`${this.props.article.id}-edit-name`).value
-                                });
-                                this.setState({ editName: false });
-                            }
-                        }}
-                    />
+                    <div className="article-rename">
+                        <input type="text"
+                            id={`${this.props.article.id}-edit-name`}
+                            placeholder={this.props.article.name}
+                            onKeyPress={(e) => {
+                                if (e.key === 'Enter') {
+                                    console.log(document.getElementById(`${this.props.article.id}-edit-name`).value);
+                                    this.updateArticleName({
+                                        id: this.props.article.id,
+                                        name: document.getElementById(`${this.props.article.id}-edit-name`).value
+                                    });
+                                    this.setState({ editName: false });
+                                }
+                            }}
+                        />
+                        <button onClick={() => {
+                            this.setState({ editName: false });
+                        }}>Cancel</button>
+                        <button onClick={() => {
+                            console.log(document.getElementById(`${this.props.article.id}-edit-name`).value);
+                            this.updateArticleName({
+                                id: this.props.article.id,
+                                name: document.getElementById(`${this.props.article.id}-edit-name`).value
+                            });
+                            this.setState({ editName: false });
+                        }}>Rename</button>
+                    </div>
                 }
                 <div className="article-image-wrap">
                     <ImageReciever
                         image={{ path: this.props.article.imagePath, class: 'fit', wrapSize: 'full', master: this.props.master }}
-                    />                    
+                    />
                 </div>
                 {
                     !this.state.editDesc &&
@@ -71,20 +84,32 @@ class ViewArticle extends Component {
                 }
                 {
                     this.state.editDesc &&
-                    <textarea type="text"
-                        id={`${this.props.article.id}-edit-desc`}
-                        placeholder={this.props.article.text}
-                        onKeyPress={(e) => {
-                            if (e.key === 'Enter') {
+                    <Aux>
+                        <textarea type="text"
+                            className="article-retype"
+                            id={`${this.props.article.id}-edit-desc`}
+                            defaultValue={this.props.article.text}
+                            // onKeyPress={(e) => {
+                            //     if (e.key === 'Enter') {
+                            //     }
+                            // }}
+                            cols="30"
+                            rows="10"
+                        ></textarea>
+                        <div className="article-retype-ui">
+                            <button onClick={() => {
+                                this.setState({ editDesc: false });
+                            }}>Cancel</button>
+                            <button onClick={() => {
                                 console.log(document.getElementById(`${this.props.article.id}-edit-desc`).value);
                                 this.updateArticleText({
                                     id: this.props.article.id,
                                     text: document.getElementById(`${this.props.article.id}-edit-desc`).value
                                 });
                                 this.setState({ editDesc: false });
-                            }
-                        }}
-                    ></textarea>
+                            }}>Submit</button>
+                        </div>
+                    </Aux>
                 }
             </Aux>
         );

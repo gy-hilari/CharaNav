@@ -101,27 +101,42 @@ class LayerList extends Component {
                     {
                         <div className="canvas-interface" id="canvas-interface">
                             {
-                                !this.state.editing &&
-                                <h2 onDoubleClick={() => {
+                                // !this.state.editing &&
+                                <h2 className="character-title" onDoubleClick={() => {
                                     this.setState({ editing: true });
                                 }}>{this.props.char.name}</h2>
                             }{
                                 this.state.editing &&
-                                <input type="text"
-                                    style={{ display: 'block', margin: '0px auto' }}
-                                    id={`${this.props.charId}-edit`}
-                                    placeholder={this.props.char.name}
-                                    onKeyPress={(e) => {
-                                        if (e.key === 'Enter') {
+                                <Aux>
+                                    <div className="character-rename">
+                                        <input type="text"
+                                            id={`${this.props.charId}-edit`}
+                                            defaultValue={this.props.char.name}
+                                            onKeyPress={(e) => {
+                                                if (e.key === 'Enter') {
+                                                    console.log(document.getElementById(`${this.props.charId}-edit`).value);
+                                                    this.updateCharName({
+                                                        id: this.props.charId,
+                                                        name: document.getElementById(`${this.props.charId}-edit`).value
+                                                    });
+                                                    this.setState({ editing: false });
+                                                }
+                                            }}
+                                        />
+                                        <button onClick={() => {
+                                            this.setState({ editing: false });
+                                        }}>Cancel</button>
+                                        <button onClick={() => {
                                             console.log(document.getElementById(`${this.props.charId}-edit`).value);
                                             this.updateCharName({
                                                 id: this.props.charId,
                                                 name: document.getElementById(`${this.props.charId}-edit`).value
                                             });
                                             this.setState({ editing: false });
-                                        }
-                                    }}
-                                />
+                                        }}>Rename</button>
+                                    </div>
+                                    <div className="backdrop"></div>
+                                </Aux>
                             }
                             <div className="article-canvas">
                                 {
@@ -137,7 +152,7 @@ class LayerList extends Component {
                                                                         charArt={charArt}
                                                                         getArticle={this.props.getArticle}
                                                                         dragMode={this.state.dragState}
-                                                                        dragScale={.96}
+                                                                        dragScale={.88}
                                                                         posX={charArt.positionX}
                                                                         posY={charArt.positionY}
                                                                         getArticles={this.props.getArticles}
@@ -165,7 +180,7 @@ class LayerList extends Component {
                                                                         charArt={charArt}
                                                                         getArticle={this.props.getArticle}
                                                                         dragMode={this.state.dragState}
-                                                                        dragScale={0.58}
+                                                                        dragScale={0.55}
                                                                         posX={charArt.positionX}
                                                                         posY={charArt.positionY}
                                                                         getArticles={this.props.getArticles}
@@ -191,11 +206,20 @@ class LayerList extends Component {
                                     // STATE / PROPS: CURRENT ACTIVE LAYER
                                 }
                                 <div className="layers-controls">
-                                    <p>Lock Layers</p>
-                                    <input type="checkbox" className="drag-toggle" id="character-edit-toggle" onChange={() => {
+                                    <div className="layer-locker">
+                                        <h2>Lock Layers</h2>
+                                        <label className="switch">
+                                            <input className="layer-lock" type="checkbox" id="character-edit-toggle" onChange={() => {
+                                                // console.log(document.getElementById('character-edit-toggle').checked);
+                                                this.setState({ dragState: this.state.dragState === true ? 'disabled' : true });
+                                            }} defaultChecked />
+                                            <span className="slider round"></span>
+                                        </label>
+                                    </div>
+                                    {/* <input type="checkbox" className="drag-toggle" id="character-edit-toggle" onChange={() => {
                                         // console.log(document.getElementById('character-edit-toggle').checked);
                                         this.setState({ dragState: this.state.dragState === true ? 'disabled' : true });
-                                    }} defaultChecked />
+                                    }} defaultChecked /> */}
                                     <button onClick={() => {
                                         this.props.newLayer({
                                             // name: `Layer`,
@@ -222,29 +246,36 @@ class LayerList extends Component {
                                                         {
                                                             this.state.editLayer === layer.id &&
                                                             <Aux>
-                                                                <input type="text" id={`${layer.id}-name`} defaultValue={layer.name} />
-                                                                <button onClick={() => {
+                                                                <input className="layer-edit" type="text" id={`${layer.id}-name`} defaultValue={layer.name}
+                                                                    onKeyPress={(e) => {
+                                                                        if (e.key === 'Enter') {
+                                                                            this.updateLayerName({ id: layer.id, name: document.getElementById(`${layer.id}-name`).value });
+                                                                            this.setState({ editLayer: null });
+                                                                        }
+                                                                    }}
+                                                                />
+                                                                <button className="charart-control" onClick={() => {
                                                                     console.log(document.getElementById(`${layer.id}-name`).value);
                                                                     this.updateLayerName({ id: layer.id, name: document.getElementById(`${layer.id}-name`).value });
                                                                     this.setState({ editLayer: null });
                                                                 }}>Rename</button>
+                                                                <button className="charart-control" onClick={() => {
+                                                                    this.setState({ editLayer: null });
+                                                                }}>Cancel</button>
                                                             </Aux>
                                                         }
-                                                        <button onClick={() => {
-                                                            this.props.delete(layer.id);
-                                                        }}>Delete Layer</button>
-                                                        <hr />
-                                                        <button onClick={() => {
+                                                        <button className="charart-control z-up" onClick={() => {
                                                             console.log('test');
                                                             this.shiftLayerZIndex({ targetLayerId: layer.id, shiftValue: 1 });
                                                         }}>Up</button>
-                                                        <button onClick={() => {
+                                                        <button className="charart-control z-down" onClick={() => {
                                                             this.shiftLayerZIndex({ targetLayerId: layer.id, shiftValue: -1 });
                                                         }}>Down</button>
+                                                        <hr />
                                                         {
                                                             // this.state.assigningLayer === false &&
                                                             <button onClick={() => {
-                                                                this.setState({ assigningLayer: true, activeLayerData: { layerId: layer.id, charId: this.props.charId } });
+                                                                this.setState({ assigningLayer: true, activeLayerData: { layerId: layer.id, charId: this.props.charId, name: layer.name } });
                                                             }}>Add Article</button>
                                                         }
                                                         {/* <p>{`${num}.) ${layer.name} | zIndex: ${layer.zIndex}`}</p> */}
@@ -264,13 +295,13 @@ class LayerList extends Component {
                                                                         {
                                                                             this.state.dragState === 'disabled' &&
                                                                             <Aux>
-                                                                                <button onClick={() => {
+                                                                                <button className="charart-control" onClick={() => {
                                                                                     this.updateCharArtScale({
                                                                                         charArtId: charArt.id,
                                                                                         scale: 15
                                                                                     });
                                                                                 }}>Reset Scale</button>
-                                                                                <button onClick={() => {
+                                                                                <button className="charart-control" onClick={() => {
                                                                                     this.updateCharArtStartPos(charArt.id, 2, 350);
                                                                                 }}>Re-Center</button>
                                                                             </Aux>
@@ -278,14 +309,16 @@ class LayerList extends Component {
                                                                         <p>
                                                                             {`Scale: ${charArt.scale}`}
                                                                         </p>
-                                                                        <input type="range" id={`${charArt.id}-range`} defaultValue={charArt.scale}
-                                                                            onMouseUp={() => {
-                                                                                console.log(`charArt[${charArt.id}] scale value: ${document.getElementById(`${charArt.id}-range`).value}`);
-                                                                                this.updateCharArtScale({
-                                                                                    charArtId: charArt.id,
-                                                                                    scale: document.getElementById(`${charArt.id}-range`).value
-                                                                                });
-                                                                            }} />
+                                                                        <div className="slidecontainer">
+                                                                            <input className="z-slider" type="range" id={`${charArt.id}-range`} defaultValue={charArt.scale}
+                                                                                onMouseUp={() => {
+                                                                                    console.log(`charArt[${charArt.id}] scale value: ${document.getElementById(`${charArt.id}-range`).value}`);
+                                                                                    this.updateCharArtScale({
+                                                                                        charArtId: charArt.id,
+                                                                                        scale: document.getElementById(`${charArt.id}-range`).value
+                                                                                    });
+                                                                                }} />
+                                                                        </div>
                                                                         <button onClick={() => {
                                                                             this.deleteCharArtById(charArt.id);
                                                                         }}>Unassign Article</button>
@@ -295,6 +328,10 @@ class LayerList extends Component {
                                                                     )
                                                             })
                                                         }
+                                                        <hr/>
+                                                        <button onClick={() => {
+                                                            this.props.delete(layer.id);
+                                                        }}>Delete Layer</button>
                                                     </div>
                                                 </Aux>
                                             )
@@ -302,9 +339,9 @@ class LayerList extends Component {
                                     }
                                     {
                                         !this.props.layers.length > 0 &&
-                                        <p>
+                                        <h4>
                                             No layers yet!
-                                        </p>
+                                        </h4>
                                     }
                                 </div>
                             </div>
@@ -314,7 +351,7 @@ class LayerList extends Component {
                         this.state.assigningLayer === true &&
                         <Aux>
                             <div className="article-modal">
-                                <h2>Assigning article to layer {`[${this.state.activeLayerData.layerId}]`}</h2>
+                                <h2>Assigning article to layer {`[${this.state.activeLayerData.name}]`}</h2>
                                 <ArticleList
                                     articles={this.props.articles}
                                     layerId={this.state.activeLayerData.layerId}

@@ -62,6 +62,8 @@ const articleForm = (props) => {
                 Create Article
             </h4>
             <h4 className="art-form-button art-form-cancel" onClick={() => {
+                props.setActiveImg(null);
+                props.setImgBrowse(false);
                 props.setFormMode(null);
             }}>
                 Cancel

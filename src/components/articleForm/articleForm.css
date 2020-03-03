@@ -28,6 +28,9 @@
     overflow-y: scroll;
 }
 
+#article-text:focus{
+    outline: none;
+}
 /* #article-name:focus, #article-text:focus{
     outline: none;
 } */

@@ -33,7 +33,7 @@ class CharacterBrowse extends Component {
                                     {
                                         this.state.hoverChar === elm.id &&
                                         <h5 className="char-delete" onClick={() => {
-                                            this.props.delete(elm.id);
+                                            this.props.deleteConfirm({route: 'char', name: elm.name, id: elm.id});
                                         }}>{`Delete ${elm.name}`}</h5>
                                     }
                                 </div>

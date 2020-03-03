@@ -21,12 +21,12 @@ const articleBrowse = (props) => {
                                     {/* <ImageReciever
                                         image={{ path: article.imagePath, class: 'fit hover', wrapSize: 'tiny', master: props.master }}
                                     /> */}
-                                    <img src={`${props.master}${article.imagePath}`} alt=""/>
+                                    <img src={`${props.master}${article.imagePath}`} alt="" />
                                 </div>
                                 <h2 className="article-name">{article.name}</h2>
                                 <h4 className="article-delete" onClick={() => {
                                     console.log(article.id);
-                                    props.delete(article.id);
+                                    props.deleteConfirm({ route: "art", name: article.name, id: article.id });
                                 }}>{`Delete [${article.name}]`}</h4>
                             </div>
 

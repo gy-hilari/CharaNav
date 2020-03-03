@@ -1,7 +1,8 @@
 .DirTitle:hover{
     cursor: pointer;
+    color: #44c1ff;
 }
 
 .DirTitle{
-    color: blue;
+    color: #175676;
 }

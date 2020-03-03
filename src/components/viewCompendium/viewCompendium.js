@@ -35,22 +35,36 @@ class viewCompendium extends Component {
                 {
                     this.state.editing &&
                     <Aux>
-                        <input
-                            type="text"
-                            id={`${this.props.comp.id}-edit`}
-                            placeholder={this.props.comp.name}
-                            onKeyPress={(e) => {
-                                if (e.key === 'Enter') {
-                                    console.log(document.getElementById(`${this.props.comp.id}-edit`).value);
-                                    this.updateCompName({
-                                        id: this.props.comp.id,
-                                        name: document.getElementById(`${this.props.comp.id}-edit`).value
-                                    });
-                                    this.props.refresh(this.props.comp.id);
-                                    this.setState({ editing: false });
-                                }
-                            }}
-                        />
+                        <div className="comp-rename">
+                            <input
+                                type="text"
+                                id={`${this.props.comp.id}-edit`}
+                                placeholder={this.props.comp.name}
+                                onKeyPress={(e) => {
+                                    if (e.key === 'Enter') {
+                                        console.log(document.getElementById(`${this.props.comp.id}-edit`).value);
+                                        this.updateCompName({
+                                            id: this.props.comp.id,
+                                            name: document.getElementById(`${this.props.comp.id}-edit`).value
+                                        });
+                                        this.props.refresh(this.props.comp.id);
+                                        this.setState({ editing: false });
+                                    }
+                                }}
+                            />
+                            <button onClick={() => {
+                                this.setState({ editing: false });
+                            }}>Cancel</button>
+                            <button onClick={() => {
+                                console.log(document.getElementById(`${this.props.comp.id}-edit`).value);
+                                this.updateCompName({
+                                    id: this.props.comp.id,
+                                    name: document.getElementById(`${this.props.comp.id}-edit`).value
+                                });
+                                this.props.refresh(this.props.comp.id);
+                                this.setState({ editing: false });
+                            }}>Rename</button>
+                        </div>
                     </Aux>
                 }
                 <div>
@@ -147,13 +161,15 @@ class viewCompendium extends Component {
                         setImgBrowse={this.props.setImgBrowse}
                         browseMode={this.props.browseMode}
                         delete={this.props.deleteChar}
-                    />
+                        deleteConfirm={this.props.deleteConfirm}
+                        />
                     <ArticleBrowse
                         articles={this.props.compArts}
                         getArticle={this.props.getArticle}
                         master={this.props.master}
                         browseMode={this.props.browseMode}
                         delete={this.props.deleteArticle}
+                        deleteConfirm={this.props.deleteConfirm}
                     />
                 </div>
             </Aux>
