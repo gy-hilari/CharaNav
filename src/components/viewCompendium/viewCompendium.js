@@ -28,7 +28,7 @@ class viewCompendium extends Component {
             <Aux>
                 {
                     !this.state.editing &&
-                    <h2 className="comp-title" onDoubleClick={() => {
+                    <h2 className="comp-title renamable" onDoubleClick={() => {
                         this.setState({ editing: true });
                     }}>{this.props.comp.name}</h2>
                 }
@@ -52,10 +52,10 @@ class viewCompendium extends Component {
                                     }
                                 }}
                             />
-                            <button onClick={() => {
+                            <h4 className="rename-cancel" onClick={() => {
                                 this.setState({ editing: false });
-                            }}>Cancel</button>
-                            <button onClick={() => {
+                            }}>Cancel</h4>
+                            <h4 className="rename-confirm" onClick={() => {
                                 console.log(document.getElementById(`${this.props.comp.id}-edit`).value);
                                 this.updateCompName({
                                     id: this.props.comp.id,
@@ -63,8 +63,9 @@ class viewCompendium extends Component {
                                 });
                                 this.props.refresh(this.props.comp.id);
                                 this.setState({ editing: false });
-                            }}>Rename</button>
+                            }}>Rename</h4>
                         </div>
+                        <div className="backdrop"></div>
                     </Aux>
                 }
                 <div>
@@ -162,7 +163,7 @@ class viewCompendium extends Component {
                         browseMode={this.props.browseMode}
                         delete={this.props.deleteChar}
                         deleteConfirm={this.props.deleteConfirm}
-                        />
+                    />
                     <ArticleBrowse
                         articles={this.props.compArts}
                         getArticle={this.props.getArticle}

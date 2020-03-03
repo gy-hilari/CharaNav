@@ -1,3 +1,11 @@
+.renamable{
+    transition: font-size .2s;
+}
+.renamable:hover{
+    font-size: 30px;
+    /* margin-top: 16px; */
+}
+
 .delete-confirmer{
     position: fixed;
     z-index: 2147483647;
@@ -17,6 +25,34 @@
 
 .delete-confirmer h2 span{
     color: rgb(251, 222, 222);
+}
+
+.delete-confirmer .rename-cancel:hover{
+    background-color: rgb(85, 70, 70) !important;
+}
+
+.delete-confirmer .rename-confirm:hover{
+    background-color: rgb(241, 0, 0) !important;
+}
+
+
+.rename-confirm, .rename-cancel{
+    display: inline-block;
+    vertical-align: middle;
+    width: max-content;
+    border: 2px solid #cce6f4;
+    padding: 5px 10px;
+    color: #cce6f4;
+    margin: 0px 5px;
+    cursor: pointer;
+}
+
+.rename-confirm:hover{
+    background-color: rgb(6, 188, 55);
+}
+
+.rename-cancel:hover{
+    background-color: rgb(226, 90, 90);
 }
 
 .nav-ui {
@@ -134,5 +170,5 @@ html, body, #root, .App, .App>.main-scene {
     z-index: 200;
     left: 0;
     top: 0;
-    background-color: rgba(0, 0, 0, .5);
+    background-color: rgba(0, 0, 0, 0.6);
 }

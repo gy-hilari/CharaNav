@@ -202,10 +202,10 @@ class Compendiums extends Component {
                                 <h2>
                                     Delete <span>"{this.state.deleteData.name}"</span>?
                                 </h2>
-                                <button onClick={() => {
+                                <h4 className="rename-cancel" onClick={() => {
                                     this.setState({ deleting: false });
-                                }}>Cancel</button>
-                                <button onClick={() => {
+                                }}>Cancel</h4>
+                                <h4 className="rename-confirm" onClick={() => {
                                     if (this.state.deleteData.route === 'comp') {
                                         this.deleteCompById(this.state.deleteData.id);
                                     }
@@ -217,7 +217,7 @@ class Compendiums extends Component {
                                     }
                                     this.setState({ deleteData: null });
                                     this.setState({ deleting: false });
-                                }}>Delete</button>
+                                }}>Delete</h4>
                             </div>
                             <div className="backdrop"></div>
                         </Aux>

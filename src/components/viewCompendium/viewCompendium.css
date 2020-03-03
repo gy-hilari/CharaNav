@@ -118,6 +118,8 @@
 .comp-rename {
     display: block;
     margin: 20px auto 10px auto;
+    position: relative;
+    z-index: 201;
 }
 
 .comp-rename input {

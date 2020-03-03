@@ -1,7 +1,3 @@
--- LAST: 
-	- Stylize layer-list buttons
-	- Stylize deletion buttons
-
 -- LATER: 
 	- FRONT END VALIDATION
 		--> ON PROMISE REJECTION

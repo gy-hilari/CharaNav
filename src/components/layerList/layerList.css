@@ -17,6 +17,10 @@
     cursor: text;
 }
 
+.character-title:hover{
+    color: #b2c9d4;
+}
+
 .backdrop {
     width: 100%;
     height: 100%;
@@ -151,7 +155,7 @@
     transition: opacity .2s;
 }
 
-.z-slider:hover{
+.z-slider:hover {
     opacity: 1;
 }
 
@@ -200,10 +204,42 @@ input:checked+.slider:before {
     display: none;
 }
 
+
+.layer-control-section{
+    margin-bottom: 10px;
+}
+
 .layers-controls {
-    padding-bottom: 15px;
+    padding-bottom: 6px;
     /* border-bottom: 1px solid black; */
     background-color: #4ba3c3;
+}
+
+.layer-control {
+    cursor: pointer;
+    color: #175676 !important;
+    margin: 0px 2px;
+    border: 2px solid #175676;
+    width: max-content;
+    padding: 0px 5px;
+    display: inline-block;
+    opacity: .5;
+    transition: background-color .2s;
+}
+
+.layer-control:hover {
+    background-color: #cee5f2;
+    border: 2px inset;
+    opacity: 1;
+}
+
+.layer-delete:hover{
+    background-color: #ec8080 !important;
+}
+
+.charart-section{
+    border-top: 1px dashed #175676;
+    padding: 10px 0px;
 }
 
 .layer-locker {
@@ -226,6 +262,16 @@ input:checked+.slider:before {
     vertical-align: middle;
 }
 
+.charart-z-button {
+    cursor: pointer;
+    display: inline-block;
+    margin: 2px 2px;
+}
+
+.charart-z-button:hover {
+    filter: brightness(180%);
+}
+
 .layer-section {
     background-color: #cee5f2;
     border-radius: 5px;
@@ -236,13 +282,26 @@ input:checked+.slider:before {
 }
 
 .layer-section p {
+    color: #175676;
     margin: 0px auto 0px auto;
+    user-select: none;
 }
 
-.layer-edit{
+.layer-section .layer-title:hover {
+    cursor: text;
+    color: #4ba3c3;
+    filter: drop-shadow(1px 1px 1px rgb(255, 255, 255));
+}
+
+.layer-edit-controls {
+    margin-bottom: 10px;
+}
+
+.layer-edit {
     background-color: white;
     font-size: 14px;
     width: 80%;
+    margin-bottom: 2px;
 }
 
 .clip-interface {
@@ -252,6 +311,21 @@ input:checked+.slider:before {
     position: relative;
     overflow: hidden;
     /* border: 1px solid black; */
+}
+
+.delete-section{
+    border-top: 1px dashed #175676;
+    padding-top: 10px;
+}
+
+.assigned-article{
+    margin-bottom: 10px;
+}
+
+.rename-charart{
+    color: #175676 !important;
+    border-color: #175676 !important;
+    margin: 0px 2px !important;
 }
 
 @media only screen and (max-width: 875px) {

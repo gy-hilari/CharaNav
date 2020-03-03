@@ -4,6 +4,8 @@ import Aux from '../../hoc/Auxi';
 import ArticleList from '../articleList/articleList';
 import AssignedArticleList from '../assignedArticleList/assignedArticleList';
 import './layerList.css';
+import up from './up.svg';
+import down from './down.svg';
 
 class LayerList extends Component {
     state = {
@@ -123,17 +125,17 @@ class LayerList extends Component {
                                                 }
                                             }}
                                         />
-                                        <button onClick={() => {
+                                        <h4 className="rename-confirm" onClick={() => {
                                             this.setState({ editing: false });
-                                        }}>Cancel</button>
-                                        <button onClick={() => {
+                                        }}>Cancel</h4>
+                                        <h4 className="rename-cancel" onClick={() => {
                                             console.log(document.getElementById(`${this.props.charId}-edit`).value);
                                             this.updateCharName({
                                                 id: this.props.charId,
                                                 name: document.getElementById(`${this.props.charId}-edit`).value
                                             });
                                             this.setState({ editing: false });
-                                        }}>Rename</button>
+                                        }}>Rename</h4>
                                     </div>
                                     <div className="backdrop"></div>
                                 </Aux>
@@ -220,13 +222,13 @@ class LayerList extends Component {
                                         // console.log(document.getElementById('character-edit-toggle').checked);
                                         this.setState({ dragState: this.state.dragState === true ? 'disabled' : true });
                                     }} defaultChecked /> */}
-                                    <button onClick={() => {
+                                    <h4 className="layer-control" onClick={() => {
                                         this.props.newLayer({
                                             // name: `Layer`,
                                             zIndex: 100,
                                             charId: this.props.charId
                                         });
-                                    }}>Add Layer</button>
+                                    }}>Add Layer</h4>
                                 </div>
                                 <div className="layer-scroll">
                                     {
@@ -237,101 +239,112 @@ class LayerList extends Component {
                                                     <div className="layer-section">
                                                         {/* <p>{`Layer [${layer.zIndex}]`}</p> */}
                                                         {/* <p>{layer.name}</p> */}
-                                                        {
-                                                            this.state.editLayer !== layer.id &&
-                                                            <p onDoubleClick={() => {
-                                                                this.setState({ editLayer: layer.id });
-                                                            }}>{layer.name}</p>
-                                                        }
-                                                        {
-                                                            this.state.editLayer === layer.id &&
-                                                            <Aux>
-                                                                <input className="layer-edit" type="text" id={`${layer.id}-name`} defaultValue={layer.name}
-                                                                    onKeyPress={(e) => {
-                                                                        if (e.key === 'Enter') {
+                                                        <div className="layer-control-section">
+                                                            {
+                                                                this.state.editLayer !== layer.id &&
+                                                                <p className="layer-title" onDoubleClick={() => {
+                                                                    this.setState({ editLayer: layer.id });
+                                                                }}>{layer.name}</p>
+                                                            }
+                                                            {
+                                                                this.state.editLayer === layer.id &&
+                                                                <Aux>
+                                                                    <div className="layer-edit-controls">
+                                                                        <input className="layer-edit" type="text" id={`${layer.id}-name`} defaultValue={layer.name}
+                                                                            onKeyPress={(e) => {
+                                                                                if (e.key === 'Enter') {
+                                                                                    this.updateLayerName({ id: layer.id, name: document.getElementById(`${layer.id}-name`).value });
+                                                                                    this.setState({ editLayer: null });
+                                                                                }
+                                                                            }}
+                                                                        />
+                                                                        <h5 className="rename-confirm rename-charart charart-control" onClick={() => {
+                                                                            console.log(document.getElementById(`${layer.id}-name`).value);
                                                                             this.updateLayerName({ id: layer.id, name: document.getElementById(`${layer.id}-name`).value });
                                                                             this.setState({ editLayer: null });
-                                                                        }
-                                                                    }}
-                                                                />
-                                                                <button className="charart-control" onClick={() => {
-                                                                    console.log(document.getElementById(`${layer.id}-name`).value);
-                                                                    this.updateLayerName({ id: layer.id, name: document.getElementById(`${layer.id}-name`).value });
-                                                                    this.setState({ editLayer: null });
-                                                                }}>Rename</button>
-                                                                <button className="charart-control" onClick={() => {
-                                                                    this.setState({ editLayer: null });
-                                                                }}>Cancel</button>
-                                                            </Aux>
-                                                        }
-                                                        <button className="charart-control z-up" onClick={() => {
-                                                            console.log('test');
-                                                            this.shiftLayerZIndex({ targetLayerId: layer.id, shiftValue: 1 });
-                                                        }}>Up</button>
-                                                        <button className="charart-control z-down" onClick={() => {
-                                                            this.shiftLayerZIndex({ targetLayerId: layer.id, shiftValue: -1 });
-                                                        }}>Down</button>
-                                                        <hr />
-                                                        {
-                                                            // this.state.assigningLayer === false &&
-                                                            <button onClick={() => {
-                                                                this.setState({ assigningLayer: true, activeLayerData: { layerId: layer.id, charId: this.props.charId, name: layer.name } });
-                                                            }}>Add Article</button>
-                                                        }
+                                                                        }}>Rename</h5>
+                                                                        <h5 className="rename-cancel rename-charart charart-control" onClick={() => {
+                                                                            this.setState({ editLayer: null });
+                                                                        }}>Cancel</h5>
+                                                                    </div>
+                                                                </Aux>
+                                                            }
+                                                            <div className="character-z-controls">
+                                                                <img onClick={() => {
+                                                                    this.shiftLayerZIndex({ targetLayerId: layer.id, shiftValue: 1 });
+                                                                }} className="charart-z-button z-up" src={up}></img>
+                                                                <img onClick={() => {
+                                                                    this.shiftLayerZIndex({ targetLayerId: layer.id, shiftValue: -1 });
+                                                                }} className="charart-z-button z-down" src={down}></img>
+                                                            </div>
+                                                            {
+                                                                // this.state.assigningLayer === false &&
+                                                                <h5 className="layer-control" onClick={() => {
+                                                                    this.setState({ assigningLayer: true, activeLayerData: { layerId: layer.id, charId: this.props.charId, name: layer.name } });
+                                                                }}>Add Article</h5>
+                                                            }
+                                                        </div>
                                                         {/* <p>{`${num}.) ${layer.name} | zIndex: ${layer.zIndex}`}</p> */}
                                                         {
                                                             this.props.charArts.map((charArt, idx) => {
                                                                 return charArt.layer === layer.id ? (
                                                                     <Aux key={charArt.id}>
-                                                                        <AssignedArticleList
-                                                                            charArt={charArt}
-                                                                            getArticle={this.props.getArticle}
-                                                                            dragMode={false}
-                                                                            // ARTICLE SCALE
-                                                                            getArticles={this.props.getArticles}
-                                                                            master={this.props.master}
-                                                                            setActive={this.setActiveCharArt}
-                                                                        />
-                                                                        {
-                                                                            this.state.dragState === 'disabled' &&
-                                                                            <Aux>
-                                                                                <button className="charart-control" onClick={() => {
-                                                                                    this.updateCharArtScale({
-                                                                                        charArtId: charArt.id,
-                                                                                        scale: 15
-                                                                                    });
-                                                                                }}>Reset Scale</button>
-                                                                                <button className="charart-control" onClick={() => {
-                                                                                    this.updateCharArtStartPos(charArt.id, 2, 350);
-                                                                                }}>Re-Center</button>
-                                                                            </Aux>
-                                                                        }
-                                                                        <p>
-                                                                            {`Scale: ${charArt.scale}`}
-                                                                        </p>
-                                                                        <div className="slidecontainer">
-                                                                            <input className="z-slider" type="range" id={`${charArt.id}-range`} defaultValue={charArt.scale}
-                                                                                onMouseUp={() => {
-                                                                                    console.log(`charArt[${charArt.id}] scale value: ${document.getElementById(`${charArt.id}-range`).value}`);
-                                                                                    this.updateCharArtScale({
-                                                                                        charArtId: charArt.id,
-                                                                                        scale: document.getElementById(`${charArt.id}-range`).value
-                                                                                    });
-                                                                                }} />
+                                                                        <div className="charart-section">
+                                                                            <div className="assigned-article">
+                                                                                <AssignedArticleList
+                                                                                    charArt={charArt}
+                                                                                    getArticle={this.props.getArticle}
+                                                                                    dragMode={false}
+                                                                                    // ARTICLE SCALE
+                                                                                    getArticles={this.props.getArticles}
+                                                                                    master={this.props.master}
+                                                                                    setActive={this.setActiveCharArt}
+                                                                                />
+                                                                            </div>
+                                                                            {
+                                                                                this.state.dragState === 'disabled' &&
+                                                                                <Aux>
+                                                                                    <div>
+                                                                                        <h5 className="layer-control" onClick={() => {
+                                                                                            this.updateCharArtScale({
+                                                                                                charArtId: charArt.id,
+                                                                                                scale: 15
+                                                                                            });
+                                                                                        }}>Reset Scale</h5>
+                                                                                        <h5 className="layer-control" onClick={() => {
+                                                                                            this.updateCharArtStartPos(charArt.id, 2, 350);
+                                                                                        }}>Re-Center</h5>
+                                                                                    </div>
+                                                                                </Aux>
+                                                                            }
+                                                                            <p>
+                                                                                {`Scale: ${charArt.scale}`}
+                                                                            </p>
+                                                                            <div className="slidecontainer">
+                                                                                <input className="z-slider" type="range" id={`${charArt.id}-range`} defaultValue={charArt.scale}
+                                                                                    onMouseUp={() => {
+                                                                                        console.log(`charArt[${charArt.id}] scale value: ${document.getElementById(`${charArt.id}-range`).value}`);
+                                                                                        this.updateCharArtScale({
+                                                                                            charArtId: charArt.id,
+                                                                                            scale: document.getElementById(`${charArt.id}-range`).value
+                                                                                        });
+                                                                                    }} />
+                                                                            </div>
+                                                                            <h5 className="layer-control layer-delete" onClick={() => {
+                                                                                this.deleteCharArtById(charArt.id);
+                                                                            }}>Unassign Article</h5>
                                                                         </div>
-                                                                        <button onClick={() => {
-                                                                            this.deleteCharArtById(charArt.id);
-                                                                        }}>Unassign Article</button>
                                                                     </Aux>
                                                                 ) : (
                                                                         null
                                                                     )
                                                             })
                                                         }
-                                                        <hr/>
-                                                        <button onClick={() => {
-                                                            this.props.delete(layer.id);
-                                                        }}>Delete Layer</button>
+                                                        <div className="delete-section">
+                                                            <h5 className="layer-control layer-delete" onClick={() => {
+                                                                this.props.delete(layer.id);
+                                                            }}>Delete Layer</h5>
+                                                        </div>
                                                     </div>
                                                 </Aux>
                                             )

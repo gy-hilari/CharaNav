@@ -29,7 +29,7 @@ class ViewArticle extends Component {
                 <div className="liner"></div>
                 {
                     !this.state.editName &&
-                    <h2 className="article-title" onDoubleClick={() => {
+                    <h2 className="article-title renamable" onDoubleClick={() => {
                         this.setState({ editName: true });
                     }}>
                         {this.props.article.name}
@@ -37,33 +37,36 @@ class ViewArticle extends Component {
                 }
                 {
                     this.state.editName &&
-                    <div className="article-rename">
-                        <input type="text"
-                            id={`${this.props.article.id}-edit-name`}
-                            placeholder={this.props.article.name}
-                            onKeyPress={(e) => {
-                                if (e.key === 'Enter') {
-                                    console.log(document.getElementById(`${this.props.article.id}-edit-name`).value);
-                                    this.updateArticleName({
-                                        id: this.props.article.id,
-                                        name: document.getElementById(`${this.props.article.id}-edit-name`).value
-                                    });
-                                    this.setState({ editName: false });
-                                }
-                            }}
-                        />
-                        <button onClick={() => {
-                            this.setState({ editName: false });
-                        }}>Cancel</button>
-                        <button onClick={() => {
-                            console.log(document.getElementById(`${this.props.article.id}-edit-name`).value);
-                            this.updateArticleName({
-                                id: this.props.article.id,
-                                name: document.getElementById(`${this.props.article.id}-edit-name`).value
-                            });
-                            this.setState({ editName: false });
-                        }}>Rename</button>
-                    </div>
+                    <Aux>
+                        <div className="article-rename">
+                            <input type="text"
+                                id={`${this.props.article.id}-edit-name`}
+                                placeholder={this.props.article.name}
+                                onKeyPress={(e) => {
+                                    if (e.key === 'Enter') {
+                                        console.log(document.getElementById(`${this.props.article.id}-edit-name`).value);
+                                        this.updateArticleName({
+                                            id: this.props.article.id,
+                                            name: document.getElementById(`${this.props.article.id}-edit-name`).value
+                                        });
+                                        this.setState({ editName: false });
+                                    }
+                                }}
+                            />
+                            <h4 className="rename-cancel" onClick={() => {
+                                this.setState({ editName: false });
+                            }}>Cancel</h4>
+                            <h4 className="rename-confirm" onClick={() => {
+                                console.log(document.getElementById(`${this.props.article.id}-edit-name`).value);
+                                this.updateArticleName({
+                                    id: this.props.article.id,
+                                    name: document.getElementById(`${this.props.article.id}-edit-name`).value
+                                });
+                                this.setState({ editName: false });
+                            }}>Rename</h4>
+                        </div>
+                        <div className="backdrop"></div>
+                    </Aux>
                 }
                 <div className="article-image-wrap">
                     <ImageReciever
@@ -85,30 +88,33 @@ class ViewArticle extends Component {
                 {
                     this.state.editDesc &&
                     <Aux>
-                        <textarea type="text"
-                            className="article-retype"
-                            id={`${this.props.article.id}-edit-desc`}
-                            defaultValue={this.props.article.text}
-                            // onKeyPress={(e) => {
-                            //     if (e.key === 'Enter') {
-                            //     }
-                            // }}
-                            cols="30"
-                            rows="10"
-                        ></textarea>
-                        <div className="article-retype-ui">
-                            <button onClick={() => {
-                                this.setState({ editDesc: false });
-                            }}>Cancel</button>
-                            <button onClick={() => {
-                                console.log(document.getElementById(`${this.props.article.id}-edit-desc`).value);
-                                this.updateArticleText({
-                                    id: this.props.article.id,
-                                    text: document.getElementById(`${this.props.article.id}-edit-desc`).value
-                                });
-                                this.setState({ editDesc: false });
-                            }}>Submit</button>
+                        <div className="article-retype-section">
+                            <textarea type="text"
+                                className="article-retype"
+                                id={`${this.props.article.id}-edit-desc`}
+                                defaultValue={this.props.article.text}
+                                // onKeyPress={(e) => {
+                                //     if (e.key === 'Enter') {
+                                //     }
+                                // }}
+                                cols="30"
+                                rows="10"
+                            ></textarea>
+                            <div className="article-retype-ui">
+                                <h4 className="rename-cancel" onClick={() => {
+                                    this.setState({ editDesc: false });
+                                }}>Cancel</h4>
+                                <h4 className="rename-confirm" onClick={() => {
+                                    console.log(document.getElementById(`${this.props.article.id}-edit-desc`).value);
+                                    this.updateArticleText({
+                                        id: this.props.article.id,
+                                        text: document.getElementById(`${this.props.article.id}-edit-desc`).value
+                                    });
+                                    this.setState({ editDesc: false });
+                                }}>Submit</h4>
+                            </div>
                         </div>
+                        <div className="backdrop"></div>
                     </Aux>
                 }
             </Aux>
