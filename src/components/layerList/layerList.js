@@ -125,10 +125,10 @@ class LayerList extends Component {
                                                 }
                                             }}
                                         />
-                                        <h4 className="rename-confirm" onClick={() => {
+                                        <h4 className="rename-cancel" onClick={() => {
                                             this.setState({ editing: false });
                                         }}>Cancel</h4>
-                                        <h4 className="rename-cancel" onClick={() => {
+                                        <h4 className="rename-confirm" onClick={() => {
                                             console.log(document.getElementById(`${this.props.charId}-edit`).value);
                                             this.updateCharName({
                                                 id: this.props.charId,

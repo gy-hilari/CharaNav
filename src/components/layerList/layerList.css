@@ -43,6 +43,8 @@
 
 .canvas-interface h2 {
     color: #175676;
+    position: relative;
+    z-index: 2147483647;
 }
 
 .character-rename {

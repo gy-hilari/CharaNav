@@ -1,4 +1,4 @@
-@media only screen and (max-width: 500px){
+/* @media only screen and (max-width: 500px){
     .full{
         height: 200px;
     }
@@ -20,6 +20,12 @@
     .full{
         height: 500px;
     }
+} */
+
+.full{
+    /* height: ; */
+    width: max-content;
+    max-width: 60%;
 }
 
 .adjust{
@@ -79,7 +85,7 @@
 }
 
 .wrap .fit{
-    height: 100%;
+    width: 100%;
     /* margin-left: -50%; */
     /* margin-top: -50%; */
 }

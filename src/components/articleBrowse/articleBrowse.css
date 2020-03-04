@@ -5,6 +5,8 @@
     margin: 0px;
     padding: 0px;
     height: max-content;
+
+    transition: width .5s, height .5s;
 }
   
 .articleTooltip .tooltiptext {
@@ -50,6 +52,10 @@
 
 .targetArticle:hover .image-wrap{
     transform: translateY(-15%);
+    /* width: max-content;
+    max-width: 80%; */
+    /* height: 40%; */
+    max-height: 170px;
     width: max-content;
     /* height: 200px; */
     cursor: pointer;
@@ -74,6 +80,7 @@
     margin-top: -1%;
     padding-bottom: 5px;
     border-bottom: 2px solid #cce6f4;
+    user-select: none;
 }
 
 .article-delete{
