@@ -51,8 +51,10 @@ const getFiles = (dir) => {
         .map(file => file.name);
 }
 
-console.log(`Current image dir: ${path.resolve('./images')}`);
-console.log(getDirs('./images'));
+if (isDev) {
+    console.log(`Current image dir: ${path.resolve('./images')}`);
+    console.log(getDirs('./images'));    
+}
 
 const db = new sqlite3.Database(path.join('.', `/${dbDir}/${dbName}.db`));
 
@@ -89,6 +91,7 @@ function createWindow() {
                 nodeIntegration: false,
                 contextIsolation: true,
                 enableRemoteModule: false,
+                devTools: false,
                 preload: path.join(__dirname, "/preload.js")
             },
 
@@ -216,12 +219,7 @@ function CheckOrCreateModels() {
     });
 }
 
-promiseIpc.on('test', () => {
-    return "Testing IPC!!!";
-});
-
 promiseIpc.on('/get/imageDir', () => {
-    console.log('Getting image dirs!');
     let dirData = {};
     dirData['master'] = path.resolve('./images');
     dirData['directories'] = getDirs('./images');
@@ -372,10 +370,6 @@ promiseIpc.on('/get/char/layer', (charId) => {
     });
 });
 
-promiseIpc.on('/get/article', () => {
-});
-
-
 promiseIpc.on('/post/article', (form) => {
     return new Promise((resolve, reject) => {
         CreateArticle(form).then((res) => {
@@ -513,22 +507,6 @@ promiseIpc.on('/get/char/article', (charId) => {
         });
     });
 });
-
-promiseIpc.on('/get/artTag', () => {
-    return GetArtTags();
-})
-
-promiseIpc.on('/post/artTag', (form) => {
-    return CreateArticleTag(form);
-});
-
-promiseIpc.on('/post/article/artTag', (form) => {
-    return AssignArticleTag(form);
-})
-
-promiseIpc.on('/get/article/artTag', (form) => {
-    return GetArticlesByTag();
-})
 
 function GetCompendiums() {
     return new Promise((resolve, reject) => {

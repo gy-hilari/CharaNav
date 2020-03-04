@@ -30,13 +30,13 @@ function InsertChar(comps) {
     });
 }
 ```
-- Fetch data asynchronously with promises, keep daisy chaining promise methods until you get your target data, then resolve that data for access in .then():WES
+- Fetch data asynchronously with promises, keep daisy chaining promise methods until you get your target data, then resolve that data for access in .then();
 ``` javascript
 function CreateModelsAndCharacters() {
     CheckOrCreateModels().then(comp => {
         InsertChar(comp).then(char => {
             console.log(char);
-            resolve(char); // <-- This resolve bubbles out to the outer-most promise!
+            resolve(char); // <-- This resolve bubbles out to the outer promise!
         })
     });
 }

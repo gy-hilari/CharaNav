@@ -1,3 +1,16 @@
+-- FINALIZE:
+	- Create Logo, Icons
+	- Show build version / branch on home page
+	- Investigate electron updater
+		--> Might not work on unsigned app!
+	- Develop custom frames
+		--> Reference old project experiment
+	- Finalize available menu options
+	- Finalize license
+	- Create materials for demo use-case
+	- Pitch: "Dynamic Model Sheet Tool"
+	- Outreach: Machine to machine testing, security consultation
+	
 -- LATER: 
 	- FRONT END VALIDATION
 		--> ON PROMISE REJECTION
