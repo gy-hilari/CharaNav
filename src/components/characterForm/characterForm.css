@@ -25,7 +25,6 @@ input:focus{
     background-color: #cce6f4;
     border: 2px solid #175676;
     border-radius: 10px;
-    /* border-style: outset; */
     transition: background-color .2s;
     user-select: none;
 }

@@ -3,7 +3,6 @@
 }
 .renamable:hover{
     font-size: 30px;
-    /* margin-top: 16px; */
 }
 
 .delete-confirmer{
@@ -35,7 +34,6 @@
     background-color: rgb(241, 0, 0) !important;
 }
 
-
 .rename-confirm, .rename-cancel{
     display: inline-block;
     vertical-align: middle;
@@ -62,7 +60,6 @@
     height: 30px;
     width: 100%;
     padding: 10px;
-    /* filter: drop-shadow(2px 2px 5px rgba(0, 0, 0, 0.506)); */
 }
 
 .nav-button{
@@ -75,7 +72,6 @@
     background-color: #175676;
     border: 2px solid #cce6f4;
     border-radius: 10px;
-    /* border-style: outset; */
     transition: border-style 1s, background-color .2s;
     user-select: none;
 }
@@ -86,10 +82,6 @@
     color: #536b78;
     background-color: #cce6f4;
 }
-
-/* .buffer{
-    margin-bottom: 5px;
-} */
 
 html, body, #root, .App, .App>.main-scene {
     height: 100%;
@@ -104,7 +96,6 @@ html, body, #root, .App, .App>.main-scene {
 
 .compendium-form {
     width: 40%;
-    /* height: 40%; */
     padding: 2%;
     z-index: 201;
     position: fixed;
@@ -143,7 +134,6 @@ html, body, #root, .App, .App>.main-scene {
     background-color: #cce6f4;
     border: 2px solid #175676;
     border-radius: 10px;
-    /* border-style: outset; */
     transition: background-color .2s;
     user-select: none;
 }

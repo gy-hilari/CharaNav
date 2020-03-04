@@ -1,6 +1,5 @@
 import React from 'react';
 import Aux from '../../hoc/Auxi';
-import ImageReciever from '../imageReciever/imageReciever';
 import './articleBrowse.css';
 
 const articleBrowse = (props) => {
@@ -12,15 +11,9 @@ const articleBrowse = (props) => {
                     return (
                         <Aux key={article.id}>
                             <div className="targetArticle articleTooltip">
-                                {/* <p className="tooltiptext">
-                                    {article.name}
-                                </p> */}
                                 <div className="image-wrap" onClick={() => {
                                     props.getArticle(article.id);
                                 }}>
-                                    {/* <ImageReciever
-                                        image={{ path: article.imagePath, class: 'fit hover', wrapSize: 'tiny', master: props.master }}
-                                    /> */}
                                     <img src={`${props.master}${article.imagePath}`} alt="" />
                                 </div>
                                 <h2 className="article-name">{article.name}</h2>

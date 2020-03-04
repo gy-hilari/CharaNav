@@ -13,7 +13,6 @@ class CharacterBrowse extends Component {
                 {
                     this.props.chars.length > 0 &&
                     this.props.chars.map((elm, idx) => {
-                        let num = idx + 1;
                         return (
                             <Aux key={elm.id}>
                                 <div className="char-card"

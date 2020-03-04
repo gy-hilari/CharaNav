@@ -70,7 +70,7 @@ class ViewArticle extends Component {
                 }
                 <div className="article-image-wrap">
                     <ImageReciever
-                        image={{ path: this.props.article.imagePath, class: 'fit', wrapSize: 'full', master: this.props.master }}
+                        image={{ path: this.props.article.imagePath, class: 'fit-wide', wrapSize: 'full', master: this.props.master }}
                     />
                 </div>
                 {
@@ -93,10 +93,6 @@ class ViewArticle extends Component {
                                 className="article-retype"
                                 id={`${this.props.article.id}-edit-desc`}
                                 defaultValue={this.props.article.text}
-                                // onKeyPress={(e) => {
-                                //     if (e.key === 'Enter') {
-                                //     }
-                                // }}
                                 cols="30"
                                 rows="10"
                             ></textarea>

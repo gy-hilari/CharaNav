@@ -1,31 +1,10 @@
-/* @media only screen and (max-width: 500px){
-    .full{
-        height: 200px;
-    }
-}
-
-@media only screen and (min-width: 500px){
-    .full{
-        height: 300px;
-    }
-}
-
-@media only screen and (min-width: 800px){
-    .full{
-        height: 500px;
-    }
-}
-
-@media only screen and (min-width: 1280px){
-    .full{
-        height: 500px;
-    }
-} */
-
 .full{
-    /* height: ; */
     width: max-content;
     max-width: 60%;
+}
+
+.full img{
+    max-height: 640px;
 }
 
 .adjust{
@@ -75,7 +54,6 @@
 
 .wrap .portrait{
     width: 200%;
-    /* width: 100%; */
     margin-left: -50%;
     margin-top: -25%;
 }
@@ -85,7 +63,9 @@
 }
 
 .wrap .fit{
-    width: 100%;
-    /* margin-left: -50%; */
-    /* margin-top: -50%; */
+    height: 100%;
+}
+
+.wrap .fit-wide{
+    max-width: 100%;
 }

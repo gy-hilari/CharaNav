@@ -103,7 +103,6 @@ class LayerList extends Component {
                     {
                         <div className="canvas-interface" id="canvas-interface">
                             {
-                                // !this.state.editing &&
                                 <h2 className="character-title" onDoubleClick={() => {
                                     this.setState({ editing: true });
                                 }}>{this.props.char.name}</h2>
@@ -154,7 +153,7 @@ class LayerList extends Component {
                                                                         charArt={charArt}
                                                                         getArticle={this.props.getArticle}
                                                                         dragMode={this.state.dragState}
-                                                                        dragScale={.88}
+                                                                        dragScale={.94}
                                                                         posX={charArt.positionX}
                                                                         posY={charArt.positionY}
                                                                         getArticles={this.props.getArticles}
@@ -203,28 +202,18 @@ class LayerList extends Component {
                                 }
                             </div>
                             <div className="layers-ui">
-                                {
-                                    // ADD MODE & MENU: "ASSIGN ARTICLE FORM" --> CONVERT TO CLASS
-                                    // STATE / PROPS: CURRENT ACTIVE LAYER
-                                }
                                 <div className="layers-controls">
                                     <div className="layer-locker">
                                         <h2>Lock Layers</h2>
                                         <label className="switch">
                                             <input className="layer-lock" type="checkbox" id="character-edit-toggle" onChange={() => {
-                                                // console.log(document.getElementById('character-edit-toggle').checked);
                                                 this.setState({ dragState: this.state.dragState === true ? 'disabled' : true });
                                             }} defaultChecked />
                                             <span className="slider round"></span>
                                         </label>
                                     </div>
-                                    {/* <input type="checkbox" className="drag-toggle" id="character-edit-toggle" onChange={() => {
-                                        // console.log(document.getElementById('character-edit-toggle').checked);
-                                        this.setState({ dragState: this.state.dragState === true ? 'disabled' : true });
-                                    }} defaultChecked /> */}
                                     <h4 className="layer-control" onClick={() => {
                                         this.props.newLayer({
-                                            // name: `Layer`,
                                             zIndex: 100,
                                             charId: this.props.charId
                                         });
@@ -237,8 +226,6 @@ class LayerList extends Component {
                                             return (
                                                 <Aux key={layer.id}>
                                                     <div className="layer-section">
-                                                        {/* <p>{`Layer [${layer.zIndex}]`}</p> */}
-                                                        {/* <p>{layer.name}</p> */}
                                                         <div className="layer-control-section">
                                                             {
                                                                 this.state.editLayer !== layer.id &&
@@ -272,19 +259,17 @@ class LayerList extends Component {
                                                             <div className="character-z-controls">
                                                                 <img onClick={() => {
                                                                     this.shiftLayerZIndex({ targetLayerId: layer.id, shiftValue: 1 });
-                                                                }} className="charart-z-button z-up" src={up}></img>
+                                                                }} className="charart-z-button z-up" src={up} alt=""/>
                                                                 <img onClick={() => {
                                                                     this.shiftLayerZIndex({ targetLayerId: layer.id, shiftValue: -1 });
-                                                                }} className="charart-z-button z-down" src={down}></img>
+                                                                }} className="charart-z-button z-down" src={down} alt=""/>
                                                             </div>
                                                             {
-                                                                // this.state.assigningLayer === false &&
                                                                 <h5 className="layer-control" onClick={() => {
                                                                     this.setState({ assigningLayer: true, activeLayerData: { layerId: layer.id, charId: this.props.charId, name: layer.name } });
                                                                 }}>Add Article</h5>
                                                             }
                                                         </div>
-                                                        {/* <p>{`${num}.) ${layer.name} | zIndex: ${layer.zIndex}`}</p> */}
                                                         {
                                                             this.props.charArts.map((charArt, idx) => {
                                                                 return charArt.layer === layer.id ? (
@@ -295,7 +280,6 @@ class LayerList extends Component {
                                                                                     charArt={charArt}
                                                                                     getArticle={this.props.getArticle}
                                                                                     dragMode={false}
-                                                                                    // ARTICLE SCALE
                                                                                     getArticles={this.props.getArticles}
                                                                                     master={this.props.master}
                                                                                     setActive={this.setActiveCharArt}

@@ -1,11 +1,9 @@
 .targetArticle{
     display: inline-block;
     vertical-align: top;
-    /* background-color: #cce6f4; */
     margin: 0px;
     padding: 0px;
     height: max-content;
-
     transition: width .5s, height .5s;
 }
   
@@ -16,7 +14,6 @@
     text-align: center;
     width: inherit;
     transition: opacity .5s;
-
     z-index: 1;
 }
 
@@ -52,12 +49,8 @@
 
 .targetArticle:hover .image-wrap{
     transform: translateY(-15%);
-    /* width: max-content;
-    max-width: 80%; */
-    /* height: 40%; */
     max-height: 170px;
     width: max-content;
-    /* height: 200px; */
     cursor: pointer;
     filter: drop-shadow(5px 5px 5px black);
 }
@@ -102,9 +95,7 @@
     margin: 0px 10px;
     height: 70%;
     border: 2px solid #cce6f4;
-
     background-color: #175676d5;
-    /* backdrop-filter: blur(5px); */
     width: 90%;
     left: 48%;
     top: 25%;

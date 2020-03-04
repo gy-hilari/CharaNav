@@ -1,7 +1,6 @@
 const electron = require('electron');
 const windowStateKeeper = require('electron-window-state');
 const app = electron.app;
-const { ipcMain } = require('electron');
 const BrowserWindow = electron.BrowserWindow;
 const fs = require('fs');
 const { readdirSync } = require('fs');
@@ -13,7 +12,6 @@ const isDev = require('electron-is-dev');
 const uniqid = require('uniqid');
 const promiseIpc = require('electron-promise-ipc');
 
-// const lmdb = require('node-lmdb');
 const sqlite3 = require('sqlite3').verbose();
 
 let mainWindow;
@@ -105,7 +103,6 @@ function createWindow() {
     mainWindow.loadURL(startUrl);
 
     if (isDev) mainWindow.webContents.openDevTools();
-    // mainWindow.webContents.openDevTools();
 
     state.manage(mainWindow);
 
@@ -153,7 +150,7 @@ function CheckOrCreateModels() {
             {
                 tableName: 'layer',
                 name: { foreignKey: false, string: 'TEXT NOT NULL' },
-                zIndex: { foreignKey: false, string: 'INT NOT NULL' }, // MAKE A LINKED LIST FOR THESE!
+                zIndex: { foreignKey: false, string: 'INT NOT NULL' },
                 character: { foreignKey: false, string: 'TEXT NOT NULL' },
                 createdAt: { foreignKey: false, string: 'TEXT NOT NULL' },
                 charKey: { foreignKey: true, string: 'FOREIGN KEY (character) REFERENCES character(_id)' }
@@ -208,7 +205,6 @@ function CheckOrCreateModels() {
                 }
                 sql += `
                 )`;
-                // console.log(sql);
                 let stmt = db.prepare(sql);
                 stmt.run(err => {
                     reject(err);
@@ -235,10 +231,8 @@ promiseIpc.on('/get/imageDir', () => {
 promiseIpc.on('/get/comp', () => {
     return new Promise((resolve, reject) => {
         GetCompendiums().then((res) => {
-            console.log(res);
             resolve(res);
         }).catch(err => {
-            console.log(err);
             reject(err);
         });
     });
@@ -247,7 +241,6 @@ promiseIpc.on('/get/comp', () => {
 promiseIpc.on('/get/comp/id', (id) => {
     return new Promise((resolve, reject) => {
         GetCompendiumById(id).then((res) => {
-            console.log(res);
             resolve(res);
         }).catch((err) => reject(err));
     });
@@ -256,15 +249,11 @@ promiseIpc.on('/get/comp/id', (id) => {
 promiseIpc.on('/post/comp', (form) => {
     return new Promise((resolve, reject) => {
         CreateCompendium(form).then((res) => {
-            console.log(res);
             GetCompendiums().then((res) => {
-                console.log(res);
                 resolve(res);
             });
         }).catch((err) => {
-            console.log(err);
             GetCompendiums().then((res) => {
-                console.log(res);
                 resolve(res);
             });
         });
@@ -274,11 +263,9 @@ promiseIpc.on('/post/comp', (form) => {
 promiseIpc.on('/put/comp/name', (form) => {
     return new Promise((resolve, reject) => {
         UpdateCompendiumName(form).then((res) => {
-            console.log(res);
             resolve(res);
         });
     }).catch((err) => {
-        console.log(err);
         resolve(`Error updating comp [${form.id}]`);
     });
 });
@@ -286,7 +273,6 @@ promiseIpc.on('/put/comp/name', (form) => {
 promiseIpc.on('/delete/comp', (compId) => {
     return new Promise((resolve, reject) => {
         DeleteCompendiumById(compId).then((res) => {
-            console.log(res);
             resolve(res);
         }).catch((err) => {
             resolve(`Compendium [${compId}] not found!`)
@@ -297,7 +283,6 @@ promiseIpc.on('/delete/comp', (compId) => {
 promiseIpc.on('/get/char/id', (id) => {
     return new Promise((resolve, reject) => {
         GetCharacterById(id).then((res) => {
-            console.log(res);
             resolve(res);
         }).catch((err) => reject(err));
     });
@@ -306,15 +291,11 @@ promiseIpc.on('/get/char/id', (id) => {
 promiseIpc.on('/post/char', (form) => {
     return new Promise((resolve, reject) => {
         CreateCharacter(form).then((res) => {
-            console.log(res);
             GetCharactersByCompId(form.compId).then((res) => {
-                console.log(res);
                 resolve(res);
             });
         }).catch((err) => {
-            console.log(err);
             GetCharactersByCompId(form.compId).then((res) => {
-                console.log(res);
                 resolve(res);
             });
         });
@@ -324,11 +305,9 @@ promiseIpc.on('/post/char', (form) => {
 promiseIpc.on('/put/char/name', (form) => {
     return new Promise((resolve, reject) => {
         UpdateCharacterName(form).then((res) => {
-            console.log(res);
             resolve(res);
         });
     }).catch((err) => {
-        console.log(err);
         resolve(`Error updating character [${form.id}]`);
     });
 });
@@ -336,7 +315,6 @@ promiseIpc.on('/put/char/name', (form) => {
 promiseIpc.on('/delete/char', (charId) => {
     return new Promise((resolve, reject) => {
         DeleteCharacterById(charId).then((res) => {
-            console.log(res);
             resolve(res);
         }).catch((err) => {
             resolve(`Character [${charId}] not found!`)
@@ -353,10 +331,8 @@ promiseIpc.on('/post/char/article', (form) => {
 promiseIpc.on('/get/comp/char', (compId) => {
     return new Promise((resolve, reject) => {
         GetCharactersByCompId(compId).then((res) => {
-            console.log(res);
             resolve(res);
         }).catch((err) => {
-            console.log(err);
             reject(err);
         });
     });
@@ -365,15 +341,11 @@ promiseIpc.on('/get/comp/char', (compId) => {
 promiseIpc.on('/post/layer', (form) => {
     return new Promise((resolve, reject) => {
         CreateLayer(form).then((res) => {
-            console.log(res);
             GetLayersByCharId(form.charId).then((res) => {
-                console.log(res);
                 resolve(res);
             });
         }).catch((err) => {
-            console.log(err);
             GetLayersByCharId(form.charId).then((res) => {
-                console.log(res);
                 resolve(res);
             });
         });
@@ -383,7 +355,6 @@ promiseIpc.on('/post/layer', (form) => {
 promiseIpc.on('/delete/layer', (lyrId) => {
     return new Promise((resolve, reject) => {
         DeleteLayerById(lyrId).then((res) => {
-            console.log(res);
             resolve(res);
         }).catch((err) => {
             resolve(`Layer [${lyrId}] not found!`)
@@ -394,10 +365,8 @@ promiseIpc.on('/delete/layer', (lyrId) => {
 promiseIpc.on('/get/char/layer', (charId) => {
     return new Promise((resolve, reject) => {
         GetLayersByCharId(charId).then((res) => {
-            console.log(res);
             resolve(res);
         }).catch((err) => {
-            console.log(err);
             reject(err);
         });
     });
@@ -410,15 +379,11 @@ promiseIpc.on('/get/article', () => {
 promiseIpc.on('/post/article', (form) => {
     return new Promise((resolve, reject) => {
         CreateArticle(form).then((res) => {
-            console.log(res);
             GetArticlesByCompId(form.compId).then((res) => {
-                console.log(res);
                 resolve(res);
             });
         }).catch((err) => {
-            console.log(err);
             GetArticlesByCompId(form.compId).then((res) => {
-                console.log(res);
                 resolve(res);
             });
         });
@@ -428,11 +393,9 @@ promiseIpc.on('/post/article', (form) => {
 promiseIpc.on('/put/article/name', (form) => {
     return new Promise((resolve, reject) => {
         UpdateArticleName(form).then((res) => {
-            console.log(res);
             resolve(res);
         });
     }).catch((err) => {
-        console.log(err);
         resolve(`Error updating name of article [${form.id}]`);
     });
 });
@@ -440,11 +403,9 @@ promiseIpc.on('/put/article/name', (form) => {
 promiseIpc.on('/put/article/text', (form) => {
     return new Promise((resolve, reject) => {
         UpdateArticleText(form).then((res) => {
-            console.log(res);
             resolve(res);
         });
     }).catch((err) => {
-        console.log(err);
         resolve(`Error updating text of article [${form.id}]`);
     });
 });
@@ -452,7 +413,6 @@ promiseIpc.on('/put/article/text', (form) => {
 promiseIpc.on('/delete/article', (artId) => {
     return new Promise((resolve, reject) => {
         DeleteArticleById(artId).then((res) => {
-            console.log(res);
             resolve(res);
         }).catch((err) => {
             resolve(`Article [${artId}] not found!`)
@@ -463,10 +423,8 @@ promiseIpc.on('/delete/article', (artId) => {
 promiseIpc.on('/get/comp/article', (compId) => {
     return new Promise((resolve, reject) => {
         GetArticlesByCompId(compId).then((res) => {
-            console.log(res);
             resolve(res);
         }).catch((err) => {
-            console.log(err);
             reject(err);
         });
     });
@@ -475,7 +433,6 @@ promiseIpc.on('/get/comp/article', (compId) => {
 promiseIpc.on('/get/article/id', (id) => {
     return new Promise((resolve, reject) => {
         GetArticleById(id).then((res) => {
-            console.log(res);
             resolve(res);
         }).catch((err) => reject(err));
     });
@@ -484,10 +441,8 @@ promiseIpc.on('/get/article/id', (id) => {
 promiseIpc.on('/assign/article/char/layer', (form) => {
     return new Promise((resolve, reject) => {
         AssignArticleToCharacterLayer(form).then((res) => {
-            console.log(res);
             resolve(res);
         }).catch((err) => {
-            console.log(err);
         });
     });
 });
@@ -495,10 +450,8 @@ promiseIpc.on('/assign/article/char/layer', (form) => {
 promiseIpc.on('/delete/article/char/layer', (charArtId) => {
     return new Promise((resolve, reject) => {
         DeleteCharArtById(charArtId).then((res) => {
-            console.log(res);
             resolve(res);
         }).catch((err) => {
-            console.log(err);
             resolve(`CharArt [${charArtId}] not found!`);
         });
     })
@@ -507,32 +460,26 @@ promiseIpc.on('/delete/article/char/layer', (charArtId) => {
 promiseIpc.on('/put/char/layer/pos', (form) => {
     return new Promise((resolve, reject) => {
         UpdateCharacterLayerPosition(form).then((res) => {
-            console.log(res);
             resolve(res);
         })
     }).catch((err) => {
-        console.log(err);
     });
 });
 
 promiseIpc.on('/put/char/layer/reset', (charArtId) => {
     return new Promise((resolve, reject) => {
         ResetCharacterLayerByCharArtId(charArtId).then((res) => {
-            console.log(res);
             resolve(res);
         })
     }).catch((err) => {
-        console.log(err);
     });
 });
 
 promiseIpc.on('/put/layer/swap', (form) => {
     return new Promise((resolve, reject) => {
         SwapLayerZIndex(form).then((res) => {
-            console.log(res);
             resolve(res);
         }).catch((err) => {
-            console.log(err);
             resolve(err);
         });
     });
@@ -541,10 +488,8 @@ promiseIpc.on('/put/layer/swap', (form) => {
 promiseIpc.on('/put/layer/name', (form) => {
     return new Promise((resolve, reject) => {
         UpdateLayerName(form).then((res) => {
-            console.log(res);
             resolve(res);
         }).catch((err) => {
-            console.log(err);
             resolve(err);
         });
     });
@@ -553,10 +498,8 @@ promiseIpc.on('/put/layer/name', (form) => {
 promiseIpc.on('/put/char/layer/scale', (form) => {
     return new Promise((resolve, reject) => {
         UpdateCharacterLayerScale(form).then((res) => {
-            console.log(res);
             resolve(res);
         }).catch((err) => {
-            console.log(err);
             resolve(err);
         });
     });
@@ -565,10 +508,8 @@ promiseIpc.on('/put/char/layer/scale', (form) => {
 promiseIpc.on('/get/char/article', (charId) => {
     return new Promise((resolve, reject) => {
         GetAssignedArticlesByCharacterId(charId).then((res) => {
-            console.log(res);
             resolve(res);
         }).catch((err) => {
-            console.log(err);
         });
     });
 });
@@ -590,7 +531,6 @@ promiseIpc.on('/get/article/artTag', (form) => {
 })
 
 function GetCompendiums() {
-    console.log('Getting Compendiums!');
     return new Promise((resolve, reject) => {
         db.serialize(() => {
             db.all(`SELECT _id as id, name, createdAt FROM comp ORDER BY createdAt DESC`, (err, comps) => {
@@ -630,7 +570,6 @@ function CreateCompendium(form) {
 }
 
 function GetCompendiumById(id) {
-    console.log(id);
     return new Promise((resolve, reject) => {
         db.serialize(() => {
             let stmt = db.prepare(
@@ -664,7 +603,6 @@ function UpdateCompendiumName(form) {
 }
 
 function GetCharactersByCompId(compId) {
-    console.log(`Getting characters of comp: [${compId}]`);
     return new Promise((resolve, reject) => {
         db.serialize(() => {
             let stmt = db.prepare(
@@ -705,10 +643,8 @@ function CreateCharacter(form) {
 }
 
 function GetCharacterById(id) {
-    console.log(`Getting character with id: [${id}]`);
     return new Promise((resolve, reject) => {
         db.serialize(() => {
-            // let sql = `SELECT _id as id, name, comp FROM character WHERE id = '${id}'`;
             let stmt = db.prepare(
                 `SELECT _id as id, name, comp
                 FROM character WHERE id = $id
@@ -741,7 +677,6 @@ function UpdateCharacterName(form) {
 function CreateLayer(form) {
     return new Promise((resolve, reject) => {
         GetHighestLayerByCharId(form.charId).then((layer) => {
-            console.log(layer[0] ? layer[0] : 'No layer found');
             let zValue = layer[0] ? layer[0].zIndex + 1 : 0;
             if (!form.name) reject('Invalid form');
             db.serialize(() => {
@@ -794,7 +729,6 @@ function UpdateLayerName(form) {
 
 function GetLayersByCharId(charId) {
     return new Promise((resolve, reject) => {
-        console.log(`Getting layers of char: [${charId}]`);
         db.serialize(() => {
             let stmt = db.prepare(
                 `SELECT _id as id, name, createdAt, zIndex 
@@ -812,7 +746,6 @@ function GetLayersByCharId(charId) {
 
 function GetHighestLayerByCharId(charId) {
     return new Promise((resolve, reject) => {
-        console.log(`Getting highest layer of char: [${charId}]`);
         db.serialize(() => {
             let stmt = db.prepare(
                 `SELECT _id as id, name, createdAt, zIndex 
@@ -829,25 +762,18 @@ function GetHighestLayerByCharId(charId) {
 }
 
 function SwapLayerZIndex(form) {
-    // QUERY TARGET LAYER WHERE Z-INDEX === CURRENT zIndex - 1
-    // IF UNDEFINED, REJECT
     return new Promise((resolve, reject) => {
         GetLayerById(form.targetLayerId).then((layer) => {
             let targetLayer = layer ? layer : null;
             if (!targetLayer) reject(`No layer with target id: [${form.targetLayerId}]`);
-            // SHIFT VALUE = 1 OR -1
             let shiftValue = targetLayer.zIndex + form.shiftValue;
-            console.log(`Shift Value: ${shiftValue}`);
             if (shiftValue < 0) reject(`No layers below layer: [${form.targetLayerId}]`);
             GetLayerByZIndex({ zIndex: shiftValue, character: targetLayer.character }).then((sLayer) => {
-                console.log(sLayer);
                 let swapLayer = sLayer ? sLayer : null;
                 if (!swapLayer) reject(`No layer with swap zIndex: [${shiftValue}]`);
                 let swap = swapLayer.zIndex;
                 UpdateLayerZIndex({ layer: swapLayer, zIndex: targetLayer.zIndex }).then((res) => {
-                    console.log(res);
                     UpdateLayerZIndex({ layer: targetLayer, zIndex: swap }).then((res) => {
-                        console.log(res);
                         resolve(`Swapped zIndex of [${targetLayer.id}] & [${swapLayer.id}] successfully!`);
                     });
                 });
@@ -863,7 +789,6 @@ function GetLayerById(layerId) {
                 `SELECT _id as id, name, createdAt, zIndex, character
                 FROM layer WHERE id = $id
                 `);
-            // let sql = `SELECT _id as id, name, createdAt, zIndex, character FROM layer WHERE id = '${layerId}'`;
             stmt.get({ $id: layerId }, (err, layer) => {
                 if (err) reject(err);
                 resolve(layer);
@@ -881,7 +806,6 @@ function GetLayerByZIndex(form) {
                 FROM layer WHERE zIndex = $zIndex
                 AND character = $char
                 `);
-            // let sql = `SELECT _id as id, name, createdAt, zIndex, character FROM layer WHERE zIndex = '${form.zIndex}' AND character = '${form.character}'`;
             stmt.get({ $zIndex: form.zIndex, $char: form.character }, (err, layer) => {
                 if (err) reject(err);
                 resolve(layer);
@@ -899,7 +823,6 @@ function UpdateLayerZIndex(form) {
                 WHERE _id = $id
                 AND character = $char
                 `);
-            // db.all(`UPDATE layer SET zIndex = '${form.zIndex}' WHERE _id = '${form.layer.id}' AND character = '${form.layer.character}'`, (err, layer) => {
             stmt.all({ $zIndex: form.zIndex, $id: form.layer.id, $char: form.layer.character }, (err, layer) => {
                 if (err) reject(err);
                 resolve(`Updated zIndex of layer [${form.layer.id}] with value [${form.zIndex}]`);
@@ -910,14 +833,12 @@ function UpdateLayerZIndex(form) {
 }
 
 function GetArticleById(id) {
-    console.log(`Getting article: [${id}]`);
     return new Promise((resolve, reject) => {
         db.serialize(() => {
             let stmt = db.prepare(
                 `SELECT _id as id, name, text, imagePath, comp
                 FROM article WHERE id = $id
                 `);
-            // let sql = `SELECT _id as id, name, text, imagePath, comp FROM article WHERE id = '${id}'`;
             stmt.get({ $id: id }, (err, char) => {
                 if (err) reject(err);
                 resolve(char);
@@ -929,7 +850,6 @@ function GetArticleById(id) {
 
 function CreateArticle(form) {
     return new Promise((resolve, reject) => {
-        console.log(form.image);
         // FFS ADD SOME REAL VALIDATION LATER 
         if (!form.image ||
             !form.text.length > 0 ||
@@ -969,7 +889,6 @@ function CreateArticle(form) {
 }
 
 function GetArticlesByCompId(compId) {
-    console.log(`Getting articles of comp: [${compId}]`);
     return new Promise((resolve, reject) => {
         db.serialize(() => {
             let stmt = db.prepare(
@@ -1067,7 +986,6 @@ function UpdateCharacterLayerPosition(form) {
                 positionY = $posY
                 WHERE _id = $id
                 `);
-            // db.all(`UPDATE character_article SET positionX = '${form.posX}', positionY = '${form.posY}' WHERE _id = '${form.id}'`, (err, char) => {
             stmt.all({ $posX: form.posX, $posY: form.posY, $id: form.id }, (err, char) => {
                 if (err) reject(err);
                 resolve(`Updated position of character_article [${form.id}] with position [${form.posX}, ${form.posY}]`);
@@ -1084,7 +1002,6 @@ function UpdateCharacterLayerScale(form) {
                 `UPDATE character_article SET scale = $scale
                 WHERE _id = $id
                 `);
-            // db.all(`UPDATE character_article SET scale = '${form.scale}' WHERE _id = '${form.charArtId}'`, (err, char) => {
             stmt.all({ $scale: form.scale, $id: form.charArtId }, (err, char) => {
                 if (err) reject(err);
                 resolve(`Updated scale of character_article [${form.charArtId}] to: [${form.scale}]`);
@@ -1112,7 +1029,6 @@ function ResetCharacterLayerByCharArtId(charArtId) {
 
 function GetAssignedArticlesByCharacterId(charId) {
     return new Promise((resolve, reject) => {
-        console.log(`Getting assigned articles of char: [${charId}]`);
         db.serialize(() => {
             let stmt = db.prepare(
                 `SELECT 
@@ -1162,7 +1078,6 @@ function DeleteCharactersByCompId(compId) {
                     ]);
                 })).then(() => {
                     let stmt = db.prepare(`DELETE FROM character WHERE _id = $id`);
-                    // let sql = `DELETE FROM character WHERE comp = '${compId}'`;
                     stmt.all({ $id: compId }, (err) => {
                         if (err) reject(err);
                         resolve(`Deleted characters from comp: [${compId}]`);

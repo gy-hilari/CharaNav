@@ -15,7 +15,6 @@ class CompendiumList extends Component {
                         <div className="buffer"></div>
                         {
                             this.props.comps.map((elm, idx) => {
-                                // let num = idx + 1;
                                 return (
                                     <Aux key={elm.id}>
                                         <div className="comp-card"

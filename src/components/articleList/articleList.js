@@ -5,7 +5,6 @@ import './articleList.css';
 
 class ArticleList extends Component {
     state = {
-        // assigningLayer: false,
         activeLayerImage: null
     }
     render() {

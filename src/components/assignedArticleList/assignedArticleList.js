@@ -13,8 +13,6 @@ class AssignedArticleList extends Component {
     componentDidMount() {
         if (this.props.charArt) {
             this.getArticle(this.props.charArt.article);
-            // console.log(this.props.posX);
-            // this.getArticleLayerPositions(this.props.charArt.character);
         }
     }
 
@@ -33,9 +31,6 @@ class AssignedArticleList extends Component {
         });
     }
 
-
-    //
-
     render() {
         return !this.props.charArt ? (
             <Aux>
@@ -51,7 +46,6 @@ class AssignedArticleList extends Component {
                         this.props.dragMode === true && this.state.articlePath && this.props.activeCharArt === this.props.charArt.id &&
                         <Draggable
                             scale={this.props.dragScale}
-                            // bounds={`parent`}
                             defaultPosition={{ x: parseInt(this.props.posX), y: parseInt(this.props.posY) }}
                             onStart={() => { this.setState({ dragClass: 'dragging' }); }}
                             onStop={() => {
@@ -66,7 +60,6 @@ class AssignedArticleList extends Component {
                                 this.props.getArticles(this.props.charArt.character);
                             }}
                         >
-                            {/* PLACE Z-INDEX DATA IN INLINE STYLE VIA layer z-index PROP */}
                             <img
                                 style={{
                                     zIndex: `${this.props.zIndex}`,
@@ -79,7 +72,6 @@ class AssignedArticleList extends Component {
                         this.props.dragMode === true && this.state.articlePath && this.props.activeCharArt !== this.props.charArt.id &&
                         <Draggable
                             scale={this.props.dragScale}
-                            // bounds={`parent`}
                             defaultPosition={{ x: parseInt(this.props.posX), y: parseInt(this.props.posY) }}
                             onStart={() => { this.setState({ dragClass: 'dragging' }); }}
                             onStop={() => {
@@ -94,7 +86,6 @@ class AssignedArticleList extends Component {
                                 this.props.getArticles(this.props.charArt.character);
                             }}
                         >
-                            {/* PLACE Z-INDEX DATA IN INLINE STYLE VIA layer z-index PROP */}
                             <img
                                 style={{
                                     zIndex: `${this.props.zIndex}`,

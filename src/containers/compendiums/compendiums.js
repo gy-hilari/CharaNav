@@ -225,14 +225,6 @@ class Compendiums extends Component {
                     {
                         this.state.scene === 'comps' &&
                         <Aux>
-                            {
-                                // !this.state.creatingComp &&
-                                // <Aux>
-                                //     <button onClick={() => {
-                                //         this.setState({ creatingComp: true });
-                                //     }}>New Compendium</button>
-                                // </Aux>
-                            }
                             <h4 className="nav-button" onClick={() => {
                                 this.setState({ creatingComp: true });
                             }}>New Compendium</h4>

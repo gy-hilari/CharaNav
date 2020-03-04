@@ -6,15 +6,6 @@
     overflow-y: scroll;
 }
 
-/* #article-name{
-    font-size: 22px;
-    text-align: center;
-    border-radius: 5px;
-    display: block;
-    margin: 0px auto;
-    padding: 5px;
-} */
-
 #article-text{
     border-radius: 5px;
     padding:10px;
@@ -31,9 +22,6 @@
 #article-text:focus{
     outline: none;
 }
-/* #article-name:focus, #article-text:focus{
-    outline: none;
-} */
 
 #article-name{
     text-align: center;
@@ -53,7 +41,6 @@
     background-color: white;
 }
 
-
 .art-form-button{
     display: inline-block;
     margin: 2px;
@@ -63,7 +50,6 @@
     background-color: #cce6f4;
     border: 2px solid #175676;
     border-radius: 10px;
-    /* border-style: outset; */
     transition: background-color .2s;
     user-select: none;
 }

@@ -86,14 +86,12 @@
 }
 
 .article-retype-ui{
-    /* border: 1px solid black; */
     margin-bottom: 15px;
 }
 
 .article-retype:focus{
     outline: none;
 }
-
 
 @media only screen and (max-width: 690px) and (min-height: 900px){
     .article-text{

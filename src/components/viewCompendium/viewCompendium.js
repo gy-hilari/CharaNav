@@ -71,7 +71,6 @@ class viewCompendium extends Component {
                 <div>
                     <h4 className="browse-button" onClick={() => {
                         this.refreshForms();
-                        // this.props.setScene('character-browse');
                         this.props.setFormMode('null');
                         this.props.setBrowseMode('char');
                     }}>
@@ -79,7 +78,6 @@ class viewCompendium extends Component {
                         </h4>
                     <h4 className="browse-button" onClick={() => {
                         this.refreshForms();
-                        // this.props.setScene('article-browse');
                         this.props.setFormMode('null');
                         this.props.setBrowseMode('article');
                     }}>

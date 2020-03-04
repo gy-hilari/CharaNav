@@ -1,23 +1,15 @@
 .char-card{
     background-color: #4ba3c3;
     border-radius: 2px;
-    /* background-image: linear-gradient(#4ba3c3, #3985a1); */
     padding: 10px;
     margin: -4px 2px;
-    /* margin-bottom: -8px; */
-    /* transition: background-color .5s, transform .5s; */
-    /* border: none; */
     transform: scale(.9);
     transition: background-color .2s, transform .3s, filter .5s;
 }
 
 .char-card:hover{
-    /* cursor: pointer; */
-    /* background-image: linear-gradient(#efa1ae, #efa1ae); */
     background-color: #cee5f2;
-    /* filter: drop-shadow(-5px 5px 5px #175676); */
     transform:translateY(-5px) scale(1);
-    /* border: 3px inset; */
 }
 
 .char-card h4{
