@@ -54,3 +54,4 @@ CreateModelsAndCharacters().then((res) => {
 ---
 ## React resources:
 - [Default Image on broken source path](https://stackoverflow.com/a/38527860/12853439)
+- [React Validation](https://www.npmjs.com/package/react-validation)

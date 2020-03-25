@@ -16,6 +16,7 @@
 -- LATER: 
 	- Fix colors so that it is more clear when hovering over grayscale images
 	- FRONT END VALIDATION
+		--> RegEx for inputs (overkill?)
 		--> ON PROMISE REJECTION
 			--> PRELOAD.js ??
 	- ADD OPTION TO EXPLICITLY SET SCALE --> INT ONLY!!
