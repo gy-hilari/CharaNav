@@ -1,9 +1,12 @@
 {
   "name": "chara-nav",
+  "author": "Gabe 'Ectochip' H.",
   "version": "0.1.0",
+  "description": "Character Design Utility",
   "private": true,
   "main": "public/electron.js",
   "homepage": "./",
+  "repository": "https://github.com/gy-hilari/CharaNav",
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.4.0",
@@ -51,5 +54,10 @@
     "electron-builder": "^22.3.2",
     "electron-packager": "^14.2.1",
     "electron-rebuild": "^1.10.0"
+  },
+  "build" : {
+    "win": {
+      "icon": "build/icon.png"
+    }
   }
 }

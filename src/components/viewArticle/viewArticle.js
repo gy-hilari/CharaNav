@@ -25,12 +25,12 @@ class ViewArticle extends Component {
             this.props.refresh(this.props.article.id);
         });
     }
-    
+
     updateArticleImage = (form) => {
         window.api.promise('/put/article/image', form, (res) => {
             console.log(res);
             this.props.refresh(this.props.article.id);
-        });        
+        });
     }
 
     render() {
@@ -79,13 +79,13 @@ class ViewArticle extends Component {
                     </Aux>
                 }
                 <div className="article-image-wrap"
-                    onClick={() => {
-                        console.log(`Editing image of article [${this.props.article.name}]`);
-                        this.setState({ editImg: true });
-                    }}
                 >
                     <ImageReciever
                         image={{ path: this.props.article.imagePath, class: 'fit-wide hover', wrapSize: 'full', master: this.props.master }}
+                        click={() => {
+                            console.log(`Editing image of article [${this.props.article.name}]`);
+                            this.setState({ editImg: true });
+                        }}
                     />
                 </div>
                 {
@@ -124,10 +124,10 @@ class ViewArticle extends Component {
                                 className="art-form-button art-form-confirm"
                                 onClick={() => {
                                     this.setState({ activeImg: null, editImg: false });
-                                    if(this.state.activeImg){
+                                    if (this.state.activeImg) {
                                         this.updateArticleImage({
                                             id: this.props.article.id,
-                                            path: this.state.activeImg.path 
+                                            path: this.state.activeImg.path
                                         });
                                     }
                                 }}>Confirm</h2>
@@ -167,13 +167,14 @@ class ViewArticle extends Component {
                                 <h4 className="rename-cancel" onClick={() => {
                                     this.setState({ editDesc: false });
                                 }}>Cancel</h4>
-                                <h4 className="rename-confirm" onClick={() => {
-                                    console.log(document.getElementById(`${this.props.article.id}-edit-desc`).value);
-                                    this.updateArticleText({
-                                        id: this.props.article.id,
-                                        text: document.getElementById(`${this.props.article.id}-edit-desc`).value
-                                    });
-                                    this.setState({ editDesc: false });
+                                <h4 className="rename-confirm" onClick={() => {                                    
+                                    if(/\S/.test(document.getElementById(`${this.props.article.id}-edit-desc`).value)){
+                                        this.updateArticleText({
+                                            id: this.props.article.id,
+                                            text: document.getElementById(`${this.props.article.id}-edit-desc`).value
+                                        });
+                                        this.setState({ editDesc: false });
+                                    }
                                 }}>Submit</h4>
                             </div>
                         </div>

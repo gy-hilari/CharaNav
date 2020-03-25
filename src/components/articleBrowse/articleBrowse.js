@@ -1,6 +1,8 @@
 import React from 'react';
 import Aux from '../../hoc/Auxi';
 import './articleBrowse.css';
+import imageError from '../../imageError.png';
+
 
 const articleBrowse = (props) => {
     return props.browseMode === 'article' ? (
@@ -15,7 +17,7 @@ const articleBrowse = (props) => {
                                     props.getArticle(article.id);
                                 }}>
                                     <img onError={(e) => {
-                                        e.target.src= process.env.PUBLIC_URL + 'imageError.png';
+                                        e.target.src= imageError;
                                     }} src={`${props.master}${article.imagePath}`} alt="ERROR" />
                                 </div>
                                 <h2 className="article-name">{article.name}</h2>

@@ -3,6 +3,7 @@ import Draggable from 'react-draggable';
 import Aux from '../../hoc/Auxi';
 import ImageReciever from '../imageReciever/imageReciever';
 import './assignedArticleList.css';
+import imageError from '../../imageError.png';
 
 class AssignedArticleList extends Component {
     state = {
@@ -62,7 +63,7 @@ class AssignedArticleList extends Component {
                         >
                             <img 
                                 onError={(e) => {
-                                    e.target.src = process.env.PUBLIC_URL + 'imageError.png';
+                                    e.target.src = imageError;
                                 }}
                                 style={{
                                     zIndex: `${this.props.zIndex}`,
@@ -91,7 +92,7 @@ class AssignedArticleList extends Component {
                         >
                             <img 
                                 onError={(e) => {
-                                    e.target.src = process.env.PUBLIC_URL + 'imageError.png';
+                                    e.target.src = imageError;
                                 }}
                                 style={{
                                     zIndex: `${this.props.zIndex}`,
@@ -115,7 +116,7 @@ class AssignedArticleList extends Component {
                         this.props.dragMode === 'disabled' && this.state.articlePath && this.props.activeCharArt === this.props.charArt.id &&
                         <img 
                             onError={(e) => {
-                                e.target.src = process.env.PUBLIC_URL + 'imageError.png';
+                                e.target.src = imageError;
                             }}
                             style={
                                 {
@@ -129,7 +130,7 @@ class AssignedArticleList extends Component {
                         this.props.dragMode === 'disabled' && this.state.articlePath && this.props.activeCharArt !== this.props.charArt.id &&
                         <img 
                             onError={(e) => {
-                                e.target.src = process.env.PUBLIC_URL + 'imageError.png';
+                                e.target.src = imageError;
                             }}
                             style={
                                 {

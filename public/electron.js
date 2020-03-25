@@ -41,6 +41,7 @@ const getDirs = (path) => {
 const getFiles = (dir) => {
     let validExtensions = [
         ".jpg",
+        ".JPG",
         ".jpeg",
         ".png",
         ".bmp"

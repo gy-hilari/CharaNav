@@ -45,18 +45,20 @@ const articleForm = (props) => {
 
             <textarea id="article-text" cols="30" rows="10" placeholder="Article Description"></textarea>
             <h4 className="art-form-button art-form-confirm" onClick={() => {
-                props.newArticle({
-                    compId: props.compId,
-                    name: document.getElementById('article-name').value,
-                    text: document.getElementById('article-text').value,
-                    image: props.activeImg ? props.activeImg.path : null
-                });
-                if (
-                    document.getElementById('article-name').value &&
-                    document.getElementById('article-text').value
-                ) {
-                    props.refresh();
-                    props.setFormMode(null);
+                if (/\S/.test(document.getElementById('article-text').value)) {
+                    props.newArticle({
+                        compId: props.compId,
+                        name: document.getElementById('article-name').value,
+                        text: document.getElementById('article-text').value,
+                        image: props.activeImg ? props.activeImg.path : null
+                    });
+                    if (
+                        document.getElementById('article-name').value &&
+                        document.getElementById('article-text').value
+                    ) {
+                        props.refresh();
+                        props.setFormMode(null);
+                    }
                 }
             }}>
                 Create Article

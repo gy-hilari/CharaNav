@@ -1,6 +1,7 @@
 import React from 'react';
 import Aux from '../../hoc/Auxi';
 import './imageReciever.css'
+import imageError from '../../imageError.png';
 
 const imageReciever = (props) => {
     return props.image ? (
@@ -9,13 +10,13 @@ const imageReciever = (props) => {
                 {
                     !props.hover &&
                     <img onError={(e) => {
-                        e.target.src= process.env.PUBLIC_URL + 'imageError.png';
+                        e.target.src= imageError;
                     }} onClick={props.click} className={props.image.class} src={`${props.image.master}${props.image.path}`} alt="ERROR" />
                 }
                 {
                     props.hover &&
                     <img onError={(e) => {
-                        e.target.src= process.env.PUBLIC_URL + 'imageError.png';
+                        e.target.src= imageError;
                     }}
                         onMouseEnter={props.hover.on}
                         onMouseLeave={props.hover.off}

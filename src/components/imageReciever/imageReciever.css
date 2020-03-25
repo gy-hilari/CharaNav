@@ -37,6 +37,10 @@
     border-radius: 5px;
 }
 
+.wrap img{
+    user-select: none;
+}
+
 .wrap:hover .hover{
     cursor: pointer;
     filter: brightness(140%) grayscale(70%);
