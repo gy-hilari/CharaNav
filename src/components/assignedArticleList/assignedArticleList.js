@@ -60,7 +60,10 @@ class AssignedArticleList extends Component {
                                 this.props.getArticles(this.props.charArt.character);
                             }}
                         >
-                            <img
+                            <img 
+                                onError={(e) => {
+                                    e.target.src = process.env.PUBLIC_URL + 'imageError.png';
+                                }}
                                 style={{
                                     zIndex: `${this.props.zIndex}`,
                                     height: `${this.props.charArt.scale}%`
@@ -86,7 +89,10 @@ class AssignedArticleList extends Component {
                                 this.props.getArticles(this.props.charArt.character);
                             }}
                         >
-                            <img
+                            <img 
+                                onError={(e) => {
+                                    e.target.src = process.env.PUBLIC_URL + 'imageError.png';
+                                }}
                                 style={{
                                     zIndex: `${this.props.zIndex}`,
                                     height: `${this.props.charArt.scale}%`
@@ -107,7 +113,10 @@ class AssignedArticleList extends Component {
                     }
                     {
                         this.props.dragMode === 'disabled' && this.state.articlePath && this.props.activeCharArt === this.props.charArt.id &&
-                        <img
+                        <img 
+                            onError={(e) => {
+                                e.target.src = process.env.PUBLIC_URL + 'imageError.png';
+                            }}
                             style={
                                 {
                                     transform: `translateX(${this.props.posX}px) translateY(${this.props.posY}px)`,
@@ -118,7 +127,10 @@ class AssignedArticleList extends Component {
                     }
                     {
                         this.props.dragMode === 'disabled' && this.state.articlePath && this.props.activeCharArt !== this.props.charArt.id &&
-                        <img
+                        <img 
+                            onError={(e) => {
+                                e.target.src = process.env.PUBLIC_URL + 'imageError.png';
+                            }}
                             style={
                                 {
                                     transform: `translateX(${this.props.posX}px) translateY(${this.props.posY}px)`,

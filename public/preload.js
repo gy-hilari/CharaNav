@@ -35,6 +35,7 @@ contextBridge.exposeInMainWorld(
             "/get/article/id",
             "/put/article/name",
             "/put/article/text",
+            "/put/article/image",
             "/post/article/char",
             "/assign/article/char/layer",
             "/delete/article/char/layer",

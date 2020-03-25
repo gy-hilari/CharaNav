@@ -1,4 +1,6 @@
 -- FINALIZE:
+	- Rename LayerList to something that makes more sense!!
+		- CharaNav.js
 	- Create Logo, Icons
 	- Show build version / branch on home page
 	- Investigate electron updater
@@ -12,6 +14,7 @@
 	- Outreach: Machine to machine testing, security consultation
 	
 -- LATER: 
+	- Fix colors so that it is more clear when hovering over grayscale images
 	- FRONT END VALIDATION
 		--> ON PROMISE REJECTION
 			--> PRELOAD.js ??

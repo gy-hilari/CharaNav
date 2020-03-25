@@ -53,7 +53,7 @@ const getFiles = (dir) => {
 
 if (isDev) {
     console.log(`Current image dir: ${path.resolve('./images')}`);
-    console.log(getDirs('./images'));    
+    console.log(getDirs('./images'));
 }
 
 const db = new sqlite3.Database(path.join('.', `/${dbDir}/${dbName}.db`));
@@ -397,6 +397,16 @@ promiseIpc.on('/put/article/name', (form) => {
 promiseIpc.on('/put/article/text', (form) => {
     return new Promise((resolve, reject) => {
         UpdateArticleText(form).then((res) => {
+            resolve(res);
+        });
+    }).catch((err) => {
+        resolve(`Error updating text of article [${form.id}]`);
+    });
+});
+
+promiseIpc.on('/put/article/image', (form) => {
+    return new Promise((resolve, reject) => {
+        UpdateArticleImage(form).then((res) => {
             resolve(res);
         });
     }).catch((err) => {
@@ -907,7 +917,23 @@ function UpdateArticleText(form) {
                 `);
             stmt.all({ $id: form.id, $text: form.text }, (err) => {
                 if (err) reject(err);
-                resolve(`Successfully edited character [${form.id}] text to [${form.text}]`);
+                resolve(`Successfully edited article [${form.id}] text to [${form.text}]`);
+            });
+            stmt.finalize();
+        });
+    });
+}
+
+function UpdateArticleImage(form) {
+    return new Promise((resolve, reject) => {
+        db.serialize(() => {
+            let stmt = db.prepare(
+                `UPDATE article SET imagePath = $path
+                WHERE _id = $id
+                `);
+            stmt.all({ $id: form.id, $path: form.path }, (err) => {
+                if(err) reject(err);
+                resolve(`Successfully edited article [${form.id} image to [${form.path}]`);
             });
             stmt.finalize();
         });

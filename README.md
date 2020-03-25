@@ -51,3 +51,6 @@ CreateModelsAndCharacters().then((res) => {
 - [FS readdirSync, read all dir / files](https://stackoverflow.com/questions/18112204/get-all-directories-within-directory-nodejs)
 - [Electron local image (isDev vs. Build)](https://stackoverflow.com/questions/50272451/electron-js-images-from-local-file-system)
     - During dev, electron loads localhost:3000 via https, so to see images from disk, webSecurity is set to false. In the production build, the index.html is loaded from file , so webSecurity can (and absolutely should be) turned back on! 
+---
+## React resources:
+- [Default Image on broken source path](https://stackoverflow.com/a/38527860/12853439)

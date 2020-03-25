@@ -8,11 +8,15 @@ const imageReciever = (props) => {
             <div className={`wrap ${props.image.wrapSize}`}>
                 {
                     !props.hover &&
-                    <img onClick={props.click} className={props.image.class} src={`${props.image.master}${props.image.path}`} alt="ERROR" />
+                    <img onError={(e) => {
+                        e.target.src= process.env.PUBLIC_URL + 'imageError.png';
+                    }} onClick={props.click} className={props.image.class} src={`${props.image.master}${props.image.path}`} alt="ERROR" />
                 }
                 {
                     props.hover &&
-                    <img
+                    <img onError={(e) => {
+                        e.target.src= process.env.PUBLIC_URL + 'imageError.png';
+                    }}
                         onMouseEnter={props.hover.on}
                         onMouseLeave={props.hover.off}
                         onClick={props.click}

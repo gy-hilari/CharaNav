@@ -371,6 +371,7 @@ class Compendiums extends Component {
                                     this.getArticle(id);
                                     this.getCompArticles(this.state.activeComp.id);
                                 }}
+                                directories={this.state.imgDir.directories}
                             />
                         </Aux>
                     }

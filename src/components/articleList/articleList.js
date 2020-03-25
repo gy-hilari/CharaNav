@@ -63,7 +63,7 @@ class ArticleList extends Component {
                                 </table>
                             </div>
                             <input type="hidden" id={`${this.props.layerId}-sel`} />
-                            <button onClick={() => {
+                            <h4 className="article-assign-ui article-assign-confirm" onClick={() => {
                                 this.props.assign({
                                     positionX: 2,
                                     positionY: 350,
@@ -74,11 +74,11 @@ class ArticleList extends Component {
                                 this.props.getArticles(this.props.charId);
                                 this.setState({ activeLayerImage: null });
                                 this.props.layerMode(false);
-                            }}>Confirm</button>
-                            <button onClick={() => {
+                            }}>Confirm</h4>
+                            <h4 className="article-assign-ui article-assign-cancel" onClick={() => {
                                 this.setState({ activeLayerImage: null });
                                 this.props.layerMode(false);
-                            }}>Cancel</button>
+                            }}>Cancel</h4>
                         </Aux>
                     }
                 </Aux>

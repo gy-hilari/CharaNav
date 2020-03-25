@@ -19,3 +19,28 @@
 .article-submit{
     padding: 10px;
 }
+
+.article-assign-ui{
+    cursor: pointer;
+    display: inline-block;
+    vertical-align: middle;
+    margin: 10px 10px 0px 10px;
+    width: max-content;
+    border: 2px outset; 
+    border-radius: 5px;
+    padding: 5px 10px;
+    background-color: rgb(220, 220, 220);
+    transition: background-color .2s;
+}
+
+.article-assign-confirm:hover{
+    border: 2px inset;
+    color: rgb(236, 255, 241);
+    background-color: rgb(6, 188, 55);
+}
+
+.article-assign-cancel:hover{
+    border: 2px inset;
+    color: rgb(255, 239, 239);
+    background-color: rgb(226, 90, 90);
+}

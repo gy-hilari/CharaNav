@@ -14,7 +14,9 @@ const articleBrowse = (props) => {
                                 <div className="image-wrap" onClick={() => {
                                     props.getArticle(article.id);
                                 }}>
-                                    <img src={`${props.master}${article.imagePath}`} alt="" />
+                                    <img onError={(e) => {
+                                        e.target.src= process.env.PUBLIC_URL + 'imageError.png';
+                                    }} src={`${props.master}${article.imagePath}`} alt="ERROR" />
                                 </div>
                                 <h2 className="article-name">{article.name}</h2>
                                 <h4 className="article-delete" onClick={() => {
