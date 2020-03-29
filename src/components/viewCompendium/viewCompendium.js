@@ -56,13 +56,15 @@ class viewCompendium extends Component {
                                 this.setState({ editing: false });
                             }}>Cancel</h4>
                             <h4 className="rename-confirm" onClick={() => {
-                                console.log(document.getElementById(`${this.props.comp.id}-edit`).value);
-                                this.updateCompName({
-                                    id: this.props.comp.id,
-                                    name: document.getElementById(`${this.props.comp.id}-edit`).value
-                                });
-                                this.props.refresh(this.props.comp.id);
-                                this.setState({ editing: false });
+                                if(/\S/.test(document.getElementById(`${this.props.comp.id}-edit`).value)){
+                                    console.log(document.getElementById(`${this.props.comp.id}-edit`).value);
+                                    this.updateCompName({
+                                        id: this.props.comp.id,
+                                        name: document.getElementById(`${this.props.comp.id}-edit`).value
+                                    });
+                                    this.props.refresh(this.props.comp.id);
+                                    this.setState({ editing: false });
+                                }
                             }}>Rename</h4>
                         </div>
                         <div className="backdrop"></div>

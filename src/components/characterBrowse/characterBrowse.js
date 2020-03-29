@@ -26,7 +26,8 @@ class CharacterBrowse extends Component {
                                         this.props.getArticles(elm.id);
                                         this.props.getChar(elm.id);
                                     }}>
-                                        <span className='tooltiptext'>{elm.id}</span>
+                                        {/* THIS TOOLTIP WILL DISPLAY CREATED AT / UPDATED AT INFORMATION */}
+                                        {/* <span className='tooltiptext'>{elm.id}</span> */}
                                         {`${elm.name}`}
                                     </h4>
                                     {

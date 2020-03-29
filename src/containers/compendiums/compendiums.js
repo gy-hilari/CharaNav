@@ -6,6 +6,7 @@ import LayerList from '../../components/layerList/layerList';
 import ArticleBrowse from '../../components/articleBrowse/articleBrowse';
 import ViewArticle from '../../components/viewArticle/viewArticle';
 import './compendiums.css';
+import logo from './charanav-logo.png';
 
 class Compendiums extends Component {
     state = {
@@ -225,6 +226,21 @@ class Compendiums extends Component {
                     {
                         this.state.scene === 'comps' &&
                         <Aux>
+                            <div className="main-title">
+                                <div>
+                                    <img src={logo} alt=""/>
+                                </div>
+                                <div>
+                                    <h1>
+                                        CharaNav
+                                    </h1>
+                                </div>
+                                <div>
+                                    <p>
+                                        v0.1.0
+                                    </p>
+                                </div>
+                            </div>
                             <h4 className="nav-button" onClick={() => {
                                 this.setState({ creatingComp: true });
                             }}>New Compendium</h4>
@@ -234,7 +250,7 @@ class Compendiums extends Component {
                                     <div className="compendium-form">
                                         <input type="text" id="create-comp-name" placeholder="Compendium Name" />
                                         <h4 className="create-comp-confirm" onClick={() => {
-                                            if (document.getElementById('create-comp-name').value.length > 0) {
+                                            if (/\S/.test(document.getElementById('create-comp-name').value)) {
                                                 this.createComp({ name: document.getElementById('create-comp-name').value });
                                                 this.setState({ creatingComp: false });
                                             }

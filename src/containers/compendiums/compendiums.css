@@ -94,6 +94,23 @@ html, body, #root, .App, .App>.main-scene {
     position: relative;
 }
 
+.main-title{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 25px;
+    border-bottom: 1px dashed #cce6f4;
+}
+
+.main-title div img{
+    height: 50px;
+}
+.main-title div h1, .main-title div p{
+    color: #cce6f4;
+    margin: 0px;
+    user-select: none;
+}
+
 .compendium-form {
     width: 40%;
     padding: 2%;

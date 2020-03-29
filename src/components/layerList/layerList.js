@@ -128,12 +128,14 @@ class LayerList extends Component {
                                             this.setState({ editing: false });
                                         }}>Cancel</h4>
                                         <h4 className="rename-confirm" onClick={() => {
-                                            console.log(document.getElementById(`${this.props.charId}-edit`).value);
-                                            this.updateCharName({
-                                                id: this.props.charId,
-                                                name: document.getElementById(`${this.props.charId}-edit`).value
-                                            });
-                                            this.setState({ editing: false });
+                                            if(/\S/.test(document.getElementById(`${this.props.charId}-edit`).value)){
+                                                console.log(document.getElementById(`${this.props.charId}-edit`).value);
+                                                this.updateCharName({
+                                                    id: this.props.charId,
+                                                    name: document.getElementById(`${this.props.charId}-edit`).value
+                                                });
+                                                this.setState({ editing: false });
+                                            }
                                         }}>Rename</h4>
                                     </div>
                                     <div className="backdrop"></div>
@@ -247,8 +249,10 @@ class LayerList extends Component {
                                                                         />
                                                                         <h5 className="rename-confirm rename-charart charart-control" onClick={() => {
                                                                             console.log(document.getElementById(`${layer.id}-name`).value);
-                                                                            this.updateLayerName({ id: layer.id, name: document.getElementById(`${layer.id}-name`).value });
-                                                                            this.setState({ editLayer: null });
+                                                                            if(/\S/.test(document.getElementById(`${layer.id}-name`).value)){
+                                                                                this.updateLayerName({ id: layer.id, name: document.getElementById(`${layer.id}-name`).value });
+                                                                                this.setState({ editLayer: null });
+                                                                            }
                                                                         }}>Rename</h5>
                                                                         <h5 className="rename-cancel rename-charart charart-control" onClick={() => {
                                                                             this.setState({ editLayer: null });

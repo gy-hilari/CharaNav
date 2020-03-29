@@ -67,12 +67,14 @@ class ViewArticle extends Component {
                                 this.setState({ editName: false });
                             }}>Cancel</h4>
                             <h4 className="rename-confirm" onClick={() => {
-                                console.log(document.getElementById(`${this.props.article.id}-edit-name`).value);
-                                this.updateArticleName({
-                                    id: this.props.article.id,
-                                    name: document.getElementById(`${this.props.article.id}-edit-name`).value
-                                });
-                                this.setState({ editName: false });
+                                if(/\S/.test(document.getElementById(`${this.props.article.id}-edit-name`).value)){
+                                    console.log(document.getElementById(`${this.props.article.id}-edit-name`).value);
+                                    this.updateArticleName({
+                                        id: this.props.article.id,
+                                        name: document.getElementById(`${this.props.article.id}-edit-name`).value
+                                    });
+                                    this.setState({ editName: false });
+                                }
                             }}>Rename</h4>
                         </div>
                         <div className="backdrop"></div>
