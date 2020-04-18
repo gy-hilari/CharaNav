@@ -1,5 +1,7 @@
 .article-modal {
     width: 60%;
+    max-height: 60%;
+    overflow-y: scroll;
     padding: 2%;
     z-index: 201;
     position: fixed;
