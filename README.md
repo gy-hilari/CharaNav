@@ -15,7 +15,7 @@ CharaNav is a desktop application built with Electron + NodeJS, React, and SQLit
 - This was my first project integrating Electron and React, **all the SQLite functions are currently crammed into the electron.js.** However, my other project [pulseFG]() uses the same technology stack and provides a much better modularized implementation. This project will soon follow suit.
 - An example project to demonstrate usage is currently in progress
 - *Documentation is currently a work in progress, stay tuned!*
-- The DevNotes.md provided in the project houses a lot of my thinking throughout the project.
+- The [DevNotes.md](DevNotes.md) provided in the project houses a lot of my thinking throughout the project.
 ---
 ## Installation
 - Clone the repository
