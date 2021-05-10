@@ -760,12 +760,15 @@ function SwapLayerZIndex(form) {
             GetLayerByZIndex({ zIndex: shiftValue, character: targetLayer.character }).then((sLayer) => {
                 let swapLayer = sLayer ? sLayer : null;
                 if (!swapLayer) reject(`No layer with swap zIndex: [${shiftValue}]`);
-                let swap = swapLayer.zIndex;
-                UpdateLayerZIndex({ layer: swapLayer, zIndex: targetLayer.zIndex }).then((res) => {
-                    UpdateLayerZIndex({ layer: targetLayer, zIndex: swap }).then((res) => {
-                        resolve(`Swapped zIndex of [${targetLayer.id}] & [${swapLayer.id}] successfully!`);
+                if(swapLayer)
+                {
+                    let swap = swapLayer.zIndex;
+                    UpdateLayerZIndex({ layer: swapLayer, zIndex: targetLayer.zIndex }).then((res) => {
+                        UpdateLayerZIndex({ layer: targetLayer, zIndex: swap }).then((res) => {
+                            resolve(`Swapped zIndex of [${targetLayer.id}] & [${swapLayer.id}] successfully!`);
+                        });
                     });
-                });
+                }
             });
         });
     })
